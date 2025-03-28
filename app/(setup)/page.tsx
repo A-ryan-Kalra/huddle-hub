@@ -1,5 +1,5 @@
 import InitialModal from "@/components/modals/initial-modal";
-import { initialProfile } from "@/lib/currentProfile";
+import { initialProfile } from "@/lib/initialProfile";
 import { db } from "@/lib/db";
 
 export default async function Home() {
