@@ -23,6 +23,8 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import qs from "query-string";
 import { useRouter } from "next/navigation";
+import axios from "axios";
+import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
@@ -38,14 +40,16 @@ function InitialModal() {
       name: "",
     },
   });
+  const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
     const url = qs.stringifyUrl({
       url: "/api/servers",
     });
 
-    const res = await fetch(url);
+    const res = await axios.post(url, values);
+
+    console.log(res.data);
     form.reset();
     router.refresh();
   };
@@ -101,6 +105,7 @@ function InitialModal() {
                       </FormLabel>
                       <FormControl>
                         <Input
+                          disabled={isLoading}
                           className="bg-zinc-400/30 border-none outline-none focus-visible:ring-0"
                           placeholder="Enter Server Name"
                           {...field}
@@ -113,7 +118,13 @@ function InitialModal() {
               </div>
             </div>
             <DialogFooter className="mt-3">
-              <Button variant={"primary"}>Create</Button>
+              <Button
+                className="disabled:bg-slate-500"
+                disabled={isLoading}
+                variant={"primary"}
+              >
+                {isLoading ? <Loader2 className="animate-spin" /> : "Create"}
+              </Button>
             </DialogFooter>
           </form>
         </Form>

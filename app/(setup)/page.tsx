@@ -1,19 +1,29 @@
 import InitialModal from "@/components/modals/initial-modal";
-import { initialProfile } from "@/lib/initialProfile";
 import { db } from "@/lib/db";
+import { currentProfile } from "@/lib/currentProfile";
+import { RedirectToSignIn } from "@clerk/nextjs";
+import { redirect } from "next/navigation";
 
 export default async function Home() {
-  const profile = await initialProfile();
+  const profile = await currentProfile();
 
-  // const server=await db.server.findFirst({
-  //   where:{
-  //     members:{
-  //       some:{
+  if (!profile) {
+    return <RedirectToSignIn />;
+  }
 
-  //       }
-  //     }
-  //   }
-  // })
+  const server = await db.server.findFirst({
+    where: {
+      members: {
+        some: {
+          profileId: profile.id,
+        },
+      },
+    },
+  });
+
+  if (server) {
+    redirect(`/servers/${server.id}`);
+  }
 
   return <InitialModal />;
 }

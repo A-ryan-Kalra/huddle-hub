@@ -14,8 +14,6 @@ interface FileUploadProps {
 function FileUpload({ onChange, endpoint, value }: FileUploadProps) {
   const [type, setType] = useState("");
 
-  console.log(type);
-
   if (value && !type.includes("pdf")) {
     return (
       <div className="w-20 border-2 border-purple-500 shadow-md shadow-zinc-400 rounded-full relative h-20 ">

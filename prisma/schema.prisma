@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,120 +8,118 @@ datasource db {
 }
 
 model Profile {
-  id String @id @default(uuid())
-  userId String @unique
-  name String
-  imageUrl String @db.Text
-  email String @db.Text
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt 
-  
-  servers Server[]
-  channels Channel[]
-  members Member[]
+  id        String    @id @default(uuid())
+  userId    String    @unique
+  name      String
+  imageUrl  String
+  email     String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  channels  Channel[]
+  members   Member[]
+  servers   Server[]
 }
 
-model Server{
-  id String @id @default(uuid())
-  name String
-  imageUrl String @db.Text
-  inviteCode String @db.Text
+model Server {
+  id         String    @id @default(uuid())
+  name       String
+  imageUrl   String
+  inviteCode String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  profileId  String
+  channels   Channel[]
+  members    Member[]
+  profile    Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+}
+
+model Channel {
+  id         String            @id @default(uuid())
+  name       String
+  profileId  String
+  serverId   String
+  type       ChannelType       @default(TEXT)
+  visibility ChannelVisibility @default(PUBLIC)
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+  profile    Profile           @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  server     Server            @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  members    Member[]
+  messages   Message[]
+}
+
+model Member {
+  id                    String         @id @default(uuid())
+  role                  MemberRole     @default(GUEST)
+  profileId             String
+  channelId             String
+  serverId              String
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+  conversationInitiated Conversation[] @relation("conversationInitiater")
+  concersationReceived  Conversation[] @relation("conversationReceiver")
+  channel               Channel        @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  profile               Profile        @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  server                Server         @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  messages              Message[]
+
+  @@index([channelId])
+  @@index([serverId])
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  content   String
+  fileUrl   String?
+  deleted   Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
-  profileId String
-  profile Profile @relation(fields: [profileId],references: [id],onDelete: Cascade)
+  memberId  String
+  channelId String
+  channel   Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  member    Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
 
-  members Member[]
+  @@index([channelId])
+  @@index([memberId])
 }
 
-enum ChannelType{
+model Conversation {
+  id                      String          @id @default(uuid())
+  conversationInitiaterId String
+  conversationReceiverId  String
+  conversationInitiator   Member          @relation("conversationInitiater", fields: [conversationInitiaterId], references: [id], onDelete: Cascade)
+  conversationReceiver    Member          @relation("conversationReceiver", fields: [conversationReceiverId], references: [id], onDelete: Cascade)
+  directMessages          DirectMessage[]
+
+  @@unique([conversationInitiaterId, conversationReceiverId])
+  @@index([conversationInitiaterId])
+  @@index([conversationReceiverId])
+}
+
+model DirectMessage {
+  id             String       @id @default(uuid())
+  content        String
+  fileUrl        String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deleted        Boolean      @default(false)
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+}
+
+enum ChannelType {
   TEXT
   AUDIO
   VIDEO
 }
 
-model Channel{
-  id String @id @default(uuid())
-  name String
-  imageUrl String @db.Text
-  role ChannelType @default(TEXT)
-
-  profileId String
-  profile Profile @relation(fields: [profileId],references: [id],onDelete: Cascade)
-
-  members Member[]
-  messages Message[]
+enum ChannelVisibility {
+  PUBLIC
+  PRIVATE
 }
 
-enum MemberRole{
+enum MemberRole {
   ADMIN
   MODERATOR
   GUEST
-}
-
-model Member{
-  id String @id @default(uuid())
-  role MemberRole @default(GUEST)
-
-  profileId String
-  profile Profile @relation(fields: [profileId],references: [id],onDelete: Cascade)
-  channelId String
-  channel Channel @relation(fields: [channelId],references: [id],onDelete: Cascade)
-  serverId String
-  server Server @relation(fields: [serverId],references: [id],onDelete: Cascade)
-
-  conversationInitiated Conversation[] @relation("conversationInitiater")
-  concersationReceived Conversation[] @relation("conversationReceiver")
-
-  messages Message[]
-  
-  @@index([channelId])
-  @@index([serverId])
-}
-
-model Message{
-  id String @id @default(uuid())
-  content String @db.Text
-  fileUrl String? @db.Text
-  deleted Boolean @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  memberId String
-  member Member @relation(fields: [memberId],references: [id],onDelete: Cascade)
-  channelId String
-  channel Channel @relation(fields: [channelId],references: [id],onDelete: Cascade)
-  @@index([channelId])
-  @@index([memberId])
-}
-
-
-model Conversation{
-  id String @id @default(uuid())
-
-  conversationInitiaterId String
-  conversationInitiator Member @relation("conversationInitiater",fields: [conversationInitiaterId],references: [id],onDelete: Cascade)
-
-  conversationReceiverId String
- 
-  conversationReceiver Member @relation("conversationReceiver",fields: [conversationReceiverId],references: [id],onDelete: Cascade)
-
-  directMessages DirectMessage[]
-
-  @@index([conversationInitiaterId])
-  @@index([conversationReceiverId])
-@@unique([conversationInitiaterId,conversationReceiverId])
-}
-
-model DirectMessage{
-  id String @id @default(uuid())
-  content String
-  fileUrl String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  deleted Boolean @default(false)
-
-  conversationId String
-  conversation Conversation @relation(fields: [conversationId],references: [id],onDelete: Cascade) 
 }
