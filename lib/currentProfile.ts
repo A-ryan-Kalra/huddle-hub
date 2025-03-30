@@ -2,14 +2,15 @@ import { auth } from "@clerk/nextjs/server";
 import { db } from "./db";
 
 export const currentProfile = async () => {
-  const { userId } = await auth();
+  const authorized = await auth();
+  const { userId } = authorized;
 
   if (!userId) {
     return null;
   }
   const profile = await db.profile.findUnique({
     where: {
-      userId: userId,
+      userId,
     },
   });
 
