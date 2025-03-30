@@ -1,4 +1,5 @@
 "use client";
+import { cn } from "@/lib/utils";
 import React, { useRef, useState } from "react";
 
 interface ResizeComponentProps {
@@ -6,8 +7,10 @@ interface ResizeComponentProps {
 }
 
 function ResizeComponent({ children }: ResizeComponentProps) {
-  const [width, setWidth] = useState(300);
+  const [width, setWidth] = useState(325);
   const isResizing = useRef(false);
+
+  const verticalBar = useRef<HTMLDivElement>(null);
 
   const handleDrag = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -15,6 +18,9 @@ function ResizeComponent({ children }: ResizeComponentProps) {
 
     const startX = e.clientX;
     const startWidth = width;
+    if (verticalBar.current) {
+      verticalBar.current.style.borderRight = "3px #818cf8 solid";
+    }
 
     const handleMove = (event: MouseEvent) => {
       if (!isResizing.current) {
@@ -26,6 +32,10 @@ function ResizeComponent({ children }: ResizeComponentProps) {
     };
 
     const handleMouseUp = () => {
+      if (verticalBar.current) {
+        verticalBar.current.style.borderRight = "";
+      }
+
       isResizing.current = false;
       document.removeEventListener("mousemove", handleMove);
       document.removeEventListener("mouseup", handleMouseUp);
@@ -34,16 +44,20 @@ function ResizeComponent({ children }: ResizeComponentProps) {
     document.addEventListener("mousemove", handleMove);
     document.addEventListener("mouseup", handleMouseUp);
   };
+
   return (
     <div
       style={{ width }}
-      className="relative overflow-hidden h-full bg-slate-100"
+      className={cn("relative overflow-hidden h-full bg-slate-100")}
     >
-      {children}
       <div
         onMouseDown={handleDrag}
-        className="absolute h-full border-r-zinc-400 w-[5px] opacity-0 hover:opacity-100 duration-500 transition  cursor-ew-resize hover:border-r-indigo-400 hover:border-r-[3px] top-0 right-0"
-      ></div>
+        ref={verticalBar}
+        className={cn(
+          "absolute h-full border-r-zinc-400 w-[8px] active:opacity-100 opacity-0 hover:opacity-100 duration-500 transition  cursor-ew-resize hover:border-r-indigo-400 hover:border-r-[3px] top-0 right-0"
+        )}
+      />
+      {children}
     </div>
   );
 }
