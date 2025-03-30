@@ -1,4 +1,4 @@
-import CommunicationSidebar from "@/components/sidebar/communication-sidebar";
+import ChannelSidebar from "@/components/sidebar/channel-sidebar";
 import ResizeComponent from "@/components/ui/resize-component";
 
 interface RoutesLayoutProps {
@@ -11,7 +11,7 @@ function RoutesLayout({ children }: RoutesLayoutProps) {
       <div className="min-w-[70px] h-full "></div>
       <div className="flex w-full h-full pr-1 pb-2 rounded-2xl  overflow-hidden">
         <ResizeComponent>
-          <CommunicationSidebar />
+          <ChannelSidebar />
         </ResizeComponent>
         <div className="bg-slate-200 w-ful flex flex-col flex-1 h-full">
           {children}
