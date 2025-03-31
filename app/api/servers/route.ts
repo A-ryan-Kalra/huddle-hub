@@ -37,6 +37,7 @@ export async function POST(req: Request) {
 
     const member = await db.member.create({
       data: {
+        role: "ADMIN",
         serverId: server.id,
         channelId: channelId,
         profileId: profile.id,

@@ -3,13 +3,14 @@
 @tailwind utilities;
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  /* font-family: var(--font-righteous); */
 }
 
 html,
 body,
 :root {
   height: 100%;
+  --font-righteous: "Righteous", sans-serif;
 }
 
 @layer base {

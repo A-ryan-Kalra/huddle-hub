@@ -4,8 +4,13 @@ import { FilePen } from "lucide-react";
 import { redirect } from "next/navigation";
 import ActionToolTip from "../ui/action-tooltip";
 import ServerDropDown from "../channels/server-drop-down";
+import ChannelSection from "./channel-section";
+import { MemberRole } from "@prisma/client";
 
-async function ChannelSidebar() {
+interface ChannelSideBarProps {
+  serverId: string;
+}
+async function ChannelSidebar({ serverId }: ChannelSideBarProps) {
   const profile = await currentProfile();
 
   if (!profile) {
@@ -33,7 +38,24 @@ async function ChannelSidebar() {
   if (!server) {
     redirect("/");
   }
+  const channels = await db.channel.findMany({
+    where: {
+      serverId,
+      members: {
+        some: {
+          profileId: profile.id,
+        },
+      },
+    },
+  });
 
+  const currentMember = server.members.find(
+    (member) => member.profileId === profile.id
+  );
+
+  const role: MemberRole = currentMember!.role;
+  console.log(currentMember);
+  console.log(role);
   return (
     <div className="truncate p-2 flex flex-col gap-y-2  h-full overflow-hidden">
       <div className="flex justify-between items-center">
@@ -45,7 +67,12 @@ async function ChannelSidebar() {
         </ActionToolTip>
       </div>
 
-      <div></div>
+      <ChannelSection
+        title={"Channels"}
+        type="channels"
+        channels={channels}
+        role={role}
+      />
     </div>
   );
 }

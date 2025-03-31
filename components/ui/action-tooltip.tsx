@@ -10,18 +10,25 @@ import { Button } from "./button";
 interface ActionToolTipProps {
   children: React.ReactNode;
   label: string;
+  className?: string;
   side?: "top" | "right" | "bottom" | "left";
   align?: "center" | "start" | "end";
 }
 
-function ActionToolTip({ children, label, side, align }: ActionToolTipProps) {
+function ActionToolTip({
+  children,
+  label,
+  side,
+  align,
+  className,
+}: ActionToolTipProps) {
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <button>{children}</button>
+          <button className={className}>{children}</button>
         </TooltipTrigger>
-        <TooltipContent align={align} className="text-sm" side={side}>
+        <TooltipContent className="text-sm" align={align} side={side}>
           {label}
         </TooltipContent>
       </Tooltip>

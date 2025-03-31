@@ -35,7 +35,7 @@ function ServerDropDown({ server }: ServerDropDownProps) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <div className="px-2 py-1 cursor-pointer hover:bg-zinc-300 duration-300 transition w-fit rounded-md">
-          <h1 className="truncate  font-semibold text-lg font-sans flex items-center   ">
+          <h1 className="truncate  font-semibold text-lg flex items-center   ">
             {server?.name.split(" ")?.join("-")}
             <ChevronDown className="w-4 h-4" />
           </h1>
