@@ -54,8 +54,8 @@ async function ChannelSidebar({ serverId }: ChannelSideBarProps) {
   );
 
   const role: MemberRole = currentMember!.role;
-  console.log(currentMember);
-  console.log(role);
+  // console.log(currentMember);
+  // console.log(role);
   return (
     <div className="truncate p-2 flex flex-col gap-y-2  h-full overflow-hidden">
       <div className="flex justify-between items-center">
