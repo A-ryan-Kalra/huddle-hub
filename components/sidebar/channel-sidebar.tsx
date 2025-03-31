@@ -35,7 +35,7 @@ async function ChannelSidebar() {
   }
 
   return (
-    <div className="truncate p-2 flex flex-col gap-y-2 w-full h-full overflow-hidden">
+    <div className="truncate p-2 flex flex-col gap-y-2  h-full overflow-hidden">
       <div className="flex justify-between items-center">
         <ServerDropDown server={server} />
         <ActionToolTip label="New message">
