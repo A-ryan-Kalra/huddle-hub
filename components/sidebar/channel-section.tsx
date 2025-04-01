@@ -1,7 +1,10 @@
+"use client";
+
 import { Channel, MemberRole } from "@prisma/client";
 import { ChevronDown, PlusIcon } from "lucide-react";
 import React from "react";
 import ActionToolTip from "../ui/action-tooltip";
+import { useModal } from "@/hooks/use-modal-store";
 
 interface ChannelScetionProps {
   title: string;
@@ -10,6 +13,7 @@ interface ChannelScetionProps {
   role: "ADMIN" | "MODERATOR" | "GUEST";
 }
 function ChannelSection({ title, channels, type, role }: ChannelScetionProps) {
+  const { onOpen } = useModal();
   return (
     <div className="mt-8">
       <div className="flex items-center gap-x-1 group">
@@ -25,7 +29,10 @@ function ChannelSection({ title, channels, type, role }: ChannelScetionProps) {
             className="ml-auto flex items-center"
             label="Add a new channel"
           >
-            <div className="p-1 group-hover:visible invisible cursor-pointer hover:bg-zinc-200 duration-300 transition w-fit rounded-md">
+            <div
+              onClick={() => onOpen("createChannel")}
+              className="p-1 group-hover:visible invisible cursor-pointer hover:bg-zinc-200 duration-300 transition w-fit rounded-md"
+            >
               <PlusIcon className="w-4 h-4" />
             </div>
           </ActionToolTip>

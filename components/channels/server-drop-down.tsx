@@ -1,4 +1,4 @@
-// "use client";
+"use client";
 import { ServerSchema } from "@/type";
 import { ChevronDown } from "lucide-react";
 import React from "react";
@@ -19,12 +19,16 @@ import {
   useAuth,
 } from "@clerk/nextjs";
 import AvatarIcon from "../ui/avatar-icon";
+import { useModal } from "@/hooks/use-modal-store";
+import { MemberRole } from "@prisma/client";
 
 interface ServerDropDownProps {
   server: ServerSchema;
+  role: MemberRole;
 }
 
-function ServerDropDown({ server }: ServerDropDownProps) {
+function ServerDropDown({ server, role }: ServerDropDownProps) {
+  const { onOpen } = useModal();
   //   const { sessionId } = useAuth();
 
   //   if (!sessionId) {
@@ -44,7 +48,7 @@ function ServerDropDown({ server }: ServerDropDownProps) {
       <DropdownMenuContent
         side="bottom"
         align="start"
-        className="w-56 cursor-pointer"
+        className="w-72 cursor-pointer"
       >
         <DropdownMenuLabel className="cursor-default flex justify-start items-center gap-x-2">
           <AvatarIcon imageUrl={server?.imageUrl} width={40} height={40} />
@@ -64,12 +68,25 @@ function ServerDropDown({ server }: ServerDropDownProps) {
             Search
             <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
           </DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer">
-            Invite People
-          </DropdownMenuItem>
+          {(role === MemberRole.ADMIN || role === MemberRole.MODERATOR) && (
+            <DropdownMenuItem
+              onClick={() => onOpen("invite", { server })}
+              className="cursor-pointer"
+            >
+              Invite People
+            </DropdownMenuItem>
+          )}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
+          {(role === MemberRole.ADMIN || role === MemberRole.MODERATOR) && (
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={() => onOpen("createServer")}
+            >
+              Create Server
+            </DropdownMenuItem>
+          )}
           <DropdownMenuItem className="cursor-pointer">
             <SignOutButton>Sign Out</SignOutButton>
           </DropdownMenuItem>

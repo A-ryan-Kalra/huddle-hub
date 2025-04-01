@@ -22,21 +22,35 @@ import FileUpload from "../ui/file-upload";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import qs from "query-string";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
+import { useModal } from "@/hooks/use-modal-store";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
-  imageUrl: z.string().min(1, { message: "Image is required" }),
+  type: z.string().min(1, { message: "Image is required" }),
 });
-function InitialModal() {
-  const [open, setOpen] = useState(false);
+
+function CreateChannelModal() {
+  const { type, onClose } = useModal();
+  const openModal = type === "createChannel";
+  const params = useParams();
+
   const router = useRouter();
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      imageUrl: "",
+      type: "",
       name: "",
     },
   });
@@ -44,56 +58,36 @@ function InitialModal() {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const url = qs.stringifyUrl({
-      url: "/api/servers",
+      url: `/api/channels`,
+      query: {
+        serverId: params?.serverId,
+      },
     });
 
     const res = await axios.post(url, values);
 
     console.log(res.data);
-    form.reset();
     router.refresh();
+    onClose();
   };
 
-  useEffect(() => {
-    setOpen(true);
-  }, []);
-
-  if (!open) {
-    return null;
-  }
+  const handleCancel = () => {
+    form.reset();
+    onClose();
+  };
 
   return (
-    <Dialog open>
+    <Dialog open={openModal} onOpenChange={handleCancel}>
       <DialogContent>
         <DialogTitle className="text-2xl text-center">
-          Customize Your Server
+          Create a new channel
         </DialogTitle>
         <DialogDescription className="text-center text-zinc-500 text-sm">
-          Let's bring your server to life with a unique name and a custom image!
+          Let's give your channel a unique name!
         </DialogDescription>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="flex items-center w-full gap-y-5 flex-col justify-center">
-              <div className="flex items-center justify-center">
-                <FormField
-                  control={form.control}
-                  name="imageUrl"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <FileUpload
-                          {...field}
-                          value={field.value}
-                          endpoint="serverImage"
-                          onChange={(imgUrl) => field.onChange(imgUrl)}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
               <div className=" w-full">
                 <FormField
                   control={form.control}
@@ -101,15 +95,48 @@ function InitialModal() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="uppercase font-semibold text-xs">
-                        Server Name
+                        channel Name
                       </FormLabel>
                       <FormControl>
                         <Input
                           disabled={isLoading}
                           className="bg-zinc-400/30 border-none outline-none focus-visible:ring-0"
-                          placeholder="Enter Server Name"
+                          placeholder="Enter a channel name"
                           {...field}
                         />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className=" w-full">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="uppercase font-semibold text-xs">
+                        channel type
+                      </FormLabel>
+                      <FormControl>
+                        <Select>
+                          <SelectTrigger className="w-full bg-zinc-400/30 border-none outline-none focus-visible:ring-0">
+                            <SelectValue placeholder="Select a channel type" />
+                          </SelectTrigger>
+                          <SelectContent
+                            disabled={isLoading}
+                            {...field}
+                            className="w-full"
+                          >
+                            <SelectGroup>
+                              <SelectLabel>Select Type</SelectLabel>
+                              <SelectItem value="text">Text</SelectItem>
+                              <SelectItem value="audio">Audio</SelectItem>
+                              <SelectItem value="video">Video</SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -133,4 +160,4 @@ function InitialModal() {
   );
 }
 
-export default InitialModal;
+export default CreateChannelModal;

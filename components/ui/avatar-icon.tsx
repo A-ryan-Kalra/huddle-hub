@@ -18,6 +18,7 @@ function AvatarIcon({ imageUrl, width, height }: AvatarIconProps) {
     >
       <Image
         fill
+        draggable={false}
         src={imageUrl}
         className="object-cover rounded-full"
         alt={imageUrl}

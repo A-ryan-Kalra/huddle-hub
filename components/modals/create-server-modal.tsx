@@ -25,13 +25,16 @@ import qs from "query-string";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
+import { useModal } from "@/hooks/use-modal-store";
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
   imageUrl: z.string().min(1, { message: "Image is required" }),
 });
-function InitialModal() {
-  const [open, setOpen] = useState(false);
+function CreateServerModal() {
+  const { type, onClose } = useModal();
+  const openModal = type === "createServer";
+
   const router = useRouter();
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -50,26 +53,23 @@ function InitialModal() {
     const res = await axios.post(url, values);
 
     console.log(res.data);
-    form.reset();
     router.refresh();
+    onClose();
   };
 
-  useEffect(() => {
-    setOpen(true);
-  }, []);
-
-  if (!open) {
-    return null;
-  }
+  const handleCancel = () => {
+    form.reset();
+    onClose();
+  };
 
   return (
-    <Dialog open>
+    <Dialog open={openModal} onOpenChange={handleCancel}>
       <DialogContent>
         <DialogTitle className="text-2xl text-center">
-          Customize Your Server
+          Create a new server
         </DialogTitle>
         <DialogDescription className="text-center text-zinc-500 text-sm">
-          Let's bring your server to life with a unique name and a custom image!
+          Let's give your server a unique name and a custom image!
         </DialogDescription>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -133,4 +133,4 @@ function InitialModal() {
   );
 }
 
-export default InitialModal;
+export default CreateServerModal;
