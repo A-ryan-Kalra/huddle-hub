@@ -37,7 +37,6 @@ function InviteMemberModal() {
   const { server } = data;
   const inviteUrl = `${origin}/invite/${server?.inviteCode}`;
 
-  console.log(server);
   const router = useRouter();
 
   const onSubmit = async () => {

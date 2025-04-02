@@ -3,6 +3,7 @@ import { Geist, Noto_Sans_Indic_Siyaq_Numbers } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import ModalProviders from "@/components/providers/modal-providers";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,6 +31,7 @@ export default function RootLayout({
       <html lang="en">
         <body className={`${righteous.className}  antialiased`}>
           <ModalProviders />
+          <Toaster />
           {children}
         </body>
       </html>
