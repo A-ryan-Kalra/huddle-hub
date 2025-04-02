@@ -23,13 +23,14 @@ import { Button } from "../ui/button";
 import qs from "query-string";
 import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
-import { Loader2 } from "lucide-react";
+import { Check, Copy, Loader2, RefreshCcw } from "lucide-react";
 import { useModal } from "@/hooks/use-modal-store";
 
 import { useOrigin } from "@/hooks/use-origin";
 
 function InviteMemberModal() {
-  const { type, onClose, data } = useModal();
+  const { type, onClose, data, onOpen } = useModal();
+  const [loading, setLoading] = useState(false);
   const openModal = type === "invite";
   const params = useParams();
   const origin = useOrigin();
@@ -41,21 +42,28 @@ function InviteMemberModal() {
 
   const onSubmit = async () => {
     const url = qs.stringifyUrl({
-      url: `/api/channels`,
+      url: `/api/servers/${params?.serverId}/invite-code`,
       query: {
         serverId: params?.serverId,
       },
     });
 
-    const res = await axios.post(url);
+    const res = await axios.put(url);
 
-    console.log(res.data);
+    onOpen("invite", { server: res.data });
     router.refresh();
-    onClose();
   };
 
   const handleCancel = () => {
     onClose();
+  };
+
+  const onCopy = () => {
+    setLoading(true);
+    navigator.clipboard.writeText(inviteUrl);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
   };
 
   return (
@@ -65,23 +73,33 @@ function InviteMemberModal() {
           Invite Friends
         </DialogTitle>
 
-        <form onSubmit={onSubmit}>
-          <div className="flex items-center w-full gap-y-5 flex-col justify-center">
-            <Input
-              // disabled={isLoading}
-              value={inviteUrl}
-              className="bg-zinc-400/30 border-none outline-none focus-visible:ring-0"
-              placeholder="Enter a server Link"
-            />
-          </div>
-          <DialogFooter className="mt-3">
-            <Button
-              className="disabled:bg-slate-500"
-              // disabled={isLoading}
-              variant={"primary"}
-            ></Button>
-          </DialogFooter>
-        </form>
+        <div className="flex items-center w-full gap-x-3 justify-center">
+          <Input
+            value={inviteUrl}
+            className="bg-zinc-400/30 border-none outline-none focus-visible:ring-0"
+            placeholder="Enter a server Link"
+          />
+          <button
+            type="button"
+            onClick={onCopy}
+            className="bg-zinc-100 hover:bg-zinc-200 transition flex items-center p-2 rounded-md"
+          >
+            {!loading ? (
+              <Copy className="w-4 h-4" />
+            ) : (
+              <Check className="w-4 h-4" />
+            )}
+          </button>
+        </div>
+        <DialogFooter className="mt-3">
+          <Button
+            className="mr-auto text-zinc-500 flex items-center"
+            variant={"link"}
+            onClick={onSubmit}
+          >
+            Generate a new link <RefreshCcw className="w-4 h-4" />
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
