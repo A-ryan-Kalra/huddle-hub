@@ -19,32 +19,46 @@ export async function POST(req: Request) {
         imageUrl,
         name,
         inviteCode: uuid(),
-        channels: {
+        members: {
           create: [
             {
-              name: "general",
               profileId: profile.id,
+              role: "ADMIN",
             },
           ],
+          // create: [
+          //   {
+          //     name: "general",
+          //     profileId: profile.id,
+          //   },
+          // ],
         },
       },
       include: {
-        channels: true,
+        members: true,
       },
     });
 
-    const channelId = server.channels[0]?.id;
+    const memberId = server.members[0]?.id;
 
-    const member = await db.member.create({
+    const channel = await db.channel.create({
       data: {
-        role: "ADMIN",
-        serverId: server.id,
-        channelId: channelId,
+        type: "TEXT",
+        visibility: "PUBLIC",
+        name: "genreal",
         profileId: profile.id,
       },
     });
 
-    return NextResponse.json({ server, member });
+    const addMembersToChannel = await db.channelOnMember.create({
+      data: {
+        serverId: server.id,
+        memberId: memberId,
+        channelId: channel.id,
+      },
+    });
+
+    return NextResponse.json({ server, channel, addMembersToChannel });
   } catch (error) {
     console.error("[SERVERS_PATCH]", error);
     return NextResponse.json(

@@ -1,6 +1,6 @@
 "use client";
 
-import { Channel, MemberRole } from "@prisma/client";
+import { Channel, ChannelOnMember, MemberRole } from "@prisma/client";
 import { ChevronDown, PlusIcon } from "lucide-react";
 import React from "react";
 import ActionToolTip from "../ui/action-tooltip";
@@ -9,7 +9,7 @@ import { useModal } from "@/hooks/use-modal-store";
 interface ChannelScetionProps {
   title: string;
   type: "channels" | "messages";
-  channels?: Channel[];
+  channels?: ChannelOnMember[];
   role: "ADMIN" | "MODERATOR" | "GUEST";
 }
 function ChannelSection({ title, channels, type, role }: ChannelScetionProps) {

@@ -1,8 +1,10 @@
-import { Channel, Member, Server } from "@prisma/client";
+import { Channel, ChannelOnMember, Member, Server } from "@prisma/client";
 
 export type ServerSchema = Server & {
-  channels: (Channel & {
-    members: Member[];
+  channels: (ChannelOnMember & {
+    memberId: string;
+    channelId: string;
+    serverId: string;
   })[];
   members: Member[];
 };
