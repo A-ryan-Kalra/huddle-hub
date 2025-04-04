@@ -25,7 +25,7 @@ import { Button } from "../ui/button";
 import qs from "query-string";
 import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
-import { Loader2, Lock } from "lucide-react";
+import { Check, Loader2, Lock } from "lucide-react";
 import { useModal } from "@/hooks/use-modal-store";
 import {
   Select,
@@ -38,6 +38,15 @@ import {
 } from "../ui/select";
 import { ChannelType, ChannelVisibility } from "@prisma/client";
 import { Switch } from "../ui/switch";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "../ui/command";
 
 const formSchema = z.object({
   name: z
@@ -54,6 +63,9 @@ function CreateChannelModal() {
   const { type, onClose } = useModal();
   const openModal = type === "createChannel";
   const params = useParams();
+  const [showMember, setShowMember] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState<string | null>(null);
 
   const router = useRouter();
   const form = useForm({
@@ -67,26 +79,36 @@ function CreateChannelModal() {
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
-    // const url = qs.stringifyUrl({
-    //   url: `/api/channels`,
-    //   query: {
-    //     serverId: params?.serverId,
-    //   },
-    // });
+    try {
+      console.log(values);
+      // const url = qs.stringifyUrl({
+      //   url: `/api/channels`,
+      //   query: {
+      //     serverId: params?.serverId,
+      //   },
+      // });
 
-    // const res = await axios.post(url, values);
+      // const res = await axios.post(url, values);
 
-    // console.log(res.data);
-    router.refresh();
-    onClose();
+      // console.log(res.data);
+      // router.refresh();
+      // onClose();
+    } catch (error) {
+      console.error(error);
+    }
   };
+  const options = [
+    { label: "Apple", value: "apple" },
+    { label: "Banana", value: "banana" },
+    { label: "Cherry", value: "cherry" },
+    { label: "Grapes", value: "grapes" },
+  ];
 
   const handleCancel = () => {
     form.reset();
     onClose();
   };
-
+  console.log(showMember);
   return (
     <Dialog open={openModal} onOpenChange={handleCancel}>
       <DialogContent>
@@ -175,6 +197,9 @@ function CreateChannelModal() {
                           checked={field.value !== "PUBLIC"}
                           onCheckedChange={(e) => {
                             field.onChange(e === true ? "PRIVATE" : "PUBLIC");
+                            setShowMember(
+                              form.getValues("visibility") === "PRIVATE"
+                            );
                           }}
                         />
                       </FormControl>
@@ -182,6 +207,50 @@ function CreateChannelModal() {
                   )}
                 />
               </div>
+              {showMember && (
+                <div className="w-full">
+                  <Popover open={open} onOpenChange={setOpen}>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" className="w-full">
+                        <span className=" mr-auto">
+                          {selected ? selected : "Select members"}
+                        </span>
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent align="start" className="sm:w-[400px] p-2">
+                      <Command className="w-full ">
+                        <CommandInput
+                          className="border-none outline-none w-full focus-visible:ring-offset-0"
+                          placeholder="Search..."
+                        />
+                        <CommandList>
+                          <CommandEmpty>No results found.</CommandEmpty>
+                          <CommandGroup>
+                            {options.map((option) => (
+                              <CommandItem
+                                key={option.value}
+                                onSelect={() => {
+                                  setSelected(option.label);
+                                  setOpen(false);
+                                }}
+                              >
+                                <Check
+                                  className={`mr-2 h-4 w-4 ${
+                                    selected === option.label
+                                      ? "opacity-100"
+                                      : "opacity-0"
+                                  }`}
+                                />
+                                {option.label}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              )}
             </div>
             <DialogFooter className="mt-3">
               <Button

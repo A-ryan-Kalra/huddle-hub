@@ -1,11 +1,11 @@
 import InitialModal from "@/components/modals/initial-modal";
 import { db } from "@/lib/db";
-import { currentProfile } from "@/lib/currentProfile";
 import { RedirectToSignIn } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
+import { initialProfile } from "@/lib/initialProfile";
 
 export default async function Home() {
-  const profile = await currentProfile();
+  const profile = await initialProfile();
 
   if (!profile) {
     return <RedirectToSignIn />;

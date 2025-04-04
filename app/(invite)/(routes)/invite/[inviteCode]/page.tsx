@@ -17,13 +17,13 @@ async function InvitePage({ params }: InvitePageProps) {
     redirect("/");
   }
 
-  const server = await db.server.findFirst({
+  const existingserver = await db.server.findFirst({
     where: {
       inviteCode: paramsResolved.inviteCode,
     },
   });
 
-  if (!server) {
+  if (!existingserver) {
     return (
       <div className="w-full h-full flex gap-y-5 items-center justify-center flex-col">
         <h1 className="text-8xl text-zinc-700">404</h1>
@@ -36,32 +36,51 @@ async function InvitePage({ params }: InvitePageProps) {
 
   const existingMember = await db.member.findFirst({
     where: {
-      serverId: server.id,
+      serverId: existingserver.id,
       profileId: profile.id,
     },
   });
 
   if (existingMember) {
-    return redirect(`/servers/${server.id}`);
+    return redirect(`/servers/${existingserver.id}`);
   }
+  const newMember = await db.member.create({
+    data: {
+      profileId: profile.id,
+      serverId: existingserver.id,
+      role: "GUEST",
+    },
+  });
+
   const allChannels = await db.channel.findMany({
     where: {
-      serverId: server.id,
+      serverId: existingserver.id,
       visibility: "PUBLIC",
     },
   });
-  const memberData = allChannels.map((channel) => ({
+  const addMemberToAllChannels = allChannels.map((channel) => ({
     channelId: channel.id,
-    serverId: server.id,
-    profileId: profile.id,
+    memberId: newMember.id,
   }));
 
-  const data = await db.member.createMany({
-    data: memberData,
-    skipDuplicates: true,
+  const server = await db.server.update({
+    where: {
+      inviteCode: paramsResolved.inviteCode,
+    },
+    data: {
+      channelOnMembers: {
+        createMany: {
+          data: addMemberToAllChannels,
+          skipDuplicates: true,
+        },
+      },
+    },
   });
 
-  console.log(data);
+  console.log("server==", server);
+  if (server) {
+    return redirect(`/servers/${server.id}`);
+  }
   return (
     <div className="w-full h-full flex gap-y-5 items-center justify-center flex-col">
       <h1 className="text-8xl text-zinc-700">404</h1>

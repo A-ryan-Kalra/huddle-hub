@@ -26,39 +26,35 @@ export async function POST(req: Request) {
               role: "ADMIN",
             },
           ],
-          // create: [
-          //   {
-          //     name: "general",
-          //     profileId: profile.id,
-          //   },
-          // ],
+        },
+        channels: {
+          create: [
+            {
+              visibility: "PUBLIC",
+              name: "genreal",
+              profileId: profile.id,
+              type: "TEXT",
+            },
+          ],
         },
       },
       include: {
         members: true,
+        channels: true,
       },
     });
 
     const memberId = server.members[0]?.id;
 
-    const channel = await db.channel.create({
-      data: {
-        type: "TEXT",
-        visibility: "PUBLIC",
-        name: "genreal",
-        profileId: profile.id,
-      },
-    });
-
     const addMembersToChannel = await db.channelOnMember.create({
       data: {
         serverId: server.id,
         memberId: memberId,
-        channelId: channel.id,
+        channelId: server.channels[0]?.id,
       },
     });
 
-    return NextResponse.json({ server, channel, addMembersToChannel });
+    return NextResponse.json({ server, addMembersToChannel });
   } catch (error) {
     console.error("[SERVERS_PATCH]", error);
     return NextResponse.json(

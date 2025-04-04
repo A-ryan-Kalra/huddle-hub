@@ -34,6 +34,7 @@ export async function POST(req: Request) {
     const channel = await db.channel.create({
       data: {
         profileId: profile.id,
+        serverId,
         name,
         type,
         visibility: "PUBLIC",

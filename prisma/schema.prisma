@@ -28,7 +28,8 @@ model Server {
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   profileId  String
-  channels   ChannelOnMember[]
+  channels   Channel[]
+  channelOnMembers ChannelOnMember[]
   members    Member[]
   profile    Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
 }
@@ -38,11 +39,12 @@ model Channel {
   name       String
   profileId  String
   type       ChannelType       @default(TEXT)
+  serverId String
   visibility ChannelVisibility @default(PUBLIC)
   createdAt  DateTime          @default(now())
   updatedAt  DateTime          @updatedAt
   profile    Profile           @relation(fields: [profileId], references: [id], onDelete: Cascade)
-
+  server     Server @relation(fields: [serverId],references: [id],onDelete: Cascade)
   members    ChannelOnMember[]
   messages   Message[]
 }
@@ -107,12 +109,12 @@ model DirectMessage {
 
 model ChannelOnMember{
   memberId String
-  member                Member @relation(fields: [memberId],references: [id],onDelete: Cascade)
+  member                Member        @relation(fields: [memberId],references: [id],onDelete: Cascade)
   channelId             String
-  channel               Channel        @relation(fields: [channelId], references: [id], onDelete: Cascade)
-  serverId   String
-  server     Server            @relation(fields: [serverId], references: [id], onDelete: Cascade)
-  @@id([memberId,channelId])
+  channel               Channel       @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  serverId              String
+  server                Server        @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  @@id([memberId,channelId,serverId])
 }
 
 enum ChannelType {
