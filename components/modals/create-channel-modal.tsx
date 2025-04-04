@@ -13,6 +13,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -24,7 +25,7 @@ import { Button } from "../ui/button";
 import qs from "query-string";
 import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
-import { Loader2 } from "lucide-react";
+import { Loader2, Lock } from "lucide-react";
 import { useModal } from "@/hooks/use-modal-store";
 import {
   Select,
@@ -35,10 +36,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { ChannelType, ChannelVisibility } from "@prisma/client";
+import { Switch } from "../ui/switch";
 
 const formSchema = z.object({
-  name: z.string().min(1, { message: "Name is required" }),
-  type: z.string().min(1, { message: "Image is required" }),
+  name: z
+    .string()
+    .min(1, { message: "Channel Name is required" })
+    .refine((name) => name !== "general", {
+      message: "Channel name cannot be 'general'",
+    }),
+  type: z.nativeEnum(ChannelType),
+  visibility: z.nativeEnum(ChannelVisibility),
 });
 
 function CreateChannelModal() {
@@ -50,23 +59,25 @@ function CreateChannelModal() {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      type: "",
+      type: ChannelType.TEXT,
       name: "",
+      visibility: ChannelVisibility.PUBLIC,
     },
   });
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    const url = qs.stringifyUrl({
-      url: `/api/channels`,
-      query: {
-        serverId: params?.serverId,
-      },
-    });
+    console.log(values);
+    // const url = qs.stringifyUrl({
+    //   url: `/api/channels`,
+    //   query: {
+    //     serverId: params?.serverId,
+    //   },
+    // });
 
-    const res = await axios.post(url, values);
+    // const res = await axios.post(url, values);
 
-    console.log(res.data);
+    // console.log(res.data);
     router.refresh();
     onClose();
   };
@@ -113,32 +124,60 @@ function CreateChannelModal() {
               <div className=" w-full">
                 <FormField
                   control={form.control}
-                  name="name"
+                  name="type"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="uppercase font-semibold text-xs">
                         channel type
                       </FormLabel>
                       <FormControl>
-                        <Select>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                          disabled={isLoading}
+                        >
                           <SelectTrigger className="w-full bg-zinc-400/30 border-none outline-none focus-visible:ring-0">
                             <SelectValue placeholder="Select a channel type" />
                           </SelectTrigger>
-                          <SelectContent
-                            disabled={isLoading}
-                            {...field}
-                            className="w-full"
-                          >
+                          <SelectContent className="w-full">
                             <SelectGroup>
                               <SelectLabel>Select Type</SelectLabel>
-                              <SelectItem value="text">Text</SelectItem>
-                              <SelectItem value="audio">Audio</SelectItem>
-                              <SelectItem value="video">Video</SelectItem>
+                              <SelectItem value="TEXT">Text</SelectItem>
+                              <SelectItem value="AUDIO">Audio</SelectItem>
+                              <SelectItem value="VIDEO">Video</SelectItem>
                             </SelectGroup>
                           </SelectContent>
                         </Select>
                       </FormControl>
                       <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="w-full">
+                <FormField
+                  control={form.control}
+                  name="visibility"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                      <div className="space-y-0.5">
+                        <FormLabel className="flex items-center">
+                          <Lock className="w-5 h-5 text-zinc-800" />
+                          Private Channel
+                        </FormLabel>
+                        <FormDescription>
+                          Only selected members will be able to view this
+                          channel.
+                        </FormDescription>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value !== "PUBLIC"}
+                          onCheckedChange={(e) => {
+                            field.onChange(e === true ? "PRIVATE" : "PUBLIC");
+                          }}
+                        />
+                      </FormControl>
                     </FormItem>
                   )}
                 />
