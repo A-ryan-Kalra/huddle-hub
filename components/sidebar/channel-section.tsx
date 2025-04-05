@@ -1,6 +1,6 @@
 "use client";
 
-import { Channel, ChannelOnMember, MemberRole } from "@prisma/client";
+import { Channel, ChannelOnMember, Member, MemberRole } from "@prisma/client";
 import { ChevronDown, PlusIcon } from "lucide-react";
 import React from "react";
 import ActionToolTip from "../ui/action-tooltip";
@@ -9,10 +9,17 @@ import { useModal } from "@/hooks/use-modal-store";
 interface ChannelScetionProps {
   title: string;
   type: "channels" | "messages";
-  channels?: ChannelOnMember[];
+  channels?: Channel[];
   role: "ADMIN" | "MODERATOR" | "GUEST";
+  allMembers: Member[];
 }
-function ChannelSection({ title, channels, type, role }: ChannelScetionProps) {
+function ChannelSection({
+  title,
+  channels,
+  type,
+  role,
+  allMembers,
+}: ChannelScetionProps) {
   const { onOpen } = useModal();
   return (
     <div className="mt-8">
@@ -30,7 +37,7 @@ function ChannelSection({ title, channels, type, role }: ChannelScetionProps) {
             label="Add a new channel"
           >
             <div
-              onClick={() => onOpen("createChannel")}
+              onClick={() => onOpen("createChannel", { member: allMembers })}
               className="p-1 group-hover:visible invisible cursor-pointer hover:bg-zinc-200 duration-300 transition w-fit rounded-md"
             >
               <PlusIcon className="w-4 h-4" />

@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  /* font-family: var(--font-righteous); */
-}
-
 html,
 body,
 :root {

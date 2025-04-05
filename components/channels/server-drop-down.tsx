@@ -29,7 +29,7 @@ interface ServerDropDownProps {
 
 function ServerDropDown({ server, role }: ServerDropDownProps) {
   const { onOpen } = useModal();
-  //   const { sessionId } = useAuth();
+  const { sessionId } = useAuth();
 
   //   if (!sessionId) {
   //     return <RedirectToSignIn />;
@@ -88,7 +88,9 @@ function ServerDropDown({ server, role }: ServerDropDownProps) {
             </DropdownMenuItem>
           )}
           <DropdownMenuItem className="cursor-pointer">
-            <SignOutButton>Sign Out</SignOutButton>
+            <SignOutButton signOutOptions={{ sessionId: sessionId as string }}>
+              Sign Out
+            </SignOutButton>
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>

@@ -9,7 +9,7 @@ export async function POST(req: Request) {
     const serverId = searchParams.get("serverId");
     console.log("serverId==", serverId);
 
-    const { name, type } = await req.json();
+    const { name, type, visibility, members } = await req.json();
 
     if (name === "general") {
       return NextResponse.json(
@@ -24,20 +24,47 @@ export async function POST(req: Request) {
     if (!serverId) {
       return NextResponse.json({ error: "Server id missing" }, { status: 401 });
     }
+    if (visibility === "PRIVATE") {
+      const channel = await db.channel.create({
+        data: {
+          profileId: profile.id,
+          serverId,
+          name,
+          type,
+          visibility,
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      const addAllMemberToNewChannel = await db.channelOnMember.createMany({
+        data: members.map((id: string) => ({
+          serverId,
+          memberId: id,
+          channelId: channel.id,
+        })),
+        skipDuplicates: true,
+      });
+
+      console.log("private==", addAllMemberToNewChannel);
+
+      return NextResponse.json({ addAllMemberToNewChannel, success: true });
+    }
 
     const allMembers = await db.member.findMany({
       select: {
         id: true,
       },
     });
-    console.log("allmembers", allMembers);
+    console.log("allmembers==", allMembers);
     const channel = await db.channel.create({
       data: {
         profileId: profile.id,
         serverId,
         name,
         type,
-        visibility: "PUBLIC",
+        visibility,
       },
       select: {
         id: true,

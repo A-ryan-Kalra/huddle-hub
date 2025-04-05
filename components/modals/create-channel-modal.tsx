@@ -25,7 +25,7 @@ import { Button } from "../ui/button";
 import qs from "query-string";
 import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
-import { Check, Loader2, Lock } from "lucide-react";
+import { Icon, Loader2, Lock, PiIcon } from "lucide-react";
 import { useModal } from "@/hooks/use-modal-store";
 import {
   Select,
@@ -38,34 +38,54 @@ import {
 } from "../ui/select";
 import { ChannelType, ChannelVisibility } from "@prisma/client";
 import { Switch } from "../ui/switch";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "../ui/command";
 
-const formSchema = z.object({
-  name: z
-    .string()
-    .min(1, { message: "Channel Name is required" })
-    .refine((name) => name !== "general", {
-      message: "Channel name cannot be 'general'",
-    }),
-  type: z.nativeEnum(ChannelType),
-  visibility: z.nativeEnum(ChannelVisibility),
-});
+import { MultiSelect } from "../ui/multi-select";
+import Image from "next/image";
+
+const formSchema = z
+  .object({
+    name: z
+      .string()
+      .min(1, { message: "Channel Name is required" })
+      .refine((name) => name !== "general", {
+        message: "Channel name cannot be 'general'",
+      }),
+    type: z.nativeEnum(ChannelType),
+    visibility: z.nativeEnum(ChannelVisibility),
+    members: z.array(z.string()),
+  })
+  .refine(
+    (data) => {
+      if (
+        data.visibility === ChannelVisibility.PRIVATE &&
+        data.members.length === 0
+      ) {
+        return false;
+      }
+      return true;
+    },
+    {
+      path: ["members"],
+      message: "Members cannot be empty when channel is private",
+    }
+  );
 
 function CreateChannelModal() {
-  const { type, onClose } = useModal();
+  const { type, onClose, data } = useModal();
   const openModal = type === "createChannel";
+  const { member } = data;
+  console.log(member);
   const params = useParams();
   const [showMember, setShowMember] = useState(false);
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
+  const [allMembers, setAllMembers] = useState<
+    {
+      label: string;
+      value: string;
+      icon: React.ComponentType<{ className?: string }>;
+    }[]
+  >([]);
 
   const router = useRouter();
   const form = useForm({
@@ -74,6 +94,7 @@ function CreateChannelModal() {
       type: ChannelType.TEXT,
       name: "",
       visibility: ChannelVisibility.PUBLIC,
+      members: [""],
     },
   });
   const isLoading = form.formState.isSubmitting;
@@ -81,36 +102,53 @@ function CreateChannelModal() {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       console.log(values);
-      // const url = qs.stringifyUrl({
-      //   url: `/api/channels`,
-      //   query: {
-      //     serverId: params?.serverId,
-      //   },
-      // });
+      const url = qs.stringifyUrl({
+        url: `/api/channels`,
+        query: {
+          serverId: params?.serverId,
+        },
+      });
 
-      // const res = await axios.post(url, values);
+      const res = await axios.post(url, values);
 
-      // console.log(res.data);
-      // router.refresh();
-      // onClose();
+      console.log(res.data);
+      close();
+      router.refresh();
+      onClose();
     } catch (error) {
       console.error(error);
     }
   };
-  const options = [
-    { label: "Apple", value: "apple" },
-    { label: "Banana", value: "banana" },
-    { label: "Cherry", value: "cherry" },
-    { label: "Grapes", value: "grapes" },
-  ];
 
-  const handleCancel = () => {
+  const close = () => {
     form.reset();
     onClose();
+    setShowMember(false);
   };
-  console.log(showMember);
+
+  useEffect(() => {
+    if (Array.isArray(member) && member.length > 0) {
+      setAllMembers(
+        member.map((person) => ({
+          label: person.profile.name,
+          value: person.id,
+          icon: () => (
+            <div className="relative w-6 h-6 rounded-full overflow-hidden">
+              <Image
+                fill
+                className="object-cover"
+                src={person.profile.imageUrl}
+                alt="person.profile.imageUrl"
+              />
+            </div>
+          ),
+        }))
+      );
+    }
+  }, [member]);
+  console.log(allMembers);
   return (
-    <Dialog open={openModal} onOpenChange={handleCancel}>
+    <Dialog open={openModal} onOpenChange={close}>
       <DialogContent>
         <DialogTitle className="text-2xl text-center">
           Create a new channel
@@ -209,46 +247,26 @@ function CreateChannelModal() {
               </div>
               {showMember && (
                 <div className="w-full">
-                  <Popover open={open} onOpenChange={setOpen}>
-                    <PopoverTrigger asChild>
-                      <Button variant="outline" className="w-full">
-                        <span className=" mr-auto">
-                          {selected ? selected : "Select members"}
-                        </span>
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent align="start" className="sm:w-[400px] p-2">
-                      <Command className="w-full ">
-                        <CommandInput
-                          className="border-none outline-none w-full focus-visible:ring-offset-0"
-                          placeholder="Search..."
-                        />
-                        <CommandList>
-                          <CommandEmpty>No results found.</CommandEmpty>
-                          <CommandGroup>
-                            {options.map((option) => (
-                              <CommandItem
-                                key={option.value}
-                                onSelect={() => {
-                                  setSelected(option.label);
-                                  setOpen(false);
-                                }}
-                              >
-                                <Check
-                                  className={`mr-2 h-4 w-4 ${
-                                    selected === option.label
-                                      ? "opacity-100"
-                                      : "opacity-0"
-                                  }`}
-                                />
-                                {option.label}
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
+                  <FormField
+                    control={form.control}
+                    name="members"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col items-start ">
+                        <FormControl>
+                          <MultiSelect
+                            modalPopover={true}
+                            {...field}
+                            placeholder="Select members"
+                            className=" justify-between rounded-lg border  shadow-sm"
+                            options={allMembers ?? []}
+                            onValueChange={field.onChange}
+                            maxCount={1}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
               )}
             </div>

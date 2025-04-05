@@ -9,6 +9,11 @@ const nextConfig: NextConfig = {
         hostname: "xui94xt04b.ufs.sh",
         port: "",
       },
+      {
+        protocol: "https",
+        hostname: "img.clerk.com",
+        port: "",
+      },
     ],
   },
 };

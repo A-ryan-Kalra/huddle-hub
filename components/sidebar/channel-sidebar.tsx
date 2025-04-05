@@ -26,7 +26,11 @@ async function ChannelSidebar({ serverId }: ChannelSideBarProps) {
       },
     },
     include: {
-      channels: true,
+      channels: {
+        include: {
+          members: true,
+        },
+      },
       members: true,
     },
   });
@@ -34,16 +38,14 @@ async function ChannelSidebar({ serverId }: ChannelSideBarProps) {
   if (!server) {
     redirect("/");
   }
-  // const channels = await db.channel.findMany({
-  //   where: {
-  //     serverId,
-  //     members: {
-  //       some: {
-  //         profileId: profile.id,
-  //       },
-  //     },
-  //   },
-  // });
+  const channels = await db.channel.findMany({
+    where: {
+      serverId,
+    },
+    include: {
+      members: true,
+    },
+  });
 
   const currentMember = server.members.find(
     (member) => member.profileId === profile.id
@@ -55,9 +57,10 @@ async function ChannelSidebar({ serverId }: ChannelSideBarProps) {
       serverId,
       profileId: { not: profile.id },
     },
+    include: {
+      profile: true,
+    },
   });
-
-  console.log(allMembers);
 
   return (
     <div className="truncate p-2 flex flex-col gap-y-2  h-full overflow-hidden">
@@ -75,6 +78,7 @@ async function ChannelSidebar({ serverId }: ChannelSideBarProps) {
         type="channels"
         channels={server.channels}
         role={role}
+        allMembers={allMembers}
       />
     </div>
   );
