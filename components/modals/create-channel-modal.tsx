@@ -74,7 +74,7 @@ function CreateChannelModal() {
   const { type, onClose, data } = useModal();
   const openModal = type === "createChannel";
   const { member } = data;
-  console.log(member);
+
   const params = useParams();
   const [showMember, setShowMember] = useState(false);
   const [open, setOpen] = useState(false);
@@ -94,27 +94,26 @@ function CreateChannelModal() {
       type: ChannelType.TEXT,
       name: "",
       visibility: ChannelVisibility.PUBLIC,
-      members: [""],
+      members: [],
     },
   });
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    console.log(values);
     try {
-      console.log(values);
-      const url = qs.stringifyUrl({
-        url: `/api/channels`,
-        query: {
-          serverId: params?.serverId,
-        },
-      });
-
-      const res = await axios.post(url, values);
-
-      console.log(res.data);
-      close();
-      router.refresh();
-      onClose();
+      // console.log(values);
+      // const url = qs.stringifyUrl({
+      //   url: `/api/channels`,
+      //   query: {
+      //     serverId: params?.serverId,
+      //   },
+      // });
+      // const res = await axios.post(url, values);
+      // console.log(res.data);
+      // close();
+      // router.refresh();
+      // onClose();
     } catch (error) {
       console.error(error);
     }
@@ -146,7 +145,7 @@ function CreateChannelModal() {
       );
     }
   }, [member]);
-  console.log(allMembers);
+
   return (
     <Dialog open={openModal} onOpenChange={close}>
       <DialogContent>
