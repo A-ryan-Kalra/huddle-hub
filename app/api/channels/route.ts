@@ -53,6 +53,9 @@ export async function POST(req: Request) {
     }
 
     const allMembers = await db.member.findMany({
+      where: {
+        serverId,
+      },
       select: {
         id: true,
       },

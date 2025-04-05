@@ -19,14 +19,19 @@ const channelIconType = {
 };
 
 function ChannelName({ channel, currentMember }: ChannelNameProps) {
+  const ownerOfPrivateChannel = channel.profileId === currentMember.profileId;
+
+  console.log(ownerOfPrivateChannel);
   const onClick = (channel: Channel & { members: ChannelOnMember[] }) => {
+    console.log(channel);
+    console.log(currentMember.id);
     if (
       channel.visibility === "PRIVATE" &&
+      !ownerOfPrivateChannel &&
       !channel.members.some((member) => member.memberId === currentMember?.id)
     ) {
       return null;
     }
-    alert("WOw");
 
     console.log(currentMember);
   };
