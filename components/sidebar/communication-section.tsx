@@ -51,7 +51,7 @@ function CommunicationSection({
           >
             <div
               onClick={() => onOpen("createChannel", { member: allMembers })}
-              className=" group-hover:visible invisible cursor-pointer hover:bg-zinc-200 duration-300 transition w-fit rounded-md"
+              className="p-1 group-hover:visible invisible cursor-pointer hover:bg-zinc-200 duration-300 transition w-fit rounded-md"
             >
               <PlusIcon className="w-4 h-4" />
             </div>

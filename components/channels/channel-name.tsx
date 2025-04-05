@@ -3,10 +3,11 @@ import ActionToolTip from "../ui/action-tooltip";
 import {
   Channel,
   ChannelOnMember,
+  ChannelType,
   ChannelVisibility,
   Member,
 } from "@prisma/client";
-import { Hash, Lock } from "lucide-react";
+import { Hash, Lock, Mic, Video } from "lucide-react";
 
 interface ChannelNameProps {
   channel: Channel & { members: ChannelOnMember[] };
@@ -16,6 +17,12 @@ interface ChannelNameProps {
 const channelIconType = {
   [ChannelVisibility.PUBLIC]: <Hash className="w-4 h-4" />,
   [ChannelVisibility.PRIVATE]: <Lock className="w-4 h-4" />,
+};
+
+const channelType = {
+  [ChannelType.AUDIO]: <Mic className="w-4 h-4" />,
+  [ChannelType.VIDEO]: <Video className="w-4 h-4" />,
+  [ChannelType.TEXT]: null,
 };
 
 function ChannelName({ channel, currentMember }: ChannelNameProps) {
@@ -41,10 +48,24 @@ function ChannelName({ channel, currentMember }: ChannelNameProps) {
       className="p-1 cursor-pointer hover:bg-zinc-200 duration-300 transition text-sm rounded-md w-full"
     >
       <div className="flex gap-x-2 items-center">
-        <ActionToolTip side="left" label={channel.visibility} className="">
+        <ActionToolTip
+          side="right"
+          align="center"
+          label={channel.visibility}
+          className=""
+        >
           {channelIconType[channel.visibility]}
         </ActionToolTip>
-        <h1 className="px-1">{channel.name}</h1>
+        <div className="flex items-start justify-start gap-x-1 w-full ">
+          <h1 className="px-1 flex items-center ">{channel.name}</h1>
+          <ActionToolTip
+            className=" self-end"
+            label={channel.type}
+            side="right"
+          >
+            {channelType[channel.type]}
+          </ActionToolTip>
+        </div>
       </div>
     </div>
   );

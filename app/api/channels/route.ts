@@ -7,7 +7,6 @@ export async function POST(req: Request) {
     const profile = await currentProfile();
     const { searchParams } = new URL(req.url);
     const serverId = searchParams.get("serverId");
-    console.log("serverId==", serverId);
 
     const { name, type, visibility, members } = await req.json();
 

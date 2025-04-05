@@ -6,6 +6,7 @@ import {
   TooltipTrigger,
 } from "./tooltip";
 import { Button } from "./button";
+import { cn } from "@/lib/utils";
 
 interface ActionToolTipProps {
   children: React.ReactNode;
@@ -26,7 +27,7 @@ function ActionToolTip({
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <button className={className}>{children}</button>
+          <button className={cn(className)}>{children}</button>
         </TooltipTrigger>
         <TooltipContent className="text-sm" align={align} side={side}>
           {label}
