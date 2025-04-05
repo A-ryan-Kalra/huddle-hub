@@ -100,20 +100,17 @@ function CreateChannelModal() {
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
     try {
-      // console.log(values);
-      // const url = qs.stringifyUrl({
-      //   url: `/api/channels`,
-      //   query: {
-      //     serverId: params?.serverId,
-      //   },
-      // });
-      // const res = await axios.post(url, values);
-      // console.log(res.data);
-      // close();
-      // router.refresh();
-      // onClose();
+      const url = qs.stringifyUrl({
+        url: `/api/channels`,
+        query: {
+          serverId: params?.serverId,
+        },
+      });
+      const res = await axios.post(url, values);
+      console.log(res.data);
+      close();
+      router.refresh();
     } catch (error) {
       console.error(error);
     }

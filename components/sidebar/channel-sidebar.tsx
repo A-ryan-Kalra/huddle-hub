@@ -4,7 +4,7 @@ import { FilePen } from "lucide-react";
 import { redirect } from "next/navigation";
 import ActionToolTip from "../ui/action-tooltip";
 import ServerDropDown from "../channels/server-drop-down";
-import ChannelSection from "./channel-section";
+import CommunicationSection from "./communication-section";
 import { MemberRole } from "@prisma/client";
 
 interface ChannelSideBarProps {
@@ -30,8 +30,18 @@ async function ChannelSidebar({ serverId }: ChannelSideBarProps) {
         include: {
           members: true,
         },
+        orderBy: {
+          createdAt: "asc",
+        },
       },
-      members: true,
+      members: {
+        orderBy: {
+          createdAt: "asc",
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "asc",
     },
   });
 
@@ -47,11 +57,11 @@ async function ChannelSidebar({ serverId }: ChannelSideBarProps) {
     },
   });
 
-  const currentMember = server.members.find(
+  const currentMember = server.members.filter(
     (member) => member.profileId === profile.id
   );
 
-  const role: MemberRole = currentMember!.role;
+  const role: MemberRole = currentMember[0]!.role;
   const allMembers = await db.member.findMany({
     where: {
       serverId,
@@ -60,8 +70,11 @@ async function ChannelSidebar({ serverId }: ChannelSideBarProps) {
     include: {
       profile: true,
     },
+    orderBy: {
+      createdAt: "asc",
+    },
   });
-
+  // console.log("currentMember", currentMember);
   return (
     <div className="truncate p-2 flex flex-col gap-y-2  h-full overflow-hidden">
       <div className="flex justify-between items-center">
@@ -73,12 +86,13 @@ async function ChannelSidebar({ serverId }: ChannelSideBarProps) {
         </ActionToolTip>
       </div>
 
-      <ChannelSection
+      <CommunicationSection
         title={"Channels"}
         type="channels"
         channels={server.channels}
         role={role}
         allMembers={allMembers}
+        currentMember={currentMember[0]}
       />
     </div>
   );
