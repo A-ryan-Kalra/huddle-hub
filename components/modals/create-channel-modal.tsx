@@ -41,6 +41,7 @@ import { Switch } from "../ui/switch";
 
 import { MultiSelect } from "../ui/multi-select";
 import Image from "next/image";
+import { toast } from "sonner";
 
 const formSchema = z
   .object({
@@ -109,9 +110,26 @@ function CreateChannelModal() {
       });
       const res = await axios.post(url, values);
       console.log(res.data);
+
+      toast("Success", {
+        description: "Channel Created Successfully",
+        style: { backgroundColor: "white", color: "black" },
+        richColors: true,
+        // action: {
+        //   label: "Undo",
+        //   onClick: () => console.log("Undo"),
+        // },
+      });
       close();
       router.refresh();
-    } catch (error) {
+    } catch (error: Error | any) {
+      toast("Error", {
+        description:
+          "Something went wrong please check console for more details" +
+          error.message,
+        style: { backgroundColor: "white", color: "black" },
+        richColors: true,
+      });
       console.error(error);
     }
   };

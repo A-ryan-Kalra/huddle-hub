@@ -30,7 +30,8 @@ interface ServerDropDownProps {
 function ServerDropDown({ server, role }: ServerDropDownProps) {
   const { onOpen } = useModal();
   const { sessionId } = useAuth();
-
+  const admin = role === MemberRole.ADMIN;
+  const moderator = role === MemberRole.MODERATOR || admin;
   //   if (!sessionId) {
   //     return <RedirectToSignIn />;
   //   }
@@ -68,7 +69,7 @@ function ServerDropDown({ server, role }: ServerDropDownProps) {
             Search
             <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
           </DropdownMenuItem>
-          {(role === MemberRole.ADMIN || role === MemberRole.MODERATOR) && (
+          {moderator && (
             <DropdownMenuItem
               onClick={() => onOpen("invite", { server })}
               className="cursor-pointer"
@@ -79,7 +80,27 @@ function ServerDropDown({ server, role }: ServerDropDownProps) {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          {(role === MemberRole.ADMIN || role === MemberRole.MODERATOR) && (
+          {moderator && (
+            <>
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() => onOpen("customizeServer", { server })}
+              >
+                Server Settings
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                // onClick={() => onOpen("customizeServer", { server })}
+                className="cursor-pointer"
+              >
+                Manage Members
+              </DropdownMenuItem>
+            </>
+          )}
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+
+        <DropdownMenuGroup>
+          {moderator && (
             <DropdownMenuItem
               className="cursor-pointer"
               onClick={() => onOpen("createServer")}

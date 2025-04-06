@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import ActionToolTip from "../ui/action-tooltip";
 import {
@@ -8,6 +9,7 @@ import {
   Member,
 } from "@prisma/client";
 import { Hash, Lock, Mic, Video } from "lucide-react";
+import { toast } from "sonner";
 
 interface ChannelNameProps {
   channel: Channel & { members: ChannelOnMember[] };
@@ -27,16 +29,25 @@ const channelType = {
 
 function ChannelName({ channel, currentMember }: ChannelNameProps) {
   const ownerOfPrivateChannel = channel.profileId === currentMember.profileId;
+  const accessToPrivateChannel =
+    channel.visibility === "PRIVATE" &&
+    channel.members.some((member) => member.memberId === currentMember?.id);
 
-  console.log(ownerOfPrivateChannel);
   const onClick = (channel: Channel & { members: ChannelOnMember[] }) => {
-    console.log(channel);
-    console.log(currentMember.id);
     if (
-      channel.visibility === "PRIVATE" &&
       !ownerOfPrivateChannel &&
-      !channel.members.some((member) => member.memberId === currentMember?.id)
+      !accessToPrivateChannel &&
+      channel.visibility === "PRIVATE"
     ) {
+      toast("Unauthorized Access", {
+        description: "Oops! This channel is private",
+        style: { backgroundColor: "white", color: "black" },
+        richColors: true,
+        // action: {
+        //   label: "Undo",
+        //   onClick: () => console.log("Undo"),
+        // },
+      });
       return null;
     }
 
