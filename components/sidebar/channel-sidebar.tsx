@@ -35,6 +35,9 @@ async function ChannelSidebar({ serverId }: ChannelSideBarProps) {
         },
       },
       members: {
+        include: {
+          profile: true,
+        },
         orderBy: {
           createdAt: "asc",
         },

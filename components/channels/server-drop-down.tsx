@@ -89,7 +89,7 @@ function ServerDropDown({ server, role }: ServerDropDownProps) {
                 Server Settings
               </DropdownMenuItem>
               <DropdownMenuItem
-                // onClick={() => onOpen("customizeServer", { server })}
+                onClick={() => onOpen("customizeMember", { server })}
                 className="cursor-pointer"
               >
                 Manage Members

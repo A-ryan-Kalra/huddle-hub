@@ -4,6 +4,7 @@ import CreateServerModal from "../modals/create-server-modal";
 import CreateChannelModal from "../modals/create-channel-modal";
 import InviteMemberModal from "../modals/invite-member-modal";
 import ServerSettingsModal from "../modals/server-settings-modal";
+import ManageMemberModal from "../modals/manage-member-modal";
 
 function ModalProviders() {
   const [open, setOpen] = useState(false);
@@ -20,6 +21,7 @@ function ModalProviders() {
       <CreateChannelModal />
       <InviteMemberModal />
       <ServerSettingsModal />
+      <ManageMemberModal />
     </>
   );
 }
