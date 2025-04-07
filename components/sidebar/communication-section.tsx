@@ -9,7 +9,7 @@ import {
   Profile,
 } from "@prisma/client";
 import { ChevronDown, Hash, Lock, PlusIcon } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import ActionToolTip from "../ui/action-tooltip";
 import { useModal } from "@/hooks/use-modal-store";
 import { ScrollArea } from "../ui/scroll-area";
@@ -33,12 +33,20 @@ function CommunicationSection({
   currentMember,
 }: ChannelScetionProps) {
   const { onOpen } = useModal();
+  const [showHeight, setShowHeight] = useState(false);
 
   return (
     <div className="mt-8 flex flex-col gap-y-1">
       <div className="flex items-center gap-x-1 group">
-        <div className="p-1 cursor-pointer hover:bg-zinc-200 duration-300 transition w-fit rounded-md">
-          <ChevronDown className="w-4 h-4" />
+        <div
+          onClick={() => setShowHeight((prev) => !prev)}
+          className="p-1 cursor-pointer hover:bg-zinc-200 duration-300 transition w-fit rounded-md"
+        >
+          <ChevronDown
+            className={`w-4 h-4 transition-all duration-300 ${
+              showHeight && "-rotate-90"
+            }`}
+          />
         </div>
 
         <p className="p-1 cursor-pointer hover:bg-zinc-200 text-sm duration-300 transition w-fit rounded-md">
@@ -60,7 +68,11 @@ function CommunicationSection({
       </div>
       <>
         {type === "channels" && (
-          <ScrollArea className="flex flex-col max-h-[200px]">
+          <ScrollArea
+            className={`flex flex-col ${
+              showHeight ? "max-h-0" : "max-h-[200px]"
+            } transition-all duration-300`}
+          >
             {channels?.map((channel, index) => (
               <ChannelName
                 key={index}
