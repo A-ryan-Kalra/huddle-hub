@@ -1,30 +1,18 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import z from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogTitle,
 } from "../ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../ui/form";
-import FileUpload from "../ui/file-upload";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+
 import qs from "query-string";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import {
+  Check,
   EllipsisVertical,
   Gavel,
   Loader2,
@@ -35,7 +23,7 @@ import {
 } from "lucide-react";
 import { useModal } from "@/hooks/use-modal-store";
 import { Member, MemberRole, Profile, Server } from "@prisma/client";
-import { ScrollArea } from "../ui/scroll-area";
+
 import AvatarIcon from "../ui/avatar-icon";
 import ActionToolTip from "../ui/action-tooltip";
 import {
@@ -56,27 +44,63 @@ const memberRoleIcon = {
   [MemberRole.MODERATOR]: <ShieldCheck className="w-4 h-4 text-blue-500" />,
   [MemberRole.GUEST]: null,
 };
+
 function ManageMemberModal() {
-  const { type, onClose, data } = useModal();
+  const { type, onClose, data, onOpen } = useModal();
   const openModal = type === "customizeMember";
+  const [loadingId, setLoadingId] = useState("");
   const { server } = data as {
     server: Server & { members: (Member & { profile: Profile })[] };
   };
   const router = useRouter();
 
-  const onSubmit = async () => {
-    const url = qs.stringifyUrl({
-      url: `/api/servers/${server?.id}`,
-    });
+  const handleRole = async (id: string, role: "MODERATOR" | "GUEST") => {
+    console.log(role);
+    try {
+      setLoadingId(id);
+      const url = qs.stringifyUrl({
+        url: `/api/servers/${server?.id}/members`,
+        query: { memberId: id },
+      });
 
-    await axios.patch(url);
-
-    router.refresh();
-    onClose();
+      const res = await axios.patch(url, { role });
+      const data = res.data;
+      setLoadingId("");
+      onOpen("customizeMember", { server: data });
+      router.refresh();
+    } catch (error) {
+      console.error(error);
+      setLoadingId("");
+    }
   };
 
   const handleCancel = () => {
     onClose();
+    setLoadingId("");
+  };
+
+  const onKick = async (id: string) => {
+    console.log(type);
+    try {
+      setLoadingId(id);
+      const url = qs.stringifyUrl({
+        url: `/api/servers/${server?.id}/members`,
+        query: {
+          memberId: id,
+        },
+      });
+
+      const res = await axios.delete(url);
+      const data = res.data;
+      onOpen("customizeMember", { server: data });
+
+      setLoadingId("");
+
+      router.refresh();
+    } catch (error) {
+      console.error(error);
+      setLoadingId("");
+    }
   };
 
   return (
@@ -108,41 +132,61 @@ function ManageMemberModal() {
                 </div>
                 <p className="text-sm text-zinc-500">{member.profile.email}</p>
               </div>
-              {member.role !== "ADMIN" && (
-                <button className="ml-auto px-2 py-1 rounded-md  hover:bg-zinc-100 transition">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger className="">
-                      <EllipsisVertical className="w-3 h-3" />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                      side="right"
-                      align="start"
-                      className=""
-                    >
-                      <DropdownMenuGroup>
-                        <DropdownMenuSub>
-                          <DropdownMenuSubTrigger>
-                            <ShieldQuestionIcon className="w-4 h-4 mr-2" />
-                            Role
-                          </DropdownMenuSubTrigger>
-                          <DropdownMenuPortal>
-                            <DropdownMenuSubContent>
-                              <DropdownMenuItem>Guest</DropdownMenuItem>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem>Moderator</DropdownMenuItem>
-                            </DropdownMenuSubContent>
-                          </DropdownMenuPortal>
-                        </DropdownMenuSub>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                          <Gavel className="w-4 h-4" />
-                          Kick
-                        </DropdownMenuItem>
-                      </DropdownMenuGroup>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </button>
-              )}
+              <div className="ml-auto p-2 ">
+                {server.profileId !== member.profileId &&
+                  member.id !== loadingId && (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger className="rounded-md p-1 hover:bg-zinc-100 transition">
+                        <EllipsisVertical className="w-3 h-3" />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent
+                        side="right"
+                        align="start"
+                        className=""
+                      >
+                        <DropdownMenuGroup>
+                          <DropdownMenuSub>
+                            <DropdownMenuSubTrigger>
+                              <ShieldQuestionIcon className="w-4 h-4 mr-2" />
+                              Role
+                            </DropdownMenuSubTrigger>
+                            <DropdownMenuPortal>
+                              <DropdownMenuSubContent>
+                                <DropdownMenuItem
+                                  onClick={() => handleRole(member.id, "GUEST")}
+                                >
+                                  Guest{" "}
+                                  {member.role === "GUEST" && (
+                                    <Check className="w-4 h-4" />
+                                  )}
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem
+                                  onClick={() =>
+                                    handleRole(member.id, "MODERATOR")
+                                  }
+                                >
+                                  Moderator{" "}
+                                  {member.role === "MODERATOR" && (
+                                    <Check className="w-4 h-4" />
+                                  )}
+                                </DropdownMenuItem>
+                              </DropdownMenuSubContent>
+                            </DropdownMenuPortal>
+                          </DropdownMenuSub>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem onClick={() => onKick(member.id)}>
+                            <Gavel className="w-4 h-4" />
+                            Kick
+                          </DropdownMenuItem>
+                        </DropdownMenuGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )}
+                {loadingId === member.id && (
+                  <Loader2 className="w-4 h-4 ml-auto animate-spin" />
+                )}
+              </div>
             </div>
           ))}
         </div>

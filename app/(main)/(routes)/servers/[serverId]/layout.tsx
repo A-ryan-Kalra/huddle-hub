@@ -1,5 +1,6 @@
 import ChannelSidebar from "@/components/sidebar/channel-sidebar";
 import ResizeComponent from "@/components/ui/resize-component";
+import { UserButton } from "@clerk/nextjs";
 
 interface ServersLayoutProps {
   children: React.ReactNode;
@@ -12,7 +13,17 @@ async function ServersLayout({ children, params }: ServersLayoutProps) {
 
   return (
     <div className="w-full h-full flex">
-      <div className="min-w-[70px] h-full "></div>
+      <div className="min-w-[70px] flex  flex-col h-full ">
+        <div className=" mt-auto pb-7 w-fit mx-auto">
+          <UserButton
+            appearance={{
+              elements: {
+                avatarBox: "h-[48px] w-[48px]",
+              },
+            }}
+          />
+        </div>
+      </div>
       <div className="flex w-full h-full pr-1 pb-2 rounded-2xl  overflow-hidden">
         <ResizeComponent>
           <ChannelSidebar serverId={serverId} />

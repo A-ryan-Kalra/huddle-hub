@@ -51,17 +51,17 @@ function ChannelName({ channel, currentMember }: ChannelNameProps) {
       return null;
     }
 
-    console.log(currentMember);
+    console.log(channel);
   };
   return (
     <div
       onClick={() => onClick(channel)}
-      className="p-1 cursor-pointer hover:bg-zinc-200 duration-300 transition text-sm rounded-md w-full"
+      className="p-1  cursor-pointer hover:bg-zinc-200 duration-300 transition text-sm rounded-md w-full"
     >
       <div className="flex gap-x-2 items-center">
         <ActionToolTip
-          side="right"
-          align="center"
+          side="top"
+          align="end"
           label={channel.visibility}
           className=""
         >

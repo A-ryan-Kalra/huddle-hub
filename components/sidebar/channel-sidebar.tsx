@@ -80,10 +80,10 @@ async function ChannelSidebar({ serverId }: ChannelSideBarProps) {
   // console.log("currentMember", currentMember);
   return (
     <div className="truncate p-2 flex flex-col gap-y-2  h-full overflow-hidden">
-      <div className="flex justify-between items-center">
+      <div className="flex relative justify-between items-center">
         <ServerDropDown server={server} role={role} />
-        <ActionToolTip label="New message">
-          <div className="hover:bg-zinc-200 duration-300 transition rounded-md p-2 cursor-pointer">
+        <ActionToolTip className="ml-auto" label="New message">
+          <div className=" hover:bg-zinc-200 duration-300 transition rounded-md p-2 cursor-pointer">
             <FilePen className="w-5 h-5" />
           </div>
         </ActionToolTip>

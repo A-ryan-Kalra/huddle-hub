@@ -34,3 +34,43 @@ export async function PATCH(req: NextRequest) {
     );
   }
 }
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const profile = await currentProfile();
+    const serverId = req.nextUrl.pathname.split("/").pop();
+    console.log("password", serverId);
+
+    if (!profile) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    if (!serverId) {
+      return NextResponse.json({ error: "Server Id missing" }, { status: 400 });
+    }
+
+    const deleteMember = await db.server.update({
+      where: {
+        id: serverId,
+        profileId: {
+          not: profile.id,
+        },
+      },
+      data: {
+        members: {
+          deleteMany: [
+            {
+              profileId: profile.id,
+            },
+          ],
+        },
+      },
+    });
+    return NextResponse.json(deleteMember);
+  } catch (error) {
+    console.error("[SERVERS]>[SERVER_ID_DELETE]", error);
+    return NextResponse.json(
+      { error: "Internal Server Errpr" },
+      { status: 500 }
+    );
+  }
+}

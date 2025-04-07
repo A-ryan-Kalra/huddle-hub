@@ -32,9 +32,6 @@ function ServerDropDown({ server, role }: ServerDropDownProps) {
   const { sessionId } = useAuth();
   const admin = role === MemberRole.ADMIN;
   const moderator = role === MemberRole.MODERATOR || admin;
-  //   if (!sessionId) {
-  //     return <RedirectToSignIn />;
-  //   }
 
   return (
     <DropdownMenu>
@@ -78,10 +75,10 @@ function ServerDropDown({ server, role }: ServerDropDownProps) {
             </DropdownMenuItem>
           )}
         </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          {moderator && (
-            <>
+        {admin && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
               <DropdownMenuItem
                 className="cursor-pointer"
                 onClick={() => onOpen("customizeServer", { server })}
@@ -94,18 +91,25 @@ function ServerDropDown({ server, role }: ServerDropDownProps) {
               >
                 Manage Members
               </DropdownMenuItem>
-            </>
-          )}
-        </DropdownMenuGroup>
+            </DropdownMenuGroup>
+          </>
+        )}
         <DropdownMenuSeparator />
 
         <DropdownMenuGroup>
-          {moderator && (
+          {admin ? (
             <DropdownMenuItem
               className="cursor-pointer"
               onClick={() => onOpen("createServer")}
             >
               Create Server
+            </DropdownMenuItem>
+          ) : (
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={() => onOpen("leaveServer", { server })}
+            >
+              Leave Server
             </DropdownMenuItem>
           )}
           <DropdownMenuItem className="cursor-pointer">
