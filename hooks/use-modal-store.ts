@@ -6,7 +6,8 @@ export type ModalType =
   | "invite"
   | "customizeServer"
   | "customizeMember"
-  | "leaveServer";
+  | "leaveServer"
+  | "searchModal";
 
 interface ModalData {
   server?: Server;

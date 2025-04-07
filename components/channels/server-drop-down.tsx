@@ -1,7 +1,7 @@
 "use client";
 import { ServerSchema } from "@/type";
 import { ChevronDown } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,6 +33,17 @@ function ServerDropDown({ server, role }: ServerDropDownProps) {
   const admin = role === MemberRole.ADMIN;
   const moderator = role === MemberRole.MODERATOR || admin;
 
+  useEffect(() => {
+    function keyPress(e: KeyboardEvent) {
+      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        onOpen("searchModal", { server });
+      }
+    }
+    document.addEventListener("keydown", keyPress);
+    return () => document.removeEventListener("keydown", keyPress);
+  }, []);
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -62,9 +73,12 @@ function ServerDropDown({ server, role }: ServerDropDownProps) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem className="cursor-pointer">
+          <DropdownMenuItem
+            onClick={() => onOpen("searchModal", { server })}
+            className="cursor-pointer"
+          >
             Search
-            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+            <DropdownMenuShortcut>⇧⌘K</DropdownMenuShortcut>
           </DropdownMenuItem>
           {moderator && (
             <DropdownMenuItem

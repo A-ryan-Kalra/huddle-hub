@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import z from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+
 import {
   Dialog,
   DialogContent,
@@ -9,21 +7,12 @@ import {
   DialogFooter,
   DialogTitle,
 } from "../ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../ui/form";
-import FileUpload from "../ui/file-upload";
-import { Input } from "../ui/input";
+
 import { Button } from "../ui/button";
 import qs from "query-string";
 import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
-import { Check, Copy, Loader2, RefreshCcw } from "lucide-react";
+
 import { useModal } from "@/hooks/use-modal-store";
 
 import { useOrigin } from "@/hooks/use-origin";
@@ -44,9 +33,8 @@ function LeaveServerModal() {
       url: `/api/servers/${params?.serverId}`,
     });
 
-    const res = await axios.delete(url);
+    await axios.delete(url);
 
-    // onOpen("invite", { server: res.data });
     router.refresh();
     handleCancel();
   };

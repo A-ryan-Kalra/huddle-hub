@@ -6,6 +6,7 @@ import InviteMemberModal from "../modals/invite-member-modal";
 import ServerSettingsModal from "../modals/server-settings-modal";
 import ManageMemberModal from "../modals/manage-member-modal";
 import LeaveServerModal from "../modals/leave-server-modal";
+import { SearchModal } from "../modals/search-modal";
 
 function ModalProviders() {
   const [open, setOpen] = useState(false);
@@ -24,6 +25,7 @@ function ModalProviders() {
       <ServerSettingsModal />
       <ManageMemberModal />
       <LeaveServerModal />
+      <SearchModal />
     </>
   );
 }
