@@ -36,29 +36,57 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { ChannelType, ChannelVisibility } from "@prisma/client";
+import {
+  Channel,
+  ChannelOnMember,
+  ChannelType,
+  ChannelVisibility,
+  Member,
+  Profile,
+} from "@prisma/client";
 import { Switch } from "../ui/switch";
 
 import { MultiSelect } from "../ui/multi-select";
 import Image from "next/image";
 import { toast } from "sonner";
 
-const formSchema = z.object({
-  name: z
-    .string()
-    .min(1, { message: "Channel Name is required" })
-    .refine((name) => name !== "general", {
-      message: "Channel name cannot be 'general'",
-    }),
-  type: z.nativeEnum(ChannelType),
-  visibility: z.nativeEnum(ChannelVisibility),
-  members: z.array(z.string()),
-});
+const formSchema = z
+  .object({
+    name: z
+      .string()
+      .min(1, { message: "Channel Name is required" })
+      .refine((name) => name !== "general", {
+        message: "Channel name cannot be 'general'",
+      }),
+    type: z.nativeEnum(ChannelType),
+    visibility: z.nativeEnum(ChannelVisibility),
+    members: z.array(z.string()),
+  })
+  .refine(
+    (data) => {
+      if (
+        data.visibility === ChannelVisibility.PRIVATE &&
+        data.members.length === 0
+      ) {
+        return false;
+      }
+      return true;
+    },
+    {
+      path: ["members"],
+      message: "Members cannot be empty when channel is private",
+    }
+  );
 
-function CreateChannelModal() {
+function CustomizeChannelModal() {
   const { type, onClose, data } = useModal();
-  const openModal = type === "createChannel";
-  const { member } = data;
+  const openModal = type === "customizeChannel";
+  const { channel, member } = data as {
+    channel: Channel & {
+      members: (ChannelOnMember & { member: Member & { profile: Profile } })[];
+    };
+    member: (Member & { profile: Profile })[];
+  };
 
   const params = useParams();
   const [showMember, setShowMember] = useState(false);
@@ -71,6 +99,7 @@ function CreateChannelModal() {
       icon: React.ComponentType<{ className?: string }>;
     }[]
   >([]);
+  const [selectedMembers, setSelectedMembers] = useState([""]);
 
   const router = useRouter();
   const form = useForm({
@@ -87,24 +116,20 @@ function CreateChannelModal() {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const url = qs.stringifyUrl({
-        url: `/api/channels`,
+        url: `/api/channels/${channel.id}`,
         query: {
           serverId: params?.serverId,
         },
       });
-      const res = await axios.post(url, values);
+      const res = await axios.patch(url, values);
       console.log(res.data);
 
       toast("Success", {
         description: "Channel Created Successfully",
         style: { backgroundColor: "white", color: "black" },
         richColors: true,
-        // action: {
-        //   label: "Undo",
-        //   onClick: () => console.log("Undo"),
-        // },
       });
-      close();
+      // close();
       router.refresh();
     } catch (error: Error | any) {
       toast("Error", {
@@ -119,37 +144,61 @@ function CreateChannelModal() {
   };
 
   const close = () => {
-    form.reset();
     onClose();
     setShowMember(false);
+    setAllMembers([]);
+    setSelectedMembers([]);
   };
-
+  const channelOwnerMemberId = channel?.members?.find(
+    (member) => member.member.profileId === channel.profileId
+  );
+  console.log(selectedMembers);
   useEffect(() => {
-    if (Array.isArray(member) && member.length > 0) {
+    if (channel?.members?.length > 0) {
+      let memberId: string[] = [""];
       setAllMembers(
-        member.map((person) => ({
-          label: person.profile.name,
-          value: person.id,
-          icon: () => (
-            <div className="relative w-6 h-6 rounded-full overflow-hidden">
-              <Image
-                fill
-                className="object-cover"
-                src={person.profile.imageUrl}
-                alt="person.profile.imageUrl"
-              />
-            </div>
-          ),
-        }))
+        member?.map((profile) => {
+          memberId.push(profile.id);
+          return {
+            label: profile.profile.name,
+            value: profile.id,
+            icon: () => (
+              <div className="relative w-6 h-6 rounded-full overflow-hidden">
+                <Image
+                  fill
+                  className="object-cover"
+                  src={profile.profile.imageUrl}
+                  alt={profile.profile.imageUrl}
+                />
+              </div>
+            ),
+          };
+        })
+      );
+      setSelectedMembers(
+        channel.members
+          .filter((member) => memberId.includes(member.memberId))
+          .map((id) => id.memberId)
       );
     }
-  }, [member]);
-
+    if (channel) {
+      setShowMember(channel.visibility === "PRIVATE" ? true : false);
+      form.setValue("name", channel.name);
+      form.setValue("visibility", channel.visibility);
+      form.setValue("type", channel.type);
+      form.setValue(
+        "members",
+        channel.members.map((member) => member.memberId)
+      );
+      channel.members;
+    }
+  }, [data, type]);
+  console.log(allMembers);
   return (
     <Dialog open={openModal} onOpenChange={close}>
       <DialogContent>
         <DialogTitle className="text-2xl text-center">
-          Create a new channel
+          Customize a channel
         </DialogTitle>
         <DialogDescription className="text-center text-zinc-500 text-sm">
           Let's give your channel a unique name!
@@ -257,6 +306,7 @@ function CreateChannelModal() {
                             placeholder="Select members"
                             className=" justify-between rounded-lg border  shadow-sm"
                             options={allMembers ?? []}
+                            defaultValue={selectedMembers}
                             onValueChange={field.onChange}
                             maxCount={1}
                           />
@@ -274,7 +324,7 @@ function CreateChannelModal() {
                 disabled={isLoading}
                 variant={"primary"}
               >
-                {isLoading ? <Loader2 className="animate-spin" /> : "Create"}
+                {isLoading ? <Loader2 className="animate-spin" /> : "Save"}
               </Button>
             </DialogFooter>
           </form>
@@ -284,4 +334,4 @@ function CreateChannelModal() {
   );
 }
 
-export default CreateChannelModal;
+export default CustomizeChannelModal;

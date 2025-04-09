@@ -1,0 +1,55 @@
+"use client";
+import { Edit, Trash } from "lucide-react";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "../ui/context-menu";
+import { useModal } from "@/hooks/use-modal-store";
+import {
+  Channel,
+  ChannelOnMember,
+  Member,
+  MemberRole,
+  Profile,
+} from "@prisma/client";
+
+interface CustomizeChannelCompProps {
+  children: React.ReactNode;
+  allMembers: (Member & { profile: Profile })[];
+
+  channel: Channel & { members: ChannelOnMember[] };
+}
+
+function CustomizeChannelComp({
+  children,
+  channel,
+  allMembers,
+}: CustomizeChannelCompProps) {
+  const { onOpen } = useModal();
+
+  return (
+    <ContextMenu>
+      <ContextMenuTrigger className=" ">{children}</ContextMenuTrigger>
+      <ContextMenuContent className="">
+        <ContextMenuItem
+          onClick={() =>
+            onOpen("customizeChannel", { channel, member: allMembers })
+          }
+          className="flex items-center border-none outline-none focus-visible:ring-0"
+        >
+          <Edit className="w-4 h-4" /> Edit
+        </ContextMenuItem>
+        <ContextMenuItem
+          onClick={() => onOpen("deleteChannel", { channel })}
+          className="flex items-center border-none outline-none focus-visible:ring-0"
+        >
+          <Trash className="w-4 h-4 text-red-500" /> Delete
+        </ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
+  );
+}
+
+export default CustomizeChannelComp;

@@ -1,4 +1,3 @@
-import { currentProfile } from "@/lib/currentProfile";
 import { db } from "@/lib/db";
 import { FilePen } from "lucide-react";
 import { redirect } from "next/navigation";
@@ -6,6 +5,7 @@ import ActionToolTip from "../ui/action-tooltip";
 import ServerDropDown from "../channels/server-drop-down";
 import CommunicationSection from "./communication-section";
 import { MemberRole } from "@prisma/client";
+import { currentProfile } from "@/lib/currentProfile";
 
 interface ChannelSideBarProps {
   serverId: string;
@@ -28,7 +28,15 @@ async function ChannelSidebar({ serverId }: ChannelSideBarProps) {
     include: {
       channels: {
         include: {
-          members: true,
+          members: {
+            include: {
+              member: {
+                include: {
+                  profile: true,
+                },
+              },
+            },
+          },
         },
         orderBy: {
           createdAt: "asc",
@@ -37,9 +45,6 @@ async function ChannelSidebar({ serverId }: ChannelSideBarProps) {
       members: {
         include: {
           profile: true,
-        },
-        orderBy: {
-          createdAt: "asc",
         },
       },
     },
@@ -65,10 +70,13 @@ async function ChannelSidebar({ serverId }: ChannelSideBarProps) {
   );
 
   const role: MemberRole = currentMember[0]!.role;
+
   const allMembers = await db.member.findMany({
     where: {
       serverId,
-      profileId: { not: profile.id },
+      profileId: {
+        not: profile.id,
+      },
     },
     include: {
       profile: true,
@@ -77,7 +85,7 @@ async function ChannelSidebar({ serverId }: ChannelSideBarProps) {
       createdAt: "asc",
     },
   });
-  // console.log("currentMember", currentMember);
+
   return (
     <div className="truncate p-2 flex flex-col gap-y-2  h-full overflow-hidden">
       <div className="flex relative justify-between items-center">

@@ -7,13 +7,16 @@ import {
   ChannelType,
   ChannelVisibility,
   Member,
+  Profile,
 } from "@prisma/client";
 import { Hash, Lock, Mic, Video } from "lucide-react";
 import { toast } from "sonner";
+import CustomizeChannelComp from "./customize-channels-comp";
 
 interface ChannelNameProps {
   channel: Channel & { members: ChannelOnMember[] };
   currentMember: Member;
+  allMembers: (Member & { profile: Profile })[];
 }
 
 const channelIconType = {
@@ -27,7 +30,7 @@ const channelType = {
   [ChannelType.TEXT]: null,
 };
 
-function ChannelName({ channel, currentMember }: ChannelNameProps) {
+function ChannelName({ channel, currentMember, allMembers }: ChannelNameProps) {
   const ownerOfPrivateChannel = channel.profileId === currentMember.profileId;
   const accessToPrivateChannel =
     channel.visibility === "PRIVATE" &&
@@ -50,35 +53,36 @@ function ChannelName({ channel, currentMember }: ChannelNameProps) {
       });
       return null;
     }
-
-    console.log(channel);
   };
+
   return (
-    <div
-      onClick={() => onClick(channel)}
-      className="p-1  cursor-pointer hover:bg-zinc-200 duration-300 transition text-sm rounded-md w-full"
-    >
-      <div className="flex gap-x-2 items-center">
-        <ActionToolTip
-          side="top"
-          align="end"
-          label={channel.visibility}
-          className=""
-        >
-          {channelIconType[channel.visibility]}
-        </ActionToolTip>
-        <div className="flex items-start justify-start gap-x-1 w-full ">
-          <h1 className="px-1 flex items-center ">{channel.name}</h1>
+    <CustomizeChannelComp allMembers={allMembers} channel={channel}>
+      <div
+        onClick={() => onClick(channel)}
+        className="p-1  cursor-pointer hover:bg-zinc-200 duration-300 transition text-sm rounded-md w-full"
+      >
+        <div className="flex gap-x-2 items-center">
           <ActionToolTip
-            className=" self-end"
-            label={channel.type}
-            side="right"
+            side="top"
+            align="end"
+            label={channel.visibility}
+            className=""
           >
-            {channelType[channel.type]}
+            {channelIconType[channel.visibility]}
           </ActionToolTip>
+          <div className="flex items-start justify-start gap-x-1 w-full ">
+            <h1 className="px-1 flex items-center ">{channel.name}</h1>
+            <ActionToolTip
+              className=" self-end"
+              label={channel.type}
+              side="right"
+            >
+              {channelType[channel.type]}
+            </ActionToolTip>
+          </div>
         </div>
       </div>
-    </div>
+    </CustomizeChannelComp>
   );
 }
 

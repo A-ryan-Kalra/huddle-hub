@@ -1,5 +1,5 @@
-import { currentProfile } from "@/lib/currentProfile";
 import { db } from "@/lib/db";
+import { initialProfile } from "@/lib/initialProfile";
 import { redirect } from "next/navigation";
 
 interface InvitePageProps {
@@ -11,11 +11,7 @@ interface InvitePageProps {
 async function InvitePage({ params }: InvitePageProps) {
   const paramsResolved = await params;
 
-  const profile = await currentProfile();
-
-  if (!profile) {
-    redirect("/");
-  }
+  const profile = await initialProfile();
 
   const existingserver = await db.server.findFirst({
     where: {

@@ -23,7 +23,16 @@ export async function POST(req: Request) {
     if (!serverId) {
       return NextResponse.json({ error: "Server id missing" }, { status: 401 });
     }
+
     if (visibility === "PRIVATE") {
+      const channelOwnerMember = await db.member.findFirst({
+        where: {
+          profileId: profile.id,
+          serverId,
+        },
+      });
+      members.push(channelOwnerMember?.id);
+
       const channel = await db.channel.create({
         data: {
           profileId: profile.id,
@@ -46,8 +55,6 @@ export async function POST(req: Request) {
         skipDuplicates: true,
       });
 
-      console.log("private==", addAllMemberToNewChannel);
-
       return NextResponse.json({ addAllMemberToNewChannel, success: true });
     }
 
@@ -59,7 +66,7 @@ export async function POST(req: Request) {
         id: true,
       },
     });
-    console.log("allmembers==", allMembers);
+
     const channel = await db.channel.create({
       data: {
         profileId: profile.id,
@@ -81,8 +88,6 @@ export async function POST(req: Request) {
       })),
       skipDuplicates: true,
     });
-
-    console.log(addAllMemberToNewChannel);
 
     return NextResponse.json({ addAllMemberToNewChannel, success: true });
   } catch (error) {

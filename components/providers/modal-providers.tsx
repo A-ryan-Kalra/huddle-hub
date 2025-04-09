@@ -7,6 +7,7 @@ import ServerSettingsModal from "../modals/server-settings-modal";
 import ManageMemberModal from "../modals/manage-member-modal";
 import LeaveServerModal from "../modals/leave-server-modal";
 import { SearchModal } from "../modals/search-modal";
+import CustomizeChannelModal from "../modals/customize-channel-modal";
 
 function ModalProviders() {
   const [open, setOpen] = useState(false);
@@ -26,6 +27,7 @@ function ModalProviders() {
       <ManageMemberModal />
       <LeaveServerModal />
       <SearchModal />
+      <CustomizeChannelModal />
     </>
   );
 }

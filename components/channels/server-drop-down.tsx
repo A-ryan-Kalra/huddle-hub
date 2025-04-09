@@ -80,14 +80,13 @@ function ServerDropDown({ server, role }: ServerDropDownProps) {
             Search
             <DropdownMenuShortcut>⇧⌘K</DropdownMenuShortcut>
           </DropdownMenuItem>
-          {moderator && (
-            <DropdownMenuItem
-              onClick={() => onOpen("invite", { server })}
-              className="cursor-pointer"
-            >
-              Invite People
-            </DropdownMenuItem>
-          )}
+
+          <DropdownMenuItem
+            onClick={() => onOpen("invite", { server })}
+            className="cursor-pointer"
+          >
+            Invite People
+          </DropdownMenuItem>
         </DropdownMenuGroup>
         {admin && (
           <>

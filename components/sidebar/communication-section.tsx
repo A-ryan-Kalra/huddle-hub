@@ -71,12 +71,13 @@ function CommunicationSection({
           <ScrollArea
             className={`flex flex-col ${
               showHeight ? "max-h-0" : "max-h-[200px]"
-            } transition-all duration-300`}
+            } transition-all duration-100`}
           >
             {channels?.map((channel, index) => (
               <ChannelName
                 key={index}
                 channel={channel}
+                allMembers={allMembers}
                 currentMember={currentMember}
               />
             ))}
