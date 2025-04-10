@@ -7,9 +7,10 @@ import {
   ChannelType,
   ChannelVisibility,
   Member,
+  MemberRole,
   Profile,
 } from "@prisma/client";
-import { Hash, Lock, Mic, Video } from "lucide-react";
+import { Hash, Lock, Mic, UserIcon, Video } from "lucide-react";
 import { toast } from "sonner";
 import CustomizeChannelComp from "./customize-channels-comp";
 
@@ -17,6 +18,7 @@ interface ChannelNameProps {
   channel: Channel & { members: ChannelOnMember[] };
   currentMember: Member;
   allMembers: (Member & { profile: Profile })[];
+  role: { admin: boolean; moderator: boolean };
 }
 
 const channelIconType = {
@@ -30,15 +32,20 @@ const channelType = {
   [ChannelType.TEXT]: null,
 };
 
-function ChannelName({ channel, currentMember, allMembers }: ChannelNameProps) {
-  const ownerOfPrivateChannel = channel.profileId === currentMember.profileId;
+function ChannelName({
+  channel,
+  currentMember,
+  allMembers,
+  role,
+}: ChannelNameProps) {
+  const ownerOfChannel = channel.profileId === currentMember.profileId;
   const accessToPrivateChannel =
     channel.visibility === "PRIVATE" &&
     channel.members.some((member) => member.memberId === currentMember?.id);
 
   const onClick = (channel: Channel & { members: ChannelOnMember[] }) => {
     if (
-      !ownerOfPrivateChannel &&
+      !ownerOfChannel &&
       !accessToPrivateChannel &&
       channel.visibility === "PRIVATE"
     ) {
@@ -56,7 +63,12 @@ function ChannelName({ channel, currentMember, allMembers }: ChannelNameProps) {
   };
 
   return (
-    <CustomizeChannelComp allMembers={allMembers} channel={channel}>
+    <CustomizeChannelComp
+      role={role}
+      ownerOfChannel={ownerOfChannel}
+      allMembers={allMembers}
+      channel={channel}
+    >
       <div
         onClick={() => onClick(channel)}
         className="p-1  cursor-pointer hover:bg-zinc-200 duration-300 transition text-sm rounded-md w-full"
@@ -71,7 +83,18 @@ function ChannelName({ channel, currentMember, allMembers }: ChannelNameProps) {
             {channelIconType[channel.visibility]}
           </ActionToolTip>
           <div className="flex items-start justify-start gap-x-1 w-full ">
-            <h1 className="px-1 flex items-center ">{channel.name}</h1>
+            <h1 className="px-1 flex items-center ">
+              {channel.name}
+              {!role.admin && ownerOfChannel && (
+                <ActionToolTip
+                  className=" self-end"
+                  label={"Owner"}
+                  side="right"
+                >
+                  <UserIcon className="text-red-500 w-4 h-4 mx-2" />
+                </ActionToolTip>
+              )}
+            </h1>
             <ActionToolTip
               className=" self-end"
               label={channel.type}

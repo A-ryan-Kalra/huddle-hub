@@ -34,7 +34,8 @@ function CommunicationSection({
 }: ChannelScetionProps) {
   const { onOpen } = useModal();
   const [showHeight, setShowHeight] = useState(false);
-
+  const admin = role === MemberRole.ADMIN;
+  const moderator = role === MemberRole.MODERATOR || admin;
   return (
     <div className="mt-8 flex flex-col gap-y-1">
       <div className="flex items-center gap-x-1 group">
@@ -52,7 +53,7 @@ function CommunicationSection({
         <p className="p-1 cursor-pointer hover:bg-zinc-200 text-sm duration-300 transition w-fit rounded-md">
           {title}
         </p>
-        {(role === MemberRole.ADMIN || role === MemberRole.MODERATOR) && (
+        {(admin || moderator) && (
           <ActionToolTip
             className="ml-auto flex items-center"
             label="Add a new channel"
@@ -79,6 +80,7 @@ function CommunicationSection({
                 channel={channel}
                 allMembers={allMembers}
                 currentMember={currentMember}
+                role={{ admin, moderator }}
               />
             ))}
           </ScrollArea>

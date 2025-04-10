@@ -18,36 +18,41 @@ import {
 interface CustomizeChannelCompProps {
   children: React.ReactNode;
   allMembers: (Member & { profile: Profile })[];
-
+  role: { admin: boolean; moderator: boolean };
   channel: Channel & { members: ChannelOnMember[] };
+  ownerOfChannel: boolean;
 }
 
 function CustomizeChannelComp({
   children,
   channel,
   allMembers,
+  role,
+  ownerOfChannel,
 }: CustomizeChannelCompProps) {
   const { onOpen } = useModal();
 
   return (
     <ContextMenu>
       <ContextMenuTrigger className=" ">{children}</ContextMenuTrigger>
-      <ContextMenuContent className="">
-        <ContextMenuItem
-          onClick={() =>
-            onOpen("customizeChannel", { channel, member: allMembers })
-          }
-          className="flex items-center border-none outline-none focus-visible:ring-0"
-        >
-          <Edit className="w-4 h-4" /> Edit
-        </ContextMenuItem>
-        <ContextMenuItem
-          onClick={() => onOpen("deleteChannel", { channel })}
-          className="flex items-center border-none outline-none focus-visible:ring-0"
-        >
-          <Trash className="w-4 h-4 text-red-500" /> Delete
-        </ContextMenuItem>
-      </ContextMenuContent>
+      {(ownerOfChannel || role.admin) && (
+        <ContextMenuContent className="">
+          <ContextMenuItem
+            onClick={() =>
+              onOpen("customizeChannel", { channel, member: allMembers })
+            }
+            className="flex items-center border-none outline-none focus-visible:ring-0"
+          >
+            <Edit className="w-4 h-4" /> Edit
+          </ContextMenuItem>
+          <ContextMenuItem
+            onClick={() => onOpen("deleteChannel", { channel })}
+            className="flex items-center border-none outline-none focus-visible:ring-0"
+          >
+            <Trash className="w-4 h-4 text-red-500" /> Delete
+          </ContextMenuItem>
+        </ContextMenuContent>
+      )}
     </ContextMenu>
   );
 }
