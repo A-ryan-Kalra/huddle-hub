@@ -1,15 +1,19 @@
 "use client";
 import { ServerSchema } from "@/type";
 import { ChevronDown } from "lucide-react";
-import React, { useEffect } from "react";
+import React, { Fragment, useEffect } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuPortal,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import {
@@ -21,18 +25,19 @@ import {
 import AvatarIcon from "../ui/avatar-icon";
 import { useModal } from "@/hooks/use-modal-store";
 import { MemberRole } from "@prisma/client";
-
+import { toast } from "sonner";
+import Link from "next/link";
 interface ServerDropDownProps {
   server: ServerSchema;
   role: MemberRole;
+  allServers: ServerSchema[];
 }
 
-function ServerDropDown({ server, role }: ServerDropDownProps) {
+function ServerDropDown({ server, role, allServers }: ServerDropDownProps) {
   const { onOpen } = useModal();
   const { sessionId } = useAuth();
   const admin = role === MemberRole.ADMIN;
   const moderator = role === MemberRole.MODERATOR || admin;
-
   useEffect(() => {
     function keyPress(e: KeyboardEvent) {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
@@ -43,6 +48,20 @@ function ServerDropDown({ server, role }: ServerDropDownProps) {
     document.addEventListener("keydown", keyPress);
     return () => document.removeEventListener("keydown", keyPress);
   }, []);
+
+  function moreServerReq() {
+    if (allServers?.length <= 1) {
+      toast("Attention!", {
+        description:
+          "At least more than one server are required to unlock this feature",
+        richColors: true,
+
+        style: {
+          backgroundColor: "white",
+        },
+      });
+    }
+  }
 
   return (
     <DropdownMenu>
@@ -111,12 +130,42 @@ function ServerDropDown({ server, role }: ServerDropDownProps) {
 
         <DropdownMenuGroup>
           {admin ? (
-            <DropdownMenuItem
-              className="cursor-pointer"
-              onClick={() => onOpen("createServer")}
-            >
-              Create Server
-            </DropdownMenuItem>
+            <>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger
+                  onClick={moreServerReq}
+                  className="border-none focus-visible:ring-offset-0 outline-none"
+                >
+                  Switch Server
+                  <span className="ml-3">(Total: {allServers?.length})</span>
+                </DropdownMenuSubTrigger>
+                {allServers?.length > 1 && (
+                  <DropdownMenuPortal>
+                    <DropdownMenuSubContent>
+                      {allServers?.map((server, index) => (
+                        <Fragment key={index}>
+                          <DropdownMenuItem className="cursor-pointer">
+                            <Link
+                              href={`/${server.id}`}
+                              className="cursor-pointer"
+                            >
+                              {server?.name}
+                            </Link>
+                          </DropdownMenuItem>
+                        </Fragment>
+                      ))}
+                    </DropdownMenuSubContent>
+                  </DropdownMenuPortal>
+                )}
+              </DropdownMenuSub>
+
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() => onOpen("createServer")}
+              >
+                Create Server
+              </DropdownMenuItem>
+            </>
           ) : (
             <DropdownMenuItem
               className="cursor-pointer"

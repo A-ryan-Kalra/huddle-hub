@@ -152,7 +152,7 @@ function CustomizeChannelModal() {
   const channelOwnerMemberId = channel?.members?.find(
     (member) => member.member.profileId === channel.profileId
   );
-  console.log(selectedMembers);
+
   useEffect(() => {
     if (channel?.members?.length > 0) {
       let memberId: string[] = [""];
@@ -193,7 +193,7 @@ function CustomizeChannelModal() {
       channel.members;
     }
   }, [data, type]);
-  console.log(allMembers);
+
   return (
     <Dialog open={openModal} onOpenChange={close}>
       <DialogContent>

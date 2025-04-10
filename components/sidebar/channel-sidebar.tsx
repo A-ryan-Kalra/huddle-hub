@@ -21,6 +21,7 @@ async function ChannelSidebar({ serverId }: ChannelSideBarProps) {
     where: {
       members: {
         some: {
+          serverId,
           profileId: profile.id,
         },
       },
@@ -56,12 +57,10 @@ async function ChannelSidebar({ serverId }: ChannelSideBarProps) {
   if (!server) {
     redirect("/");
   }
-  const channels = await db.channel.findMany({
-    where: {
-      serverId,
-    },
+  const allServers = await db.server.findMany({
     include: {
       members: true,
+      channels: { include: { members: true } },
     },
   });
 
@@ -89,7 +88,7 @@ async function ChannelSidebar({ serverId }: ChannelSideBarProps) {
   return (
     <div className="truncate p-2 flex flex-col gap-y-2  h-full overflow-hidden">
       <div className="flex relative justify-between items-center">
-        <ServerDropDown server={server} role={role} />
+        <ServerDropDown server={server} allServers={allServers} role={role} />
         <ActionToolTip className="ml-auto" label="New message">
           <div className=" hover:bg-zinc-200 duration-300 transition rounded-md p-2 cursor-pointer">
             <FilePen className="w-5 h-5" />
