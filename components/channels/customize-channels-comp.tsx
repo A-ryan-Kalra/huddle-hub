@@ -35,7 +35,7 @@ function CustomizeChannelComp({
   return (
     <ContextMenu>
       <ContextMenuTrigger className=" ">{children}</ContextMenuTrigger>
-      {(ownerOfChannel || role.admin) && (
+      {(ownerOfChannel || role.admin) && channel.name !== "general" && (
         <ContextMenuContent className="">
           <ContextMenuItem
             onClick={() =>

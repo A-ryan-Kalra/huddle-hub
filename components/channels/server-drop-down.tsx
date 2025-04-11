@@ -134,6 +134,7 @@ function ServerDropDown({ server, role, allServers }: ServerDropDownProps) {
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger
                   onClick={moreServerReq}
+                  disabled={allServers?.length <= 1}
                   className="border-none focus-visible:ring-offset-0 outline-none"
                 >
                   Switch Server
@@ -146,8 +147,8 @@ function ServerDropDown({ server, role, allServers }: ServerDropDownProps) {
                         <Fragment key={index}>
                           <DropdownMenuItem className="cursor-pointer">
                             <Link
-                              href={`/${server.id}`}
-                              className="cursor-pointer"
+                              href={`/servers/${server.id}`}
+                              className="w-full cursor-pointer"
                             >
                               {server?.name}
                             </Link>
@@ -165,6 +166,12 @@ function ServerDropDown({ server, role, allServers }: ServerDropDownProps) {
               >
                 Create Server
               </DropdownMenuItem>
+              <DropdownMenuItem
+                className="cursor-pointer text-red-500 focus:text-red-500"
+                onClick={() => onOpen("deleteServer", { server })}
+              >
+                Delete Server
+              </DropdownMenuItem>
             </>
           ) : (
             <DropdownMenuItem
@@ -174,6 +181,8 @@ function ServerDropDown({ server, role, allServers }: ServerDropDownProps) {
               Leave Server
             </DropdownMenuItem>
           )}
+          <DropdownMenuSeparator />
+
           <DropdownMenuItem className="cursor-pointer">
             <SignOutButton signOutOptions={{ sessionId: sessionId as string }}>
               Sign Out
