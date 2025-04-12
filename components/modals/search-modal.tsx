@@ -86,6 +86,7 @@ export function SearchModal() {
                 (member1) => member1.memberId === member?.id
               );
             console.log(accessToPrivateChannel);
+
             const onClick = (
               channel: Channel & { members: ChannelOnMember[] }
             ) => {
@@ -94,14 +95,12 @@ export function SearchModal() {
                   description: "Oops! This channel is private",
                   style: { backgroundColor: "white", color: "black" },
                   richColors: true,
-                  // action: {
-                  //   label: "Undo",
-                  //   onClick: () => console.log("Undo"),
-                  // },
                 });
                 return null;
               }
+              console.log("wow");
             };
+
             if (!channel) {
               return null;
             }

@@ -13,12 +13,14 @@ import {
 import { Hash, Lock, Mic, UserIcon, Video } from "lucide-react";
 import { toast } from "sonner";
 import CustomizeChannelComp from "./customize-channels-comp";
+import { useRouter } from "next/navigation";
 
 interface ChannelNameProps {
   channel: Channel & { members: ChannelOnMember[] };
   currentMember: Member;
   allMembers: (Member & { profile: Profile })[];
   role: { admin: boolean; moderator: boolean };
+  type?: "channel" | "messages";
 }
 
 const channelIconType = {
@@ -42,6 +44,7 @@ function ChannelName({
   const accessToPrivateChannel =
     channel.visibility === "PRIVATE" &&
     channel.members.some((member) => member.memberId === currentMember?.id);
+  const router = useRouter();
 
   const onClick = (channel: Channel & { members: ChannelOnMember[] }) => {
     if (!accessToPrivateChannel && channel.visibility === "PRIVATE") {
@@ -51,14 +54,11 @@ function ChannelName({
         description: "Oops! This channel is private",
         style: { backgroundColor: "white", color: "black" },
         richColors: true,
-        // action: {
-        //   label: "Undo",
-        //   onClick: () => console.log("Undo"),
-        // },
       });
       return null;
     }
     console.log("public");
+    router.push(`/servers/${channel.serverId}/channels/${channel.id}`);
   };
 
   return (
