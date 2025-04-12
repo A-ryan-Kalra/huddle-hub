@@ -14,6 +14,7 @@ import ActionToolTip from "../ui/action-tooltip";
 import { useModal } from "@/hooks/use-modal-store";
 import { ScrollArea } from "../ui/scroll-area";
 import ChannelName from "../channels/channel-name";
+import { Button } from "../ui/button";
 
 interface ChannelScetionProps {
   title: string;
@@ -53,7 +54,7 @@ function CommunicationSection({
         <p className="p-1 cursor-pointer hover:bg-zinc-200 text-sm duration-300 transition w-fit rounded-md">
           {title}
         </p>
-        {(admin || moderator) && (
+        {moderator && (
           <ActionToolTip
             className="ml-auto flex items-center"
             label="Add a new channel"
@@ -86,6 +87,17 @@ function CommunicationSection({
           </ScrollArea>
         )}
       </>
+      {type === "channels" && moderator && (
+        <button
+          onClick={() => onOpen("createChannel", { member: allMembers })}
+          className="group p-1 text-sm gap-x-2 hover:bg-zinc-200 transition  flex items-center justify-start rounded-md"
+        >
+          <span className="group-hover:bg-slate-50 rounded-md p-1 transition">
+            <PlusIcon className="w-3 h-3" />
+          </span>
+          <p className="px-1">Add Channels</p>
+        </button>
+      )}
     </div>
   );
 }

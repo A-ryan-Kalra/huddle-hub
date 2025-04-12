@@ -9,6 +9,7 @@ import LeaveServerModal from "../modals/leave-server-modal";
 import { SearchModal } from "../modals/search-modal";
 import CustomizeChannelModal from "../modals/customize-channel-modal";
 import DeleteServerModal from "../modals/delete-server-modal";
+import DeleteChannelModal from "../modals/delete-channel-modal";
 
 function ModalProviders() {
   const [open, setOpen] = useState(false);
@@ -30,6 +31,7 @@ function ModalProviders() {
       <SearchModal />
       <CustomizeChannelModal />
       <DeleteServerModal />
+      <DeleteChannelModal />
     </>
   );
 }

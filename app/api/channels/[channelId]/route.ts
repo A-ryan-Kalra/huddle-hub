@@ -37,7 +37,7 @@ export async function PATCH(req: NextRequest) {
         profileId: profile.id,
         serverId,
         role: {
-          in: [MemberRole.ADMIN],
+          in: [MemberRole.ADMIN, MemberRole.MODERATOR],
         },
       },
     });
@@ -146,6 +146,65 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ addAllMemberToNewChannel, success: true });
   } catch (error) {
     console.error("[CHANNELS]>[CHANNEL_ID_PATCH]", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const profile = await currentProfile();
+    const channelId = req.nextUrl.pathname.split("/").pop();
+    const { searchParams } = new URL(req.url);
+    const serverId = searchParams.get("serverId");
+
+    if (!profile) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    if (!serverId) {
+      return NextResponse.json({ error: "Server id missing" }, { status: 400 });
+    }
+    if (!channelId) {
+      return NextResponse.json(
+        { error: "Channel id missing" },
+        { status: 400 }
+      );
+    }
+
+    const deleteChannel = await db.server.update({
+      where: {
+        id: serverId,
+        members: {
+          some: {
+            profileId: profile.id,
+            role: {
+              in: [MemberRole.ADMIN, MemberRole.MODERATOR],
+            },
+          },
+        },
+      },
+      data: {
+        channels: {
+          delete: {
+            id: channelId,
+            OR: [
+              {
+                profileId: profile.id,
+              },
+              {
+                profileId: { not: profile.id },
+              },
+            ],
+          },
+        },
+      },
+    });
+
+    return NextResponse.json({ deleteChannel, success: true });
+  } catch (error) {
+    console.error("[CHANNELS]>[CHANNEL_ID_DELETE]", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }

@@ -53,8 +53,8 @@ function CreateServerModal() {
     const res = await axios.post(url, values);
 
     console.log(res.data);
-    router.refresh();
     onClose();
+    router.refresh();
   };
 
   const handleCancel = () => {

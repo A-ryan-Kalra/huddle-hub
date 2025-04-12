@@ -28,6 +28,7 @@ import {
 import { useModal } from "@/hooks/use-modal-store";
 import {
   Channel,
+  ChannelOnMember,
   ChannelType,
   ChannelVisibility,
   Member,
@@ -38,6 +39,8 @@ import {
 import ActionToolTip from "../ui/action-tooltip";
 import AvatarIcon from "../ui/avatar-icon";
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 const channelIconType = {
   [ChannelVisibility.PUBLIC]: <Hash className="w-4 h-4" />,
   [ChannelVisibility.PRIVATE]: <Lock className="w-4 h-4" />,
@@ -55,13 +58,18 @@ const memberRoleIcon = {
 
 export function SearchModal() {
   const { data, type, onClose } = useModal();
+  const router = useRouter();
   const isModalOpen = type === "searchModal";
-  const { server } = data as {
-    server: Server & { channels: Channel[] } & {
+  const { server, member } = data as {
+    server: Server & {
+      channels: (Channel & { members: ChannelOnMember[] })[];
+    } & {
       members: (Member & { profile: Profile })[];
     };
+    member: Member;
   };
 
+  // console.log(member);
   return (
     <CommandDialog open={isModalOpen} onOpenChange={onClose}>
       <CommandInput
@@ -72,11 +80,38 @@ export function SearchModal() {
         <CommandEmpty>No results found.</CommandEmpty>
         <CommandGroup heading={"Channel"}>
           {server?.channels?.map((channel, index) => {
+            const accessToPrivateChannel =
+              channel.visibility === "PRIVATE" &&
+              channel.members.some(
+                (member1) => member1.memberId === member?.id
+              );
+            console.log(accessToPrivateChannel);
+            const onClick = (
+              channel: Channel & { members: ChannelOnMember[] }
+            ) => {
+              if (!accessToPrivateChannel && channel.visibility === "PRIVATE") {
+                toast("Unauthorized Access", {
+                  description: "Oops! This channel is private",
+                  style: { backgroundColor: "white", color: "black" },
+                  richColors: true,
+                  // action: {
+                  //   label: "Undo",
+                  //   onClick: () => console.log("Undo"),
+                  // },
+                });
+                return null;
+              }
+            };
             if (!channel) {
               return null;
             }
+
             return (
-              <CommandItem key={index} value={`${channel.name}-${channel.id}`}>
+              <CommandItem
+                onSelect={() => onClick(channel)}
+                key={index}
+                value={`${channel.name}-${channel.id}`}
+              >
                 {channelIconType[channel.visibility]}
                 <span>{channel.name}</span>
                 <ActionToolTip side="right" label={channel.type}>

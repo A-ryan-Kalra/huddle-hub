@@ -1,5 +1,6 @@
 import { currentProfile } from "@/lib/currentProfile";
 import { db } from "@/lib/db";
+import { MemberRole } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -29,6 +30,9 @@ export async function POST(req: Request) {
         where: {
           profileId: profile.id,
           serverId,
+          role: {
+            in: [MemberRole.ADMIN, MemberRole.MODERATOR],
+          },
         },
       });
       members.push(channelOwnerMember?.id);

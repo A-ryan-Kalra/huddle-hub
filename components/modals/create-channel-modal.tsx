@@ -105,6 +105,7 @@ function CreateChannelModal() {
         // },
       });
       close();
+
       router.refresh();
     } catch (error: Error | any) {
       toast("Error", {

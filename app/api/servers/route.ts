@@ -31,7 +31,7 @@ export async function POST(req: Request) {
           create: [
             {
               visibility: "PUBLIC",
-              name: "genreal",
+              name: "general",
               profileId: profile.id,
               type: "TEXT",
             },

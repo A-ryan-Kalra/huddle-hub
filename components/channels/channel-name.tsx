@@ -44,11 +44,9 @@ function ChannelName({
     channel.members.some((member) => member.memberId === currentMember?.id);
 
   const onClick = (channel: Channel & { members: ChannelOnMember[] }) => {
-    if (
-      !ownerOfChannel &&
-      !accessToPrivateChannel &&
-      channel.visibility === "PRIVATE"
-    ) {
+    if (!accessToPrivateChannel && channel.visibility === "PRIVATE") {
+      console.log("private");
+
       toast("Unauthorized Access", {
         description: "Oops! This channel is private",
         style: { backgroundColor: "white", color: "black" },
@@ -60,6 +58,7 @@ function ChannelName({
       });
       return null;
     }
+    console.log("public");
   };
 
   return (

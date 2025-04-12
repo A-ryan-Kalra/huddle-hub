@@ -24,16 +24,22 @@ import {
 } from "@clerk/nextjs";
 import AvatarIcon from "../ui/avatar-icon";
 import { useModal } from "@/hooks/use-modal-store";
-import { MemberRole } from "@prisma/client";
+import { Member, MemberRole } from "@prisma/client";
 import { toast } from "sonner";
 import Link from "next/link";
 interface ServerDropDownProps {
   server: ServerSchema;
   role: MemberRole;
   allServers: ServerSchema[];
+  currentMember: Member;
 }
 
-function ServerDropDown({ server, role, allServers }: ServerDropDownProps) {
+function ServerDropDown({
+  server,
+  role,
+  allServers,
+  currentMember,
+}: ServerDropDownProps) {
   const { onOpen } = useModal();
   const { sessionId } = useAuth();
   const admin = role === MemberRole.ADMIN;
@@ -42,7 +48,7 @@ function ServerDropDown({ server, role, allServers }: ServerDropDownProps) {
     function keyPress(e: KeyboardEvent) {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
-        onOpen("searchModal", { server });
+        onOpen("searchModal", { server, member: currentMember });
       }
     }
     document.addEventListener("keydown", keyPress);
@@ -93,7 +99,9 @@ function ServerDropDown({ server, role, allServers }: ServerDropDownProps) {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem
-            onClick={() => onOpen("searchModal", { server })}
+            onClick={() =>
+              onOpen("searchModal", { server, member: currentMember })
+            }
             className="cursor-pointer"
           >
             Search

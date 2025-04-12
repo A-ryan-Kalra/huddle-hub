@@ -50,33 +50,17 @@ import { MultiSelect } from "../ui/multi-select";
 import Image from "next/image";
 import { toast } from "sonner";
 
-const formSchema = z
-  .object({
-    name: z
-      .string()
-      .min(1, { message: "Channel Name is required" })
-      .refine((name) => name !== "general", {
-        message: "Channel name cannot be 'general'",
-      }),
-    type: z.nativeEnum(ChannelType),
-    visibility: z.nativeEnum(ChannelVisibility),
-    members: z.array(z.string()),
-  })
-  .refine(
-    (data) => {
-      if (
-        data.visibility === ChannelVisibility.PRIVATE &&
-        data.members.length === 0
-      ) {
-        return false;
-      }
-      return true;
-    },
-    {
-      path: ["members"],
-      message: "Members cannot be empty when channel is private",
-    }
-  );
+const formSchema = z.object({
+  name: z
+    .string()
+    .min(1, { message: "Channel Name is required" })
+    .refine((name) => name !== "general", {
+      message: "Channel name cannot be 'general'",
+    }),
+  type: z.nativeEnum(ChannelType),
+  visibility: z.nativeEnum(ChannelVisibility),
+  members: z.array(z.string()),
+});
 
 function CustomizeChannelModal() {
   const { type, onClose, data } = useModal();
@@ -90,8 +74,7 @@ function CustomizeChannelModal() {
 
   const params = useParams();
   const [showMember, setShowMember] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState<string | null>(null);
+
   const [allMembers, setAllMembers] = useState<
     {
       label: string;
@@ -129,7 +112,7 @@ function CustomizeChannelModal() {
         style: { backgroundColor: "white", color: "black" },
         richColors: true,
       });
-      // close();
+      close();
       router.refresh();
     } catch (error: Error | any) {
       toast("Error", {

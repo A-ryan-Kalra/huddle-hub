@@ -114,6 +114,8 @@ model ChannelOnMember{
   channel               Channel       @relation(fields: [channelId], references: [id], onDelete: Cascade)
   serverId              String
   server                Server        @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+ 
   @@id([memberId,channelId,serverId])
 }
 
