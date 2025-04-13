@@ -7,7 +7,6 @@ interface ChatHeaderProps {
   channel?: Channel & { members: ChannelOnMember[] };
 }
 function ChatHeader({ channel, type }: ChatHeaderProps) {
-  console.log(channel);
   return (
     <div className=" border-b-[1px] border-b-zinc-400  w-full">
       <div className="flex justify-between items-center px-2 py-2">

@@ -8,7 +8,14 @@ body,
   height: 100%;
   --font-righteous: "Righteous", sans-serif;
 }
-
+.ql-tooltip.ql-editing {
+  left: 0 !important;
+  top: 0 !important;
+}
+.ql-tooltip {
+  left: 0 !important;
+  top: 0 !important;
+}
 @layer base {
   :root {
     --background: 0 0% 100%;

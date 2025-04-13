@@ -1,7 +1,9 @@
+import ChatEditor from "@/components/chat/chat-editor";
 import ChatHeader from "@/components/chat/chat-header";
+import ChatSection from "@/components/chat/chat-section";
 import { currentProfile } from "@/lib/currentProfile";
 import { db } from "@/lib/db";
-import { profile } from "console";
+
 import { redirect } from "next/navigation";
 import React from "react";
 
@@ -43,8 +45,11 @@ async function ChannelPage({ params }: ChannelPageProps) {
   }
 
   return (
-    <div className=" h-full">
+    <div className="flex flex-col flex-1 h-full">
       <ChatHeader type="channel" channel={channel} />
+      <ChatSection />
+
+      <ChatEditor />
     </div>
   );
 }
