@@ -9,7 +9,7 @@ import { OurFileRouter } from "@/app/api/uploadthing/core";
 import { cn } from "@/lib/utils";
 
 export default function TemplateDemo() {
-  const [text, setText] = useState<string>("<p></p>");
+  const [text, setText] = useState<string>("");
   const [show, setShow] = useState(false);
   const imageReference = useRef<HTMLInputElement>(null);
   const [image, setImage] = useState<string>("");
@@ -32,7 +32,7 @@ export default function TemplateDemo() {
 
     console.log(res[0].ufsUrl);
   }
-  console.log(text);
+
   const renderHeader = () => {
     return (
       <div id="toolbar-containe">
@@ -79,15 +79,19 @@ export default function TemplateDemo() {
     );
   };
 
+  const getTextLength = (html: string) => {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    const text = doc.body.innerText;
+
+    const length = text !== "null" ? text?.length : 0;
+    return length;
+  };
+  const header = renderHeader();
+
   useEffect(() => {
     setShow(true);
   }, []);
-  const getTextLength = (html: string) => {
-    const doc = new DOMParser().parseFromString(html, "text/html");
-    return doc.body.innerText.length;
-  };
-  const header = renderHeader();
-  // console.log(text);
+
   return (
     <div className="flex flex-1 flex-col w-full bg-blac relative   rounded-lg   overflow-hidden max-h-fit">
       <Editor
@@ -104,11 +108,12 @@ export default function TemplateDemo() {
           paddingBottom: image && "100px",
           fontSize: "16px",
           overflowY: "auto",
+          wordBreak: "break-word",
         }}
       />
       <button
         disabled={!text}
-        className="disabled:bg-zinc-300 hover:bg-opacity-70 transition bg-green-700 rounded-md absolute bottom-4 right-6  p-2"
+        className="disabled:bg-zinc-300 hover:bg-opacity-70 transition bg-green-700 rounded-md absolute bottom-4 right-10  p-2"
       >
         <Send className={cn("w-3 h-3 text-white", !text && "text-zinc-400")} />
       </button>
