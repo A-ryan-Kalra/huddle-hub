@@ -21,6 +21,7 @@ export default function TemplateDemo() {
   const [show, setShow] = useState(false);
   const imageReference = useRef<HTMLInputElement>(null);
   const [image, setImage] = useState<string>("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
   // const [wordLimit,setWordLimit]=useState
   // console.log(image);
 
@@ -35,25 +36,11 @@ export default function TemplateDemo() {
   const { uploadFiles } = generateReactHelpers<OurFileRouter>();
   async function handleImage(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
+    setImageFile(file as File);
     if (file) {
       const url = URL.createObjectURL(file);
       setImage(url);
     }
-    if (file?.type.startsWith("image/")) {
-      alert("Images are not allowed here!");
-      event.target.value = ""; // Reset the input
-      form.setValue("content", "");
-      return;
-    }
-
-    // if (!file) return;
-    // console.log(file);
-    // // 1. Upload image to UploadThing
-    // const res = await uploadFiles("messageFile", {
-    //   files: [file],
-    // });
-
-    // console.log(res[0].ufsUrl);
   }
 
   const renderHeader = () => {
@@ -77,24 +64,30 @@ export default function TemplateDemo() {
               </span>
               <span className="ql-formats">
                 <button className="ql-link"></button>
+                <input
+                  ref={imageReference}
+                  accept="image/*"
+                  type="file"
+                  className="hidden"
+                  onChange={handleImage}
+                />
+                <button
+                  onClick={() => imageReference.current?.click()}
+                  type="button"
+                  className=""
+                >
+                  <ImageUpIcon />
+                </button>
               </span>
             </div>
-            <input
-              ref={imageReference}
-              accept="image/*"
-              type="file"
-              className="hidden"
-              onChange={handleImage}
-            />
+
             <button
-              onClick={() => imageReference.current?.click()}
               type="button"
+              style={{ width: "100px", color: "black" }}
               className=""
             >
-              <ImageUpIcon />
-            </button>
-            <button style={{ width: "100px" }} className="">
-              {getTextLength(text) + ` / 1000`}
+              {getTextLength(text)}
+              <span>/1000</span>
             </button>
           </div>
         )}
@@ -111,8 +104,22 @@ export default function TemplateDemo() {
   };
   const header = renderHeader();
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    alert("ww");
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log(values);
+    if (imageFile) {
+      console.log(imageFile);
+      // 1. Upload image to UploadThing
+      const res = await uploadFiles("messageFile", {
+        files: [imageFile],
+      });
+
+      console.log(res[0].ufsUrl);
+    }
+  }
+
+  function clearAllImages() {
+    setImage("");
+    setImageFile(null);
   }
 
   useEffect(() => {
@@ -132,9 +139,13 @@ export default function TemplateDemo() {
                   <Editor
                     {...field}
                     className="ql-tooltip relative ql-editing  mx-4 my-2 rounded-lg overflow-hidden border-[1px] border-gray-400 mt-aut"
-                    maxLength={1000}
-                    value={field.value}
+                    maxLength={999}
+                    value={text}
                     onTextChange={(e: EditorTextChangeEvent) => {
+                      if (e.source === "api") {
+                        return null;
+                      }
+
                       setText(e.htmlValue as string);
                       field.onChange(e.htmlValue !== null ? e.htmlValue : "");
                     }}
@@ -142,7 +153,7 @@ export default function TemplateDemo() {
                     style={{
                       maxHeight: "225px",
                       minHeight: "100px",
-                      paddingBottom: image && "150px",
+                      paddingBottom: image && "100px",
                       fontSize: "16px",
                       overflowY: "auto",
                       wordBreak: "break-word",
@@ -167,7 +178,7 @@ export default function TemplateDemo() {
         </form>
       </FormProvider>
       {image && (
-        <div className="absolute bottom-8 left-7 ">
+        <div className="absolute bottom-6 left-7 ">
           <div className="relative">
             <img
               src={image}
@@ -175,7 +186,7 @@ export default function TemplateDemo() {
               className="w-[80px] h-[80px] rounded-2xl  object-cover"
             />
             <div
-              onClick={() => setImage("")}
+              onClick={clearAllImages}
               className="w-5 h-5 bg-black absolute hover:bg-zinc-400 transition cursor-pointer flex items-center justify-center top-0 right-0 rounded-full"
             >
               <XIcon className="w-3 h-3 text-white " />
