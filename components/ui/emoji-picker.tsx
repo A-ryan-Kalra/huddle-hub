@@ -21,6 +21,7 @@ function EmojiPicker({ setText }: EmojiPickerProps) {
       >
         <Picker
           data={data}
+          theme={"light"}
           onEmojiSelect={(emoji: any) => setText(emoji.native)}
         />
       </PopoverContent>

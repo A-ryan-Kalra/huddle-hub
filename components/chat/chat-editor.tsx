@@ -85,9 +85,11 @@ export default function TemplateDemo() {
                 <EmojiPicker
                   setText={(emoji: string) =>
                     setText((prev: string) => {
-                      const cleaned = prev.replace(/<\/p>$/, "");
-                      console.log("cleaned", cleaned);
-                      return `${cleaned}${emoji}<\/p>`;
+                      const safePrev =
+                        prev && prev !== "<p><br></p>"
+                          ? prev.replace(/<\/p>$/, "")
+                          : "<p>";
+                      return `${safePrev}${emoji}</p>`;
                     })
                   }
                 />
@@ -137,6 +139,14 @@ export default function TemplateDemo() {
 
   useEffect(() => {
     setShow(true);
+    const interval = setInterval(() => {
+      const quill = quillRef.current?.getQuill?.();
+      if (quill) {
+        quill.focus();
+        clearInterval(interval);
+      }
+    }, 100);
+    return () => clearInterval(interval);
   }, []);
 
   return (
