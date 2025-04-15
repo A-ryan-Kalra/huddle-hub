@@ -10,7 +10,9 @@ import { z } from "zod";
 import { Form, FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormControl, FormField, FormItem, FormMessage } from "../ui/form";
-
+import Picker from "@emoji-mart/react";
+import data from "@emoji-mart/data";
+import EmojiPicker from "../ui/emoji-picker";
 const formSchema = z.object({
   content: z.string().optional(),
   // imageUrl: z.string().optional(),
@@ -22,8 +24,10 @@ export default function TemplateDemo() {
   const imageReference = useRef<HTMLInputElement>(null);
   const [image, setImage] = useState<string>("");
   const [imageFile, setImageFile] = useState<File | null>(null);
-  // const [wordLimit,setWordLimit]=useState
-  // console.log(image);
+  const quillRef = useRef<any>(null);
+  const getQuillInstance = () => {
+    return quillRef.current?.getQuill?.();
+  };
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -42,7 +46,7 @@ export default function TemplateDemo() {
       setImage(url);
     }
   }
-
+  console.log(text);
   const renderHeader = () => {
     return (
       <div id="toolbar-container">
@@ -78,6 +82,15 @@ export default function TemplateDemo() {
                 >
                   <ImageUpIcon />
                 </button>
+                <EmojiPicker
+                  setText={(emoji: string) =>
+                    setText((prev: string) => {
+                      const cleaned = prev.replace(/<\/p>$/, "");
+                      console.log("cleaned", cleaned);
+                      return `${cleaned}${emoji}<\/p>`;
+                    })
+                  }
+                />
               </span>
             </div>
 
@@ -138,6 +151,7 @@ export default function TemplateDemo() {
                 <FormControl>
                   <Editor
                     {...field}
+                    ref={quillRef}
                     className="ql-tooltip relative ql-editing  mx-4 my-2 rounded-lg overflow-hidden border-[1px] border-gray-400 mt-aut"
                     maxLength={999}
                     value={text}
