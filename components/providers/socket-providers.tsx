@@ -18,7 +18,7 @@ export const useSocket = () => {
 
 function SocketProviders({ children }: { children: React.ReactNode }) {
   const [isConnected, setIsConnected] = useState<boolean>(false);
-  const [socket, setSocket] = useState(null);
+  const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
     const socketInstance = new (ClientIO as any)(
@@ -35,6 +35,8 @@ function SocketProviders({ children }: { children: React.ReactNode }) {
     socketInstance.on("disconnect", () => {
       setIsConnected(false);
     });
+
+    setSocket(socketInstance);
 
     return () => {
       socketInstance.disconnect();
