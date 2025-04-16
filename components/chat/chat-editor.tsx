@@ -10,8 +10,7 @@ import { z } from "zod";
 import { Form, FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormControl, FormField, FormItem, FormMessage } from "../ui/form";
-import Picker from "@emoji-mart/react";
-import data from "@emoji-mart/data";
+
 import EmojiPicker from "../ui/emoji-picker";
 const formSchema = z.object({
   content: z.string().optional(),
@@ -46,7 +45,7 @@ export default function TemplateDemo() {
       setImage(url);
     }
   }
-  console.log(text);
+
   const renderHeader = () => {
     return (
       <div id="toolbar-container">
