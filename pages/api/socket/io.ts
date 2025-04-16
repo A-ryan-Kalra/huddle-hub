@@ -2,6 +2,7 @@ import { NextApiResponseServerIO } from "@/type";
 import { NextApiRequest } from "next";
 import { Server as NetServer } from "http";
 import { Server as ServerIO } from "socket.io";
+
 const ioHandler = (req: NextApiRequest, res: NextApiResponseServerIO) => {
   if (!res?.socket?.server?.io) {
     const path = "/api/socket/io";
