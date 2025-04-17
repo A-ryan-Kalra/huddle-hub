@@ -2,7 +2,7 @@
 
 import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import { Editor, EditorTextChangeEvent } from "primereact/editor";
-import { ImageUpIcon, Send, XIcon } from "lucide-react";
+import { Hash, ImageUpIcon, Lock, Send, XIcon } from "lucide-react";
 import { generateReactHelpers } from "@uploadthing/react";
 import { OurFileRouter } from "@/app/api/uploadthing/core";
 import { cn } from "@/lib/utils";
@@ -10,15 +10,32 @@ import { z } from "zod";
 import { Form, FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormControl, FormField, FormItem, FormMessage } from "../ui/form";
-import Picker from "@emoji-mart/react";
-import data from "@emoji-mart/data";
 import EmojiPicker from "../ui/emoji-picker";
+import { ChannelVisibility } from "@prisma/client";
+
 const formSchema = z.object({
   content: z.string().optional(),
-  // imageUrl: z.string().optional(),
 });
 
-export default function TemplateDemo() {
+interface ChatEditorProps {
+  type: "channel" | "conversation";
+  apiUrl: string;
+  query: Record<string, any>;
+  visibility: "PUBLIC" | "PRIVATE";
+  name: string;
+}
+const channelIconType = {
+  [ChannelVisibility.PUBLIC]: "",
+  [ChannelVisibility.PRIVATE]: "🔓️",
+};
+
+export default function ChatEditor({
+  apiUrl,
+  query,
+  type,
+  visibility,
+  name,
+}: ChatEditorProps) {
   const [text, setText] = useState<string>("");
   const [show, setShow] = useState(false);
   const imageReference = useRef<HTMLInputElement>(null);
@@ -30,7 +47,6 @@ export default function TemplateDemo() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       content: "",
-      // imageUrl: "",
     },
     shouldFocusError: false,
   });
@@ -158,6 +174,11 @@ export default function TemplateDemo() {
                 <FormControl>
                   <Editor
                     {...field}
+                    placeholder={
+                      type === "channel"
+                        ? `Message ${channelIconType[visibility]} ${name}`
+                        : ``
+                    }
                     ref={quillRef}
                     className="ql-tooltip relative ql-editing  mx-4 my-2 rounded-lg overflow-hidden border-[1px] border-gray-400 mt-aut"
                     maxLength={999}
