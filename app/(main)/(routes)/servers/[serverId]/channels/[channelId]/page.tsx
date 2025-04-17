@@ -30,6 +30,7 @@ async function ChannelPage({ params }: ChannelPageProps) {
     },
     include: {
       members: true,
+      profile: true,
     },
   });
 
@@ -47,8 +48,7 @@ async function ChannelPage({ params }: ChannelPageProps) {
   return (
     <div className="flex flex-col flex-1 h-full">
       <ChatHeader type="channel" channel={channel} />
-      <ChatSection />
-
+      <ChatSection type="channel" channel={channel} />
       <ChatEditor />
     </div>
   );

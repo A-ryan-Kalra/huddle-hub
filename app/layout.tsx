@@ -4,6 +4,7 @@ import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import ModalProviders from "@/components/providers/modal-providers";
 import { Toaster } from "@/components/ui/sonner";
+import SocketProviders from "@/components/providers/socket-providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,9 +31,11 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={`${righteous.className}  antialiased`}>
-          <ModalProviders />
-          <Toaster />
-          {children}
+          <SocketProviders>
+            <ModalProviders />
+            <Toaster />
+            {children}
+          </SocketProviders>
         </body>
       </html>
     </ClerkProvider>
