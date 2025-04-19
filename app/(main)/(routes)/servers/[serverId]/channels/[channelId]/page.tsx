@@ -48,7 +48,13 @@ async function ChannelPage({ params }: ChannelPageProps) {
   return (
     <div className="flex flex-col flex-1 h-full">
       <ChatHeader type="channel" channel={channel} />
-      <ChatSection type="channel" channel={channel} />
+      <ChatSection
+        type="channel"
+        channel={channel}
+        apiUrl="/api/messages"
+        paramKey={"channelId"}
+        paramValue={channel?.id}
+      />
       <ChatEditor
         type="channel"
         apiUrl="/api/socket/messages"

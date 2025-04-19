@@ -5,6 +5,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import ModalProviders from "@/components/providers/modal-providers";
 import { Toaster } from "@/components/ui/sonner";
 import SocketProviders from "@/components/providers/socket-providers";
+import QueryProvider from "@/components/providers/query-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,7 +35,7 @@ export default function RootLayout({
           <SocketProviders>
             <ModalProviders />
             <Toaster />
-            {children}
+            <QueryProvider>{children}</QueryProvider>
           </SocketProviders>
         </body>
       </html>
