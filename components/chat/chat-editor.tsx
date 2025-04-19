@@ -12,9 +12,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FormControl, FormField, FormItem, FormMessage } from "../ui/form";
 import EmojiPicker from "../ui/emoji-picker";
 import { ChannelVisibility } from "@prisma/client";
+import queryString from "query-string";
+import axios from "axios";
 
 const formSchema = z.object({
   content: z.string().optional(),
+  fileUrl: z.string().optional(),
 });
 
 interface ChatEditorProps {
@@ -131,18 +134,35 @@ export default function ChatEditor({
     return length;
   };
   const header = renderHeader();
-
+  const isLoading = form.formState.isSubmitting;
+  console.log(isLoading);
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
     if (imageFile) {
       console.log(imageFile);
-      // 1. Upload image to UploadThing
       const res = await uploadFiles("messageFile", {
         files: [imageFile],
       });
 
       console.log(res[0].ufsUrl);
+      values.fileUrl = res[0].ufsUrl;
     }
+
+    const url = queryString.stringifyUrl(
+      {
+        url: apiUrl,
+        query,
+      },
+      {
+        skipNull: true,
+      }
+    );
+
+    await axios.post(url, { ...values, content: text });
+    form.reset();
+    setImageFile(null);
+    setText("");
+    setImage("");
   }
 
   function clearAllImages() {
@@ -207,7 +227,7 @@ export default function ChatEditor({
             )}
           />
           <button
-            disabled={getTextLength(text) === 0}
+            disabled={getTextLength(text) === 0 || isLoading}
             className="disabled:bg-zinc-300 hover:bg-opacity-70 transition bg-green-700 rounded-md absolute bottom-4 right-10  p-2"
           >
             <Send
