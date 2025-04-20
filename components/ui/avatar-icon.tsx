@@ -6,21 +6,22 @@ interface AvatarIconProps {
   imageUrl: string;
   width: number;
   height: number;
+  className?: string;
 }
-function AvatarIcon({ imageUrl, width, height }: AvatarIconProps) {
+function AvatarIcon({ imageUrl, width, height, className }: AvatarIconProps) {
   return (
     <div
       style={{
         width,
         height,
       }}
-      className={cn("relative rounded-full")}
+      className={cn(className, "relative rounded-full")}
     >
       <Image
         fill
         draggable={false}
         src={imageUrl}
-        className="object-cover rounded-full"
+        className={cn(className, "object-cover rounded-full")}
         alt={imageUrl}
       />
     </div>
