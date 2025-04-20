@@ -135,16 +135,17 @@ export default function ChatEditor({
   };
   const header = renderHeader();
   const isLoading = form.formState.isSubmitting;
-  console.log(isLoading);
+
+  const cleanContent = (content: string) => {
+    return content.replace(/<p><br><\/p>/g, "");
+  };
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
     if (imageFile) {
-      console.log(imageFile);
       const res = await uploadFiles("messageFile", {
         files: [imageFile],
       });
 
-      console.log(res[0].ufsUrl);
       values.fileUrl = res[0].ufsUrl;
     }
 
@@ -158,7 +159,7 @@ export default function ChatEditor({
       }
     );
 
-    await axios.post(url, { ...values, content: text });
+    await axios.post(url, { ...values, content: cleanContent(text) });
     form.reset();
     setImageFile(null);
     setText("");
@@ -199,6 +200,24 @@ export default function ChatEditor({
                         ? `Message ${channelIconType[visibility]} ${name}`
                         : ``
                     }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        onSubmit(form.getValues());
+                        const quill = quillRef.current?.getQuill?.();
+                        if (quill) {
+                          const range = quill.getSelection();
+
+                          if (range) {
+                            // Remove any content (newline) inserted before you could prevent it
+                            quill.deleteText(range.index, 1, "user");
+                            quill.setText("");
+                          }
+                        }
+
+                        // Your submit function
+                      }
+                    }}
                     ref={quillRef}
                     className="ql-tooltip relative ql-editing  mx-4 my-2 rounded-lg overflow-hidden border-[1px] border-gray-400 mt-aut"
                     maxLength={999}

@@ -23,11 +23,12 @@ function useChatQuery({
       url: apiUrl,
       query: {
         [paramKey]: paramValue,
+        cursor: pageParam,
       },
     });
 
     const res = await fetch(url);
-    console.log(res);
+
     return res.json();
   };
 

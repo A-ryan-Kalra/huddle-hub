@@ -23,10 +23,10 @@ function ChatSection({
   apiUrl,
 }: ChatSectionProps) {
   const queryKey = `chat:${channel.id}`;
-  // const { data, fetchNextPage, isFetchingNextPage, hasNextPage, status } =
-  //   useChatQuery({ queryKey, paramKey, paramValue, apiUrl });
+  const { data, fetchNextPage, isFetchingNextPage, hasNextPage, status } =
+    useChatQuery({ queryKey, paramKey, paramValue, apiUrl });
+  console.log(data);
 
-  // console.log(data, fetchNextPage, isFetchingNextPage, hasNextPage, status);
   return (
     <div className="flex flex-1 flex-col max-h-[80vh] bg-zinc-40 overflow-y-auto">
       <div className=" flex-1" />
