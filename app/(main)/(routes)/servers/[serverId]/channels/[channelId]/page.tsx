@@ -50,7 +50,14 @@ async function ChannelPage({ params }: ChannelPageProps) {
       <ChatHeader type="channel" channel={channel} />
       <ChatSection
         type="channel"
-        channel={channel}
+        chatId={channel?.id}
+        name={channel?.profile?.name?.split(" ")[0]}
+        createdAt={channel?.createdAt?.toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })}
+        chatName={channel?.name}
         apiUrl="/api/messages"
         paramKey={"channelId"}
         paramValue={channel?.id}

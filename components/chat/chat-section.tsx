@@ -8,22 +8,26 @@ import UserComment from "../ui/user-comment";
 
 interface ChatSectionProps {
   type: "channel" | "conversation";
-  channel: Channel & {
-    members: ChannelOnMember[];
-    profile: Profile;
-  };
+
   paramKey: string;
   paramValue: string;
   apiUrl: string;
+  chatId: string;
+  name: string;
+  createdAt: string;
+  chatName: string;
 }
 function ChatSection({
   type,
-  channel,
   paramKey,
   paramValue,
   apiUrl,
+  chatId,
+  createdAt,
+  name,
+  chatName,
 }: ChatSectionProps) {
-  const queryKey = `chat:${channel.id}`;
+  const queryKey = `chat:${chatId}`;
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage, status } =
     useChatQuery({ queryKey, paramKey, paramValue, apiUrl });
   console.log(data);
@@ -31,7 +35,14 @@ function ChatSection({
   return (
     <div className="flex flex-1 flex-col max-h-[80vh] bg-zinc-40 overflow-y-auto">
       {!hasNextPage && <div className=" flex-1" />}
-      {!hasNextPage && <ChatWelcome type={type} channel={channel} />}
+      {!hasNextPage && (
+        <ChatWelcome
+          type={type}
+          name={name}
+          createdAt={createdAt}
+          chatName={chatName}
+        />
+      )}
       <div className="flex justify-center items-center">
         {isFetchingNextPage ? (
           <div className="my-1 animate-spin text-zinc-400">
