@@ -12,7 +12,7 @@ async function ServersLayout({ children, params }: ServersLayoutProps) {
   const { serverId } = paramsResolved;
 
   return (
-    <div className="w-full h-full flex">
+    <div className="w-full h-full  flex">
       <div className="min-w-[70px] flex  flex-col h-full ">
         <div className=" mt-auto pb-7 w-fit mx-auto">
           <UserButton

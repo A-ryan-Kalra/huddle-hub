@@ -184,7 +184,7 @@ export default function ChatEditor({
   }, []);
 
   return (
-    <div className="flex flex-1 flex-col w-full bg-blac relative   rounded-lg   overflow-hidden max-h-fit">
+    <div className="flex flex-1 flex-col w-full mt-auto relative rounded-lg overflow-hidden max-h-fit">
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
@@ -219,7 +219,7 @@ export default function ChatEditor({
                       }
                     }}
                     ref={quillRef}
-                    className="ql-tooltip relative ql-editing  mx-4 my-2 rounded-lg overflow-hidden border-[1px] border-gray-400 mt-aut"
+                    className="ql-tooltip relative ql-editing  mx-4 my-2 rounded-lg overflow-hidden border-[1px] border-gray-400"
                     maxLength={999}
                     value={text}
                     onTextChange={(e: EditorTextChangeEvent) => {

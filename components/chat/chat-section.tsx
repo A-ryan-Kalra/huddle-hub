@@ -33,7 +33,7 @@ function ChatSection({
   console.log(data);
 
   return (
-    <div className="flex flex-1 flex-col max-h-[80vh] bg-zinc-40 overflow-y-auto">
+    <div className="flex flex-1 mt-auto flex-col  overflow-y-auto">
       {!hasNextPage && <div className=" flex-1" />}
       {!hasNextPage && (
         <ChatWelcome
