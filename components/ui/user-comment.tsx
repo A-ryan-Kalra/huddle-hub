@@ -1,6 +1,9 @@
 import { Member, Message, Profile } from "@prisma/client";
 import React from "react";
 import AvatarIcon from "./avatar-icon";
+import { Edit, TrashIcon } from "lucide-react";
+import { Button } from "./button";
+import ActionToolTip from "./action-tooltip";
 
 interface UserCommentProps {
   message: Message & { member: Member & { profile: Profile } };
@@ -17,7 +20,21 @@ function UserComment({ message, createdAt }: UserCommentProps) {
           height={40}
           className="!rounded-md border-[1px] border-current  !sticky top-0"
         />
-        <div className="flex flex-col w-full hover:bg-zinc-100 transition rounded-md overflow-hidden">
+        <div className="flex flex-col w-full hover:bg-zinc-100 group transition rounded-md relative">
+          <div className="gap-x-1 z-10 absolute right-3 p-1 bg-zinc-300 -top-4 hidden rounded-md group-hover:flex">
+            <ActionToolTip
+              label="Edit"
+              className="px-2 py-1 hover:bg-zinc-200 "
+            >
+              <Edit className="!w-4 !h-4" />
+            </ActionToolTip>
+            <ActionToolTip
+              label="Delete"
+              className="px-2 py-1 hover:bg-zinc-200 "
+            >
+              <TrashIcon className="!w-4 !h-4" />
+            </ActionToolTip>
+          </div>
           <div className="flex items-center justify-start">
             <h1 className="text-sm font-semibold hover:underline cursor-pointer transition">
               {message?.member?.profile?.name}

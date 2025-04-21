@@ -22,7 +22,7 @@ interface ChatSectionProps {
   chatName: string;
 }
 
-const DATE_FORMAT = "d MM yyyy, hh:mm a";
+const DATE_FORMAT = "d/MM/yyyy, hh:mm a";
 function ChatSection({
   type,
   paramKey,
