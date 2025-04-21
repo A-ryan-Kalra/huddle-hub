@@ -5,6 +5,7 @@ interface ChatScrollProps {
   bottomRef: React.RefObject<HTMLDivElement | null>;
   loadMore: () => void;
   shouldLoadMore: boolean;
+  count: number;
 }
 
 function useChatScroll({
@@ -12,6 +13,7 @@ function useChatScroll({
   chatRef,
   shouldLoadMore,
   loadMore,
+  count,
 }: ChatScrollProps) {
   useEffect(() => {
     const topDiv = chatRef?.current;
@@ -28,6 +30,25 @@ function useChatScroll({
       topDiv?.removeEventListener("scroll", handleScroll);
     };
   }, [chatRef, loadMore, shouldLoadMore]);
+
+  useEffect(() => {
+    const bottomDiv = bottomRef?.current;
+    const topDiv = chatRef?.current;
+
+    function checkDistance() {
+      if (!topDiv) {
+        return false;
+      }
+      const distanceFromBottom =
+        topDiv?.scrollHeight - (topDiv?.clientHeight + topDiv?.scrollTop) >= 50;
+      return distanceFromBottom;
+    }
+    if (checkDistance()) {
+      bottomDiv?.scrollIntoView({
+        behavior: "smooth",
+      });
+    }
+  }, [bottomRef, loadMore, count]);
 }
 
 export default useChatScroll;

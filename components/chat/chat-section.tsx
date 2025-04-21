@@ -45,6 +45,7 @@ function ChatSection({
     bottomRef,
     loadMore: fetchNextPage,
     shouldLoadMore: !!hasNextPage && !isFetchingNextPage,
+    count: data?.pages[0]?.items?.length ?? 0,
   });
 
   const chat = useChatSocket({ addKey, queryKey });
@@ -97,6 +98,7 @@ function ChatSection({
           </Fragment>
         ))}
       </div>
+      <div ref={bottomRef} />
     </div>
   );
 }

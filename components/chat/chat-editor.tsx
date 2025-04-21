@@ -137,7 +137,9 @@ export default function ChatEditor({
   const isLoading = form.formState.isSubmitting;
 
   const cleanContent = (content: string) => {
-    return content.replace(/<p><br><\/p>/g, "");
+    return content
+      .replace(/^(?:<p>(?:<br>|\s)*<\/p>)+/g, "")
+      .replace(/(?:<p>(?:<br>|\s)*<\/p>)+$/g, "");
   };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
