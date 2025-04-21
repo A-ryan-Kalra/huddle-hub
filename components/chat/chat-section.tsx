@@ -5,6 +5,7 @@ import React, { Fragment } from "react";
 import ChatWelcome from "./chat-welcome";
 import useChatQuery from "@/hooks/use-chat-query";
 import UserComment from "../ui/user-comment";
+import { format } from "date-fns";
 
 interface ChatSectionProps {
   type: "channel" | "conversation";
@@ -17,6 +18,8 @@ interface ChatSectionProps {
   createdAt: string;
   chatName: string;
 }
+
+const DATE_FORMAT = "d MM yyyy, hh:mm a";
 function ChatSection({
   type,
   paramKey,
@@ -59,11 +62,14 @@ function ChatSection({
           ""
         )}
       </div>
-      <div className="flex flex-col-reverse mt-auto">
+      <div className="flex flex-col-reverse mt-auto my-2">
         {data?.pages?.map((group, index) => (
           <Fragment key={index}>
             {group?.items?.map((item, index) => (
-              <UserComment message={item} />
+              <UserComment
+                createdAt={format(new Date(item?.createdAt), DATE_FORMAT)}
+                message={item}
+              />
             ))}
           </Fragment>
         ))}

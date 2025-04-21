@@ -4,11 +4,13 @@ import AvatarIcon from "./avatar-icon";
 
 interface UserCommentProps {
   message: Message & { member: Member & { profile: Profile } };
+  createdAt: string;
 }
 
-function UserComment({ message }: UserCommentProps) {
+function UserComment({ message, createdAt }: UserCommentProps) {
+  console.log(message?.createdAt);
   return (
-    <div className="flex px-4 py-">
+    <div className="flex px-4 py-1">
       <div className="relative flex gap-x-2  items-start">
         <AvatarIcon
           imageUrl={message?.member?.profile?.imageUrl}
@@ -21,7 +23,7 @@ function UserComment({ message }: UserCommentProps) {
             <h1 className="text-sm font-semibold hover:underline cursor-pointer transition">
               {message?.member?.profile?.name}
             </h1>
-            <span>22</span>
+            <span className="text-xs ml-3 text-zinc-500">{createdAt}</span>
           </div>
           <p dangerouslySetInnerHTML={{ __html: message?.content }} />
         </div>

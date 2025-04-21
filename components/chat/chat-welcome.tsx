@@ -10,7 +10,7 @@ interface ChatWelcomeProps {
 
 function ChatWelcome({ createdAt, name, type, chatName }: ChatWelcomeProps) {
   return (
-    <div className="flex flex-col bg-blac gap-y-1 py-3 px-5">
+    <div className="flex flex-col bg-blac gap-y-1 py-4 px-5 my-3">
       <h1 className="flex items-center text-2xl font-semibold">
         <HashIcon className="w-6 h-6" />
         {chatName}
@@ -28,8 +28,9 @@ function ChatWelcome({ createdAt, name, type, chatName }: ChatWelcomeProps) {
             <HashIcon className="inline mb-0.5 w-4 h-4" />
             {chatName}
           </strong>{" "}
-          channel. This is the one channel that will always include everyone.
-          It's a great spot for announcements and team-wide conversations.
+          channel.
+          {chatName === "general" &&
+            " This is the one channel that will always include everyone. It's a great spot for announcements and team-wide conversations."}
         </p>
       ) : (
         <p></p>
