@@ -6,6 +6,7 @@ import ChatWelcome from "./chat-welcome";
 import useChatQuery from "@/hooks/use-chat-query";
 import UserComment from "../ui/user-comment";
 import { format } from "date-fns";
+import useChatSocket from "@/hooks/use-chat-socket";
 
 interface ChatSectionProps {
   type: "channel" | "conversation";
@@ -31,8 +32,11 @@ function ChatSection({
   chatName,
 }: ChatSectionProps) {
   const queryKey = `chat:${chatId}`;
+  const addKey = `chat:${chatId}:messages`;
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage, status } =
     useChatQuery({ queryKey, paramKey, paramValue, apiUrl });
+
+  const chat = useChatSocket({ addKey, queryKey });
   console.log(data);
 
   return (

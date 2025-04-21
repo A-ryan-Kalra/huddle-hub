@@ -80,7 +80,11 @@ export default async function handler(
         ...(fileUrl && { fileUrl }),
       },
       include: {
-        member: true,
+        member: {
+          include: {
+            profile: true,
+          },
+        },
       },
     });
 

@@ -209,13 +209,10 @@ export default function ChatEditor({
                           const range = quill.getSelection();
 
                           if (range) {
-                            // Remove any content (newline) inserted before you could prevent it
                             quill.deleteText(range.index, 1, "user");
                             quill.setText("");
                           }
                         }
-
-                        // Your submit function
                       }
                     }}
                     ref={quillRef}
