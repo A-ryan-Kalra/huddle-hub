@@ -39,7 +39,12 @@ function useChatSocket({ addKey, queryKey }: ChatSockerProps) {
         };
       });
     });
-  }, [isConnected, queryKey]);
+
+    return () => {
+      socket.off(addKey);
+      // socket.off(u);
+    };
+  }, [isConnected, queryKey, addKey]);
 }
 
 export default useChatSocket;

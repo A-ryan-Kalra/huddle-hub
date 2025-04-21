@@ -9,7 +9,7 @@ interface UserCommentProps {
 
 function UserComment({ message, createdAt }: UserCommentProps) {
   return (
-    <div className="flex px-4 py-1">
+    <div className="flex px-4 py-1 h-full ">
       <div className="relative flex gap-x-2 w-full  items-start">
         <AvatarIcon
           imageUrl={message?.member?.profile?.imageUrl}
@@ -25,7 +25,7 @@ function UserComment({ message, createdAt }: UserCommentProps) {
             <span className="text-xs ml-3 text-zinc-500">{createdAt}</span>
           </div>
           <div
-            className="w-full"
+            className="w-full min-h-[40px]"
             dangerouslySetInnerHTML={{ __html: message?.content }}
           />
         </div>

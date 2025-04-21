@@ -7,6 +7,8 @@ import useChatQuery from "@/hooks/use-chat-query";
 import UserComment from "../ui/user-comment";
 import { format } from "date-fns";
 import useChatSocket from "@/hooks/use-chat-socket";
+import useChatScroll from "@/hooks/use-chat-scroll";
+import { cn } from "@/lib/utils";
 
 interface ChatSectionProps {
   type: "channel" | "conversation";
@@ -31,16 +33,28 @@ function ChatSection({
   name,
   chatName,
 }: ChatSectionProps) {
+  const chatRef = React.useRef<HTMLDivElement | null>(null);
+  const bottomRef = React.useRef<HTMLDivElement | null>(null);
   const queryKey = `chat:${chatId}`;
   const addKey = `chat:${chatId}:messages`;
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage, status } =
     useChatQuery({ queryKey, paramKey, paramValue, apiUrl });
 
+  useChatScroll({
+    chatRef,
+    bottomRef,
+    loadMore: fetchNextPage,
+    shouldLoadMore: !!hasNextPage && !isFetchingNextPage,
+  });
+
   const chat = useChatSocket({ addKey, queryKey });
   console.log(data);
 
   return (
-    <div className="flex flex-1 mt-auto flex-col  overflow-y-auto">
+    <div
+      ref={chatRef}
+      className="flex flex-1 mt-auto flex-col h-full overflow-y-auto"
+    >
       {!hasNextPage && <div className=" flex-1" />}
       {!hasNextPage && (
         <ChatWelcome
@@ -66,7 +80,12 @@ function ChatSection({
           ""
         )}
       </div>
-      <div className="flex flex-col-reverse mt-auto my-2">
+      <div
+        className={cn(
+          "flex flex-col-reverse mt-auto my-2",
+          hasNextPage && "flex-1"
+        )}
+      >
         {data?.pages?.map((group, index) => (
           <Fragment key={index}>
             {group?.items?.map((item, index) => (
