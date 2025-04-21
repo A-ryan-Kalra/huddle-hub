@@ -186,7 +186,7 @@ export default function ChatEditor({
   }, []);
 
   return (
-    <div className="flex flex-1 flex-col w-full mt-auto relative rounded-lg overflow-hidden max-h-fit">
+    <div className="flex  flex-col w-full mt-auto relative rounded-lg overflow-hidden max-h-fit">
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
