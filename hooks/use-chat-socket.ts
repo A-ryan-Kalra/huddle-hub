@@ -6,12 +6,13 @@ import { useEffect } from "react";
 interface ChatSockerProps {
   addKey: string;
   queryKey: string;
+  updateKey: string;
 }
 type MessageWithMember = Message & {
   member: Member & { profile: Profile };
 };
 
-function useChatSocket({ addKey, queryKey }: ChatSockerProps) {
+function useChatSocket({ addKey, queryKey, updateKey }: ChatSockerProps) {
   const { socket, isConnected } = useSocket();
   const queryClient = useQueryClient();
 
@@ -22,11 +23,10 @@ function useChatSocket({ addKey, queryKey }: ChatSockerProps) {
 
     socket?.on(addKey, (message: MessageWithMember) => {
       queryClient.setQueryData([queryKey], (oldData: any) => {
-        if (!oldData || !oldData.pages) {
+        if (!oldData || !oldData.pages || oldData.pages.length === 0) {
           return { pages: [{ items: [message] }] };
         }
 
-        console.log("oldData=", oldData);
         const newData = [...oldData.pages];
         newData[0] = {
           ...newData[0],
@@ -40,11 +40,36 @@ function useChatSocket({ addKey, queryKey }: ChatSockerProps) {
       });
     });
 
+    socket?.on(updateKey, (message: MessageWithMember) => {
+      queryClient.setQueryData([queryKey], (oldData: any) => {
+        if (!oldData || !oldData.pages || oldData.pages.length === 0) {
+          return oldData;
+        }
+
+        const newData = oldData?.pages?.map((page: any) => {
+          return {
+            ...page,
+            items: page?.items?.map((memberWithMessage: any) => {
+              if (memberWithMessage?.id === message.id) {
+                return message;
+              }
+              return memberWithMessage;
+            }),
+          };
+        });
+
+        return {
+          ...oldData,
+          pages: newData,
+        };
+      });
+    });
+
     return () => {
       socket.off(addKey);
-      // socket.off(u);
+      socket.off(updateKey);
     };
-  }, [isConnected, queryKey, addKey]);
+  }, [isConnected, queryKey, addKey, updateKey]);
 }
 
 export default useChatSocket;

@@ -49,16 +49,16 @@ function UserComment({ message, createdAt, socketQuery }: UserCommentProps) {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values.content);
-
     const url = queryString.stringifyUrl({
       url: `/api/socket/messages/${message.id}`,
       query: socketQuery,
     });
 
-    const res = await axios.patch(url, values);
+    await axios.patch(url, values);
+    setIsEditing(false);
+    setMessageId("");
   };
-
+  const isLoading = form.formState.isSubmitting;
   useEffect(() => {
     function closeEditor(e: KeyboardEvent) {
       if (e.key === "Escape") {
@@ -159,7 +159,7 @@ function UserComment({ message, createdAt, socketQuery }: UserCommentProps) {
                           Press escape to cancel, enter to save
                         </span>
                         <Button
-                          // disabled={isLoading}
+                          disabled={isLoading}
                           size={"sm"}
                           type="submit"
                           variant={"primary"}

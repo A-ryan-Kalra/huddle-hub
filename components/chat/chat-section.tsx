@@ -39,6 +39,7 @@ function ChatSection({
   const bottomRef = React.useRef<HTMLDivElement | null>(null);
   const queryKey = `chat:${chatId}`;
   const addKey = `chat:${chatId}:messages`;
+  const updateKey = `chat:${chatId}:messages:update`;
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage, status } =
     useChatQuery({ queryKey, paramKey, paramValue, apiUrl });
 
@@ -50,8 +51,7 @@ function ChatSection({
     count: data?.pages[0]?.items?.length ?? 0,
   });
 
-  const chat = useChatSocket({ addKey, queryKey });
-  console.log(data);
+  useChatSocket({ addKey, queryKey, updateKey });
 
   return (
     <div
@@ -93,6 +93,7 @@ function ChatSection({
           <Fragment key={index}>
             {group?.items?.map((item, index) => (
               <UserComment
+                key={index}
                 createdAt={format(new Date(item?.createdAt), DATE_FORMAT)}
                 message={item}
                 socketQuery={socketQuery}
