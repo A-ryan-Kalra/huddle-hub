@@ -1,4 +1,4 @@
-import { Member, Message, Profile } from "@prisma/client";
+import { Member, MemberRole, Message, Profile } from "@prisma/client";
 import React, { useEffect, useRef, useState } from "react";
 import AvatarIcon from "./avatar-icon";
 import { Edit, TrashIcon } from "lucide-react";
@@ -11,22 +11,30 @@ import { cn } from "@/lib/utils";
 import { Button } from "./button";
 import queryString from "query-string";
 import axios from "axios";
+import { useModal } from "@/hooks/use-modal-store";
 
 interface UserCommentProps {
   message: Message & { member: Member & { profile: Profile } };
   createdAt: string;
   socketQuery: Record<string, any>;
+  currentMember: Member & { profile: Profile };
 }
 
 const formSchema = z.object({
   content: z.string().min(1, { message: "Content is required!" }),
 });
 
-function UserComment({ message, createdAt, socketQuery }: UserCommentProps) {
+function UserComment({
+  message,
+  createdAt,
+  socketQuery,
+  currentMember,
+}: UserCommentProps) {
   const [messageId, setMessageId] = useState<string>("");
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [content, setContent] = useState("");
   const contentRef = useRef<HTMLDivElement>(null);
+  const { type, onOpen } = useModal();
 
   const cleanContent = (html: string) => {
     return html
@@ -78,6 +86,11 @@ function UserComment({ message, createdAt, socketQuery }: UserCommentProps) {
       contentRef.current.innerHTML = message.content;
     }
   }, [message.content, isEditing]);
+
+  const isAdmin = currentMember.role === MemberRole.ADMIN;
+  const isModerator = isAdmin || currentMember.role === MemberRole.MODERATOR;
+  const ownerOfMessage = message.memberId === currentMember.id;
+
   return (
     <div className="flex px-4 py-1 h-full ">
       <div className="relative flex gap-x-2 w-full  items-start">
@@ -94,22 +107,27 @@ function UserComment({ message, createdAt, socketQuery }: UserCommentProps) {
           )}
         >
           <div className="gap-x-1 z-10 absolute right-3 p-1 bg-zinc-300 -top-4 invisible rounded-md group-hover:visible flex">
-            <ActionToolTip
-              label="Edit"
-              onClick={() => {
-                setMessageId(message.id);
-                setIsEditing(true);
-              }}
-              className="px-2 py-1 hover:bg-zinc-200 "
-            >
-              <Edit className="!w-4 !h-4" />
-            </ActionToolTip>
-            <ActionToolTip
-              label="Delete"
-              className="px-2 py-1 hover:bg-zinc-200 "
-            >
-              <TrashIcon className="!w-4 !h-4" />
-            </ActionToolTip>
+            {ownerOfMessage && (
+              <ActionToolTip
+                label="Edit"
+                onClick={() => {
+                  setMessageId(message.id);
+                  setIsEditing(true);
+                }}
+                className="px-2 py-1 hover:bg-zinc-200 "
+              >
+                <Edit className="!w-4 !h-4" />
+              </ActionToolTip>
+            )}
+            {(isAdmin || isModerator || ownerOfMessage) && (
+              <ActionToolTip
+                label="Delete"
+                onClick={() => onOpen("deleteMessage", { message })}
+                className="px-2 py-1 hover:bg-zinc-200 "
+              >
+                <TrashIcon className="!w-4 !h-4" />
+              </ActionToolTip>
+            )}
           </div>
           <div className="flex items-center justify-start">
             <h1 className="text-sm font-semibold hover:underline cursor-pointer transition">

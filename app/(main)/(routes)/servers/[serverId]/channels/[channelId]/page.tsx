@@ -38,6 +38,9 @@ async function ChannelPage({ params }: ChannelPageProps) {
       profileId: profile.id,
       serverId: paramsResolved.serverId,
     },
+    include: {
+      profile: true,
+    },
   });
 
   if (!channel || !member) {
@@ -64,6 +67,7 @@ async function ChannelPage({ params }: ChannelPageProps) {
           channelId: channel?.id,
           serverId: paramsResolved.serverId,
         }}
+        currentMember={member}
       />
       <ChatEditor
         type="channel"

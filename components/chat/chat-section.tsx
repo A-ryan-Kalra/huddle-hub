@@ -1,5 +1,5 @@
 "use client";
-import { Channel, ChannelOnMember, Profile } from "@prisma/client";
+import { Channel, ChannelOnMember, Member, Profile } from "@prisma/client";
 import { HashIcon, Loader2 } from "lucide-react";
 import React, { Fragment } from "react";
 import ChatWelcome from "./chat-welcome";
@@ -21,6 +21,7 @@ interface ChatSectionProps {
   createdAt: string;
   chatName: string;
   socketQuery: Record<string, any>;
+  currentMember: Member & { profile: Profile };
 }
 
 const DATE_FORMAT = "d/MM/yyyy, hh:mm a";
@@ -34,6 +35,7 @@ function ChatSection({
   name,
   chatName,
   socketQuery,
+  currentMember,
 }: ChatSectionProps) {
   const chatRef = React.useRef<HTMLDivElement | null>(null);
   const bottomRef = React.useRef<HTMLDivElement | null>(null);
@@ -94,6 +96,7 @@ function ChatSection({
             {group?.items?.map((item, index) => (
               <UserComment
                 key={index}
+                currentMember={currentMember}
                 createdAt={format(new Date(item?.createdAt), DATE_FORMAT)}
                 message={item}
                 socketQuery={socketQuery}

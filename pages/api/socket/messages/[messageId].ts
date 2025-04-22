@@ -1,6 +1,7 @@
 import { currentProfilePages } from "@/lib/currentProfilePages";
 import { db } from "@/lib/db";
 import { NextApiResponseServerIO } from "@/type";
+import { MemberRole } from "@prisma/client";
 import { NextApiRequest } from "next";
 
 export default async function handler(
@@ -30,26 +31,85 @@ export default async function handler(
     if (!messageId) {
       return res.status(400).json({ error: "Message Id Missing" });
     }
-    if (!content) {
-      return res.status(400).json({ error: "Content is Missing" });
-    }
 
-    const message = await db.message.update({
+    const existingMessage = await db.message.findUnique({
       where: {
         id: messageId as string,
         channelId: channelId as string,
       },
-      data: {
-        content,
-      },
       include: {
         member: {
-          include: { profile: true },
+          include: {
+            profile: true,
+          },
         },
       },
     });
+    if (!existingMessage || existingMessage?.deleted) {
+      return res.status(404).json({ error: "Message not found" });
+    }
+    const currentMember = await db.member.findFirst({
+      where: {
+        profileId: profile.id,
+        serverId: serverId as string,
+      },
+      include: {
+        profile: true,
+      },
+    });
 
-    const updateKey = `chat:${message.channelId}:messages:update`;
+    const isAdmin = currentMember?.role === MemberRole.ADMIN;
+    const isModerator = isAdmin || currentMember?.role === MemberRole.MODERATOR;
+    const isOwner = currentMember?.profileId === profile.id;
+
+    const canModify = isAdmin || isModerator || isOwner;
+    let message;
+
+    if (!canModify) {
+      return res.status(401).json({ error: "Unauthorized to make changes" });
+    }
+    if (req.method === "DELETE") {
+      message = await db.message.update({
+        where: {
+          id: messageId as string,
+          channelId: channelId as string,
+        },
+        data: {
+          deleted: true,
+          fileUrl: null,
+          content: "This message has been deleted",
+        },
+        include: {
+          member: {
+            include: {
+              profile: true,
+            },
+          },
+        },
+      });
+    }
+
+    if (req.method === "PATCH") {
+      if (!isOwner) {
+        return res.status(401).json({ error: "Unauthorized to make changes" });
+      }
+      message = await db.message.update({
+        where: {
+          id: messageId as string,
+          channelId: channelId as string,
+        },
+        data: {
+          content,
+        },
+        include: {
+          member: {
+            include: { profile: true },
+          },
+        },
+      });
+    }
+
+    const updateKey = `chat:${message?.channelId}:messages:update`;
     res?.socket?.server?.io.emit(updateKey, message);
 
     return res.json(message);
