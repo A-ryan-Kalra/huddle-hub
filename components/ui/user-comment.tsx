@@ -1,16 +1,83 @@
 import { Member, Message, Profile } from "@prisma/client";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import AvatarIcon from "./avatar-icon";
 import { Edit, TrashIcon } from "lucide-react";
-import { Button } from "./button";
 import ActionToolTip from "./action-tooltip";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField, FormItem } from "./form";
+import { cn } from "@/lib/utils";
+import { Button } from "./button";
+import queryString from "query-string";
+import axios from "axios";
 
 interface UserCommentProps {
   message: Message & { member: Member & { profile: Profile } };
   createdAt: string;
+  socketQuery: Record<string, any>;
 }
 
-function UserComment({ message, createdAt }: UserCommentProps) {
+const formSchema = z.object({
+  content: z.string().min(1, { message: "Content is required!" }),
+});
+
+function UserComment({ message, createdAt, socketQuery }: UserCommentProps) {
+  const [messageId, setMessageId] = useState<string>("");
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [content, setContent] = useState("");
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const cleanContent = (html: string) => {
+    return html
+      .replace(/^(?:\s*<p>(?:<br\s*\/?>|\s|&nbsp;)*<\/p>\s*)+/gi, "")
+      .replace(/^((<br\s*\/?>|\s|&nbsp;)+)+/gi, "")
+      .replace(/((<br\s*\/?>|\s|&nbsp;)+)+$/gi, "")
+      .replace(/(?:\s*<p>(?:<br\s*\/?>|\s|&nbsp;)*<\/p>\s*)+$/gi, "")
+      .replace(
+        /(<p>[\s\S]*?)(<br\s*\/?>\s*)+(<\/p>)/gi,
+        (_, start, _brs, end) => {
+          return start + end;
+        }
+      );
+  };
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      content: "",
+    },
+  });
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    console.log(values.content);
+
+    const url = queryString.stringifyUrl({
+      url: `/api/socket/messages/${message.id}`,
+      query: socketQuery,
+    });
+
+    const res = await axios.patch(url, values);
+  };
+
+  useEffect(() => {
+    function closeEditor(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setIsEditing(false);
+        setMessageId("");
+      }
+    }
+
+    window.addEventListener("keyup", closeEditor);
+
+    return () => window.removeEventListener("keyup", closeEditor);
+  }, []);
+
+  useEffect(() => {
+    // Set initial content only once from DB
+    if (contentRef.current && message.content) {
+      contentRef.current.innerHTML = message.content;
+    }
+  }, [message.content, isEditing]);
   return (
     <div className="flex px-4 py-1 h-full ">
       <div className="relative flex gap-x-2 w-full  items-start">
@@ -20,10 +87,19 @@ function UserComment({ message, createdAt }: UserCommentProps) {
           height={40}
           className="!rounded-md border-[1px] border-current  !sticky top-0"
         />
-        <div className="flex flex-col w-full hover:bg-zinc-100 group transition rounded-md relative">
-          <div className="gap-x-1 z-10 absolute right-3 p-1 bg-zinc-300 -top-4 hidden rounded-md group-hover:flex">
+        <div
+          className={cn(
+            "flex flex-col w-full  group rounded-md relative",
+            message.id !== messageId && "hover:bg-neutral-50  transition"
+          )}
+        >
+          <div className="gap-x-1 z-10 absolute right-3 p-1 bg-zinc-300 -top-4 invisible rounded-md group-hover:visible flex">
             <ActionToolTip
               label="Edit"
+              onClick={() => {
+                setMessageId(message.id);
+                setIsEditing(true);
+              }}
               className="px-2 py-1 hover:bg-zinc-200 "
             >
               <Edit className="!w-4 !h-4" />
@@ -41,10 +117,67 @@ function UserComment({ message, createdAt }: UserCommentProps) {
             </h1>
             <span className="text-xs ml-3 text-zinc-500">{createdAt}</span>
           </div>
-          <div
-            className="w-full min-h-[40px]"
-            dangerouslySetInnerHTML={{ __html: message?.content }}
-          />
+          {isEditing && message.id === messageId ? (
+            <Form {...form}>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  form.setValue("content", cleanContent(content));
+                  form.handleSubmit(onSubmit)(e);
+                }}
+              >
+                <FormField
+                  control={form.control}
+                  name="content"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <div
+                          ref={contentRef}
+                          contentEditable
+                          onInput={(e) =>
+                            setContent((e.target as HTMLElement).innerHTML)
+                          }
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" && !e.shiftKey) {
+                              e.preventDefault();
+                              form.setValue(
+                                "content",
+                                cleanContent(
+                                  contentRef.current?.innerHTML || ""
+                                )
+                              );
+                              form.handleSubmit(onSubmit)();
+                            }
+                          }}
+                          className="border-none focus-visible:ring-0 outline-none rounded-md p-2 bg-neutral-100 min-h-20 max-h-32 overflow-auto"
+                          suppressContentEditableWarning
+                        ></div>
+                      </FormControl>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-zinc-500 font-semibold py-1">
+                          Press escape to cancel, enter to save
+                        </span>
+                        <Button
+                          // disabled={isLoading}
+                          size={"sm"}
+                          type="submit"
+                          variant={"primary"}
+                        >
+                          Save
+                        </Button>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+              </form>
+            </Form>
+          ) : (
+            <div
+              className="w-full min-h-[40px]"
+              dangerouslySetInnerHTML={{ __html: message?.content }}
+            />
+          )}
         </div>
       </div>
     </div>

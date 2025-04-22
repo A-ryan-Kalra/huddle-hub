@@ -22,7 +22,6 @@ async function ChannelPage({ params }: ChannelPageProps) {
     return redirect("/sign-in");
   }
 
-  console.log(paramsResolved);
   const channel = await db.channel.findUnique({
     where: {
       id: paramsResolved.channelId,
@@ -61,6 +60,10 @@ async function ChannelPage({ params }: ChannelPageProps) {
         apiUrl="/api/messages"
         paramKey={"channelId"}
         paramValue={channel?.id}
+        socketQuery={{
+          channelId: channel?.id,
+          serverId: paramsResolved.serverId,
+        }}
       />
       <ChatEditor
         type="channel"

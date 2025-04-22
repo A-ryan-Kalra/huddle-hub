@@ -14,6 +14,7 @@ interface ActionToolTipProps {
   className?: string;
   side?: "top" | "right" | "bottom" | "left";
   align?: "center" | "start" | "end";
+  onClick?: () => void;
 }
 
 function ActionToolTip({
@@ -22,11 +23,12 @@ function ActionToolTip({
   side,
   align,
   className,
+  onClick,
 }: ActionToolTipProps) {
   return (
     <TooltipProvider>
       <Tooltip>
-        <TooltipTrigger asChild>
+        <TooltipTrigger onClick={onClick} asChild>
           <button className={cn(className)}>{children}</button>
         </TooltipTrigger>
         <TooltipContent className="text-sm" align={align} side={side}>

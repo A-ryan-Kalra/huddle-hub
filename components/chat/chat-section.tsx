@@ -20,6 +20,7 @@ interface ChatSectionProps {
   name: string;
   createdAt: string;
   chatName: string;
+  socketQuery: Record<string, any>;
 }
 
 const DATE_FORMAT = "d/MM/yyyy, hh:mm a";
@@ -32,6 +33,7 @@ function ChatSection({
   createdAt,
   name,
   chatName,
+  socketQuery,
 }: ChatSectionProps) {
   const chatRef = React.useRef<HTMLDivElement | null>(null);
   const bottomRef = React.useRef<HTMLDivElement | null>(null);
@@ -54,7 +56,7 @@ function ChatSection({
   return (
     <div
       ref={chatRef}
-      className="flex flex-1 mt-auto flex-col h-full overflow-y-auto"
+      className="flex flex-1 mt-auto flex-col h-full overflow-y-auto !scroll-smooth"
     >
       {!hasNextPage && <div className=" flex-1" />}
       {!hasNextPage && (
@@ -93,6 +95,7 @@ function ChatSection({
               <UserComment
                 createdAt={format(new Date(item?.createdAt), DATE_FORMAT)}
                 message={item}
+                socketQuery={socketQuery}
               />
             ))}
           </Fragment>
