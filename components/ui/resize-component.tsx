@@ -28,7 +28,7 @@ function ResizeComponent({ children }: ResizeComponentProps) {
       }
       const newWidth = startWidth + (event.clientX - startX);
 
-      setWidth(Math.min(Math.max(newWidth, 150), 2500));
+      setWidth(Math.min(Math.max(newWidth, 250), 1400));
     };
 
     const handleMouseUp = () => {
