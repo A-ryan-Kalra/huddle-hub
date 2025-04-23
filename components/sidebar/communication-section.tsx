@@ -15,14 +15,16 @@ import { useModal } from "@/hooks/use-modal-store";
 import { ScrollArea } from "../ui/scroll-area";
 import ChannelName from "../channels/channel-name";
 import { Button } from "../ui/button";
+import MemberName from "../members/member-name";
 
 interface ChannelScetionProps {
   title: string;
-  type: "channels" | "messages";
-  channels: (Channel & { members: ChannelOnMember[] })[];
+  type: "channels" | "members";
   role: "ADMIN" | "MODERATOR" | "GUEST";
   allMembers: (Member & { profile: Profile })[];
   currentMember: Member;
+  channels?: (Channel & { members: ChannelOnMember[] })[];
+  members?: (Member & { profile: Profile })[];
 }
 
 function CommunicationSection({
@@ -32,11 +34,13 @@ function CommunicationSection({
   role,
   allMembers,
   currentMember,
+  members,
 }: ChannelScetionProps) {
   const { onOpen } = useModal();
   const [showHeight, setShowHeight] = useState(false);
   const admin = role === MemberRole.ADMIN;
   const moderator = role === MemberRole.MODERATOR || admin;
+
   return (
     <div className="mt-8 flex flex-col gap-y-1">
       <div className="flex items-center gap-x-1 group">
@@ -69,7 +73,7 @@ function CommunicationSection({
         )}
       </div>
       <>
-        {type === "channels" && (
+        {type === "channels" ? (
           <ScrollArea
             className={`flex flex-col ${
               showHeight ? "max-h-0" : "max-h-[200px]"
@@ -82,6 +86,21 @@ function CommunicationSection({
                 allMembers={allMembers}
                 currentMember={currentMember}
                 role={{ admin, moderator }}
+              />
+            ))}
+          </ScrollArea>
+        ) : (
+          <ScrollArea
+            className={`flex flex-col ${
+              showHeight ? "max-h-0" : "max-h-[200px]"
+            } transition-all duration-100`}
+          >
+            {members?.map((member, index) => (
+              <MemberName
+                key={index}
+                member={member}
+                // allMembers={allMembers}
+                // currentMember={currentMember}
               />
             ))}
           </ScrollArea>
