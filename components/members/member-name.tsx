@@ -1,15 +1,26 @@
 import { Member, Profile } from "@prisma/client";
-import ActionToolTip from "../ui/action-tooltip";
 import AvatarIcon from "../ui/avatar-icon";
+import { useParams, useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 interface MemberNameProps {
   member: Member & { profile: Profile };
 }
 
 function MemberName({ member }: MemberNameProps) {
-  console.log(member);
+  const router = useRouter();
+  const params = useParams();
+  function routeToMemberPage() {
+    router.push(`/servers/${member.serverId}/conversations/${member.id}`);
+  }
   return (
-    <div className="p-1  cursor-pointer hover:bg-zinc-200 duration-300 transition text-sm rounded-md w-full">
+    <div
+      onClick={routeToMemberPage}
+      className={cn(
+        "p-1  cursor-pointer hover:bg-zinc-200  duration-300 transition text-sm rounded-md w-full",
+        params?.memberId === member.id && "bg-zinc-300 hover:bg-zinc-300"
+      )}
+    >
       <div className="flex gap-x-2 items-center">
         <div className="flex items-center justify-start gap-x-1 w-full ">
           <AvatarIcon
