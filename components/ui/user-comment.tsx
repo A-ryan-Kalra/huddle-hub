@@ -12,10 +12,11 @@ import { Button } from "./button";
 import queryString from "query-string";
 import axios from "axios";
 import { useModal } from "@/hooks/use-modal-store";
+import { format } from "date-fns";
 
 interface UserCommentProps {
   message: Message & { member: Member & { profile: Profile } };
-  createdAt: string;
+  createdAt: Date;
   socketQuery: Record<string, any>;
   currentMember: Member & { profile: Profile };
 }
@@ -23,6 +24,8 @@ interface UserCommentProps {
 const formSchema = z.object({
   content: z.string().min(1, { message: "Content is required!" }),
 });
+const TIME_FORMAT = "hh:mm a";
+const DATE_FORMAT = "d/MM/yyyy, hh:mm a";
 
 function UserComment({
   message,
@@ -35,6 +38,13 @@ function UserComment({
   const [content, setContent] = useState("");
   const contentRef = useRef<HTMLDivElement>(null);
   const { type, onOpen } = useModal();
+  const isUpdated = message.createdAt !== message.updatedAt;
+  const isAdmin = currentMember.role === MemberRole.ADMIN;
+  const isModerator = isAdmin || currentMember.role === MemberRole.MODERATOR;
+  const ownerOfMessage = message.memberId === currentMember.id;
+  const isDeleted = message.deleted;
+  const showTime = format(new Date(message?.createdAt), TIME_FORMAT);
+  const showDate = format(new Date(message?.createdAt), DATE_FORMAT);
 
   const cleanContent = (html: string) => {
     return html
@@ -87,10 +97,6 @@ function UserComment({
     }
   }, [message.content, isEditing]);
 
-  const isAdmin = currentMember.role === MemberRole.ADMIN;
-  const isModerator = isAdmin || currentMember.role === MemberRole.MODERATOR;
-  const ownerOfMessage = message.memberId === currentMember.id;
-
   return (
     <div className="flex px-4 py-1 h-full ">
       <div className="relative flex gap-x-2 w-full  items-start">
@@ -133,7 +139,18 @@ function UserComment({
             <h1 className="text-sm font-semibold hover:underline cursor-pointer transition">
               {message?.member?.profile?.name}
             </h1>
-            <span className="text-xs ml-3 text-zinc-500">{createdAt}</span>
+
+            <ActionToolTip
+              label={showDate}
+              className="text-xs ml-3 text-zinc-500 hover:underline"
+            >
+              {showTime}
+            </ActionToolTip>
+            {isUpdated && !isDeleted && (
+              <span className="text-xs mt-aut text-zinc-700 ml-2">
+                (edited)
+              </span>
+            )}
           </div>
           {isEditing && message.id === messageId ? (
             <Form {...form}>
@@ -191,10 +208,16 @@ function UserComment({
               </form>
             </Form>
           ) : (
+            // <div className="flex min-h-[40px] w-fit gap-x-2 items-center">
             <div
-              className="w-full min-h-[40px]"
+              className={cn(
+                "w-full",
+                isDeleted && "text-xs text-zinc-600 tracking-wide"
+              )}
               dangerouslySetInnerHTML={{ __html: message?.content }}
             />
+
+            // </div>
           )}
         </div>
       </div>

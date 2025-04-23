@@ -97,7 +97,7 @@ function ChatSection({
               <UserComment
                 key={index}
                 currentMember={currentMember}
-                createdAt={format(new Date(item?.createdAt), DATE_FORMAT)}
+                createdAt={item?.createdAt}
                 message={item}
                 socketQuery={socketQuery}
               />
