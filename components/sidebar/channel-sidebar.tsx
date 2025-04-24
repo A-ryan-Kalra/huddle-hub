@@ -84,7 +84,7 @@ async function ChannelSidebar({ serverId }: ChannelSideBarProps) {
       createdAt: "asc",
     },
   });
-  console.log(server);
+
   return (
     <div className="truncate p-2 flex flex-col gap-y-2  h-full overflow-hidden">
       <div className="flex relative justify-between items-center">

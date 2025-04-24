@@ -104,7 +104,7 @@ function UserComment({
           imageUrl={message?.member?.profile?.imageUrl}
           width={40}
           height={40}
-          className="!rounded-md border-[1px] border-current  !sticky top-0"
+          className="!rounded-md border-[1px] border-current mt-auto !sticky bottom-0"
         />
         <div
           className={cn(
