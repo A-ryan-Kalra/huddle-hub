@@ -38,7 +38,7 @@ async function ConversationPage({ params }: ConversationPageProps) {
       : conversation?.conversationReceiver;
 
   // console.log(conversation);
-  console.log(anotherMember);
+  // console.log(anotherMember);
   return (
     <div className="flex flex-col flex-1 h-full">
       <ChatHeader type="message" member={anotherMember} />
@@ -47,7 +47,7 @@ async function ConversationPage({ params }: ConversationPageProps) {
         apiUrl="/api/socket/direct-messages"
         query={{
           serverId: paramsResolved?.serverId,
-          memberId: paramsResolved?.memberId,
+          conversationId: conversation?.id,
         }}
         name={anotherMember?.profile?.name as string}
       />
