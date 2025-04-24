@@ -24,7 +24,7 @@ interface ChatEditorProps {
   type: "channel" | "conversation";
   apiUrl: string;
   query: Record<string, any>;
-  visibility: "PUBLIC" | "PRIVATE";
+  visibility?: "PUBLIC" | "PRIVATE";
   name: string;
 }
 const channelIconType = {
@@ -199,8 +199,9 @@ export default function ChatEditor({
                     {...field}
                     placeholder={
                       type === "channel"
-                        ? `Message ${channelIconType[visibility]} ${name}`
-                        : ``
+                        ? visibility &&
+                          `Message ${channelIconType[visibility]} ${name}`
+                        : `Message ${name}`
                     }
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && !e.shiftKey) {

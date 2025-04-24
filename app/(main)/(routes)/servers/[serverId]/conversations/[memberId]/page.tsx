@@ -1,3 +1,4 @@
+import ChatEditor from "@/components/chat/chat-editor";
 import ChatHeader from "@/components/chat/chat-header";
 import { getOrCreateConversation } from "@/lib/conversation";
 import { currentProfile } from "@/lib/currentProfile";
@@ -41,6 +42,15 @@ async function ConversationPage({ params }: ConversationPageProps) {
   return (
     <div className="flex flex-col flex-1 h-full">
       <ChatHeader type="message" member={anotherMember} />
+      <ChatEditor
+        type="conversation"
+        apiUrl="/api/socket/direct-messages"
+        query={{
+          serverId: paramsResolved?.serverId,
+          memberId: paramsResolved?.memberId,
+        }}
+        name={anotherMember?.profile?.name as string}
+      />
     </div>
   );
 }
