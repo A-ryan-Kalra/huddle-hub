@@ -18,7 +18,7 @@ interface ChatSectionProps {
   apiUrl: string;
   chatId: string;
   name: string;
-  createdAt: string;
+  createdAt?: string;
   chatName: string;
   socketQuery: Record<string, any>;
   currentMember: Member & { profile: Profile };
@@ -65,7 +65,7 @@ function ChatSection({
         <ChatWelcome
           type={type}
           name={name}
-          createdAt={createdAt}
+          createdAt={createdAt as string}
           chatName={chatName}
         />
       )}

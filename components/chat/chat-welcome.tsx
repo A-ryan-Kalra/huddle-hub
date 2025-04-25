@@ -33,7 +33,13 @@ function ChatWelcome({ createdAt, name, type, chatName }: ChatWelcomeProps) {
             " This is the one channel that will always include everyone. It's a great spot for announcements and team-wide conversations."}
         </p>
       ) : (
-        <p></p>
+        <p className="ml-1">
+          This conversation is just between you and{" "}
+          <span className="inline bg-blue-100 text-nowrap text-blue-600">
+            @{name}
+          </span>
+          . Have Fun 🕹️
+        </p>
       )}
     </div>
   );
