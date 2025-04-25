@@ -11,8 +11,8 @@ interface ChatWelcomeProps {
 function ChatWelcome({ createdAt, name, type, chatName }: ChatWelcomeProps) {
   return (
     <div className="flex flex-col bg-blac gap-y-1 py-4 px-5 my-3">
-      <h1 className="flex items-center text-2xl font-semibold">
-        <HashIcon className="w-6 h-6" />
+      <h1 className="flex items-center text-2xl font-semibold ">
+        {type === "channel" && <HashIcon className="w-6 h-6" />}
         {chatName}
       </h1>
       {type === "channel" ? (
@@ -33,7 +33,7 @@ function ChatWelcome({ createdAt, name, type, chatName }: ChatWelcomeProps) {
             " This is the one channel that will always include everyone. It's a great spot for announcements and team-wide conversations."}
         </p>
       ) : (
-        <p className="ml-1">
+        <p className="">
           This conversation is just between you and{" "}
           <span className="inline bg-blue-100 text-nowrap text-blue-600">
             @{name}

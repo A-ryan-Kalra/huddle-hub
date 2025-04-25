@@ -7,6 +7,7 @@ import {
   Member,
   MemberRole,
   Profile,
+  Server,
 } from "@prisma/client";
 import { ChevronDown, Hash, Lock, PlusIcon } from "lucide-react";
 import React, { useState } from "react";
@@ -19,12 +20,13 @@ import MemberName from "../members/member-name";
 
 interface ChannelScetionProps {
   title: string;
-  type: "channels" | "members";
+  type: "channels" | "conversation";
   role: "ADMIN" | "MODERATOR" | "GUEST";
   allMembers: (Member & { profile: Profile })[];
   currentMember: Member;
   channels?: (Channel & { members: ChannelOnMember[] })[];
   members?: (Member & { profile: Profile })[];
+  server?: Server;
 }
 
 function CommunicationSection({
@@ -35,6 +37,7 @@ function CommunicationSection({
   allMembers,
   currentMember,
   members,
+  server,
 }: ChannelScetionProps) {
   const { onOpen } = useModal();
   const [showHeight, setShowHeight] = useState(false);
@@ -115,6 +118,17 @@ function CommunicationSection({
             <PlusIcon className="w-3 h-3" />
           </span>
           <p className="px-1">Add Channels</p>
+        </button>
+      )}
+      {type === "conversation" && moderator && (
+        <button
+          onClick={() => onOpen("invite", { server: server })}
+          className="group p-1 text-sm gap-x-2 hover:bg-zinc-200 transition  flex items-center justify-start rounded-md"
+        >
+          <span className="group-hover:bg-slate-50 rounded-md p-1 transition">
+            <PlusIcon className="w-3 h-3" />
+          </span>
+          <p className="px-1">Invite People</p>
         </button>
       )}
     </div>

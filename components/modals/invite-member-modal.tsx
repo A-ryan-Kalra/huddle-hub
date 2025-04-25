@@ -69,7 +69,7 @@ function InviteMemberModal() {
     <Dialog open={openModal} onOpenChange={handleCancel}>
       <DialogContent>
         <DialogTitle className="text-2xl text-center">
-          Invite Friends
+          Invite People
         </DialogTitle>
 
         <div className="flex items-center w-full gap-x-3 justify-center">

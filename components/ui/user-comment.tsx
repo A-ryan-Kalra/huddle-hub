@@ -91,7 +91,6 @@ function UserComment({
   }, []);
 
   useEffect(() => {
-    // Set initial content only once from DB
     if (contentRef.current && message.content) {
       contentRef.current.innerHTML = message.content;
     }

@@ -54,27 +54,19 @@ export default async function handler(
       data: {
         conversationId: conversation?.id,
         content: content as string,
+        memberId: currentMember?.id,
         ...(fileUrl && { fileUrl }),
       },
       include: {
-        conversation: {
+        member: {
           include: {
-            conversationInitiator: {
-              include: {
-                profile: true,
-              },
-            },
-            conversationReceiver: {
-              include: {
-                profile: true,
-              },
-            },
+            profile: true,
           },
         },
       },
     });
 
-    const chat = `chat:${conversationId}:chat`;
+    const chat = `chat:${conversationId}:messages`;
 
     res?.socket?.server?.io?.emit(chat, directMessage);
 

@@ -111,11 +111,12 @@ async function ChannelSidebar({ serverId }: ChannelSideBarProps) {
       />
       <CommunicationSection
         title={"Members"}
-        type="members"
+        type="conversation"
         members={allMembers}
         role={role}
         allMembers={allMembers}
         currentMember={currentMember[0]}
+        server={server}
       />
     </div>
   );
