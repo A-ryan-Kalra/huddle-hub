@@ -62,7 +62,7 @@ async function ConversationPage({ params }: ConversationPageProps) {
         paramKey={"conversationId"}
         paramValue={conversation?.id}
         socketQuery={{
-          conversation: conversation?.id,
+          conversationId: conversation?.id,
           serverId: paramsResolved.serverId,
         }}
         currentMember={currentMember}

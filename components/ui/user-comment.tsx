@@ -19,6 +19,7 @@ interface UserCommentProps {
   createdAt: Date;
   socketQuery: Record<string, any>;
   currentMember: Member & { profile: Profile };
+  type: "channel" | "conversation";
 }
 
 const formSchema = z.object({
@@ -31,15 +32,16 @@ function UserComment({
   message,
   createdAt,
   socketQuery,
+  type,
   currentMember,
 }: UserCommentProps) {
   const [messageId, setMessageId] = useState<string>("");
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [content, setContent] = useState("");
   const contentRef = useRef<HTMLDivElement>(null);
-  const { type, onOpen } = useModal();
+  const { onOpen } = useModal();
   const isUpdated = message.createdAt !== message.updatedAt;
-  const isAdmin = currentMember.role === MemberRole.ADMIN;
+  const isAdmin = type === "channel" && currentMember.role === MemberRole.ADMIN;
   const isModerator = isAdmin || currentMember.role === MemberRole.MODERATOR;
   const ownerOfMessage = message.memberId === currentMember.id;
   const isDeleted = message.deleted;
@@ -68,7 +70,9 @@ function UserComment({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const url = queryString.stringifyUrl({
-      url: `/api/socket/messages/${message.id}`,
+      url: `/api/socket/${
+        type === "channel" ? "messages" : "direct-messages"
+      }/${message.id}`,
       query: socketQuery,
     });
 
@@ -111,7 +115,7 @@ function UserComment({
             message.id !== messageId && "hover:bg-neutral-50  transition"
           )}
         >
-          {!isDeleted && (
+          {!isDeleted && ownerOfMessage && (
             <div className="gap-x-1 z-10 absolute right-3 p-1 bg-zinc-300 -top-4 invisible rounded-md group-hover:visible flex">
               {ownerOfMessage && (
                 <ActionToolTip

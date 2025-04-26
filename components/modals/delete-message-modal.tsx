@@ -21,23 +21,34 @@ import {
   Message,
   Profile,
 } from "@prisma/client";
+import { useOrigin } from "@/hooks/use-origin";
 
 function DeleteMessageModal() {
   const { type, onClose, data, onOpen } = useModal();
   const openModal = type === "deleteMessage";
   const params = useParams();
   const { message } = data as {
-    message?: Message & { member: Member & { profile: Profile } };
+    message?: Message & { member: Member & { profile: Profile } } & {
+      conversationId: string;
+    };
   };
-
   const router = useRouter();
+  console.log(message);
 
   const onSubmit = async () => {
+    const type = window.location.pathname?.split("/")[3];
     const url = qs.stringifyUrl({
-      url: `/api/socket/messages/${message?.id}`,
+      url: `/api/socket/${
+        type === "conversations" ? "direct-messages" : "messages"
+      }/${message?.id}`,
       query: {
         serverId: params?.serverId,
-        channelId: message?.channelId,
+        ...(type === "channels" && {
+          channelId: message?.channelId,
+        }),
+        ...(type === "conversations" && {
+          conversationId: message?.conversationId,
+        }),
       },
     });
 

@@ -95,6 +95,7 @@ function ChatSection({
           <Fragment key={index}>
             {group?.items?.map((item, index) => (
               <UserComment
+                type={type}
                 key={index}
                 currentMember={currentMember}
                 createdAt={item?.createdAt}
