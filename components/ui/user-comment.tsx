@@ -101,7 +101,7 @@ function UserComment({
   }, [message.content, isEditing]);
 
   return (
-    <div className="flex px-4 h-full ">
+    <div className="flex px-4 h-full">
       <div className="relative flex gap-x-2 w-full  items-start">
         <AvatarIcon
           imageUrl={message?.member?.profile?.imageUrl}
@@ -111,7 +111,7 @@ function UserComment({
         />
         <div
           className={cn(
-            "flex flex-col w-full  group rounded-md relative",
+            "flex flex-col w-full  group rounded-tl-2xl rounded-r-2xl my-1 px-3 border-gray-200 border-[1px] relative ",
             message.id !== messageId && "hover:bg-neutral-50  transition"
           )}
         >
