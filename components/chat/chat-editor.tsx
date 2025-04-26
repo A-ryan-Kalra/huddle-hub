@@ -219,7 +219,7 @@ export default function ChatEditor({
                       }
                     }}
                     ref={quillRef}
-                    className="ql-tooltip relative ql-editing  mx-4 my-2 rounded-lg overflow-hidden border-[1px] border-gray-400"
+                    className="ql-tooltip relative ql-editing  mx-2 my-2 rounded-lg overflow-hidden border-[1px] border-slate-400"
                     maxLength={999}
                     value={text}
                     onTextChange={(e: EditorTextChangeEvent) => {

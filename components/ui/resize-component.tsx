@@ -48,7 +48,9 @@ function ResizeComponent({ children }: ResizeComponentProps) {
   return (
     <div
       style={{ width }}
-      className={cn("relative overflow-hidden h-full bg-slate-100")}
+      className={cn(
+        "relative max-md:hidden overflow-hidden h-full bg-slate-100"
+      )}
     >
       <div
         onMouseDown={handleDrag}

@@ -13,7 +13,7 @@ async function ServersLayout({ children, params }: ServersLayoutProps) {
 
   return (
     <div className="w-full h-full  flex">
-      <div className="min-w-[70px] flex  flex-col h-full ">
+      <div className="min-w-[70px] md:flex max-md:hidden flex-col h-full ">
         <div className=" mt-auto pb-7 w-fit mx-auto">
           <UserButton
             appearance={{
@@ -24,7 +24,7 @@ async function ServersLayout({ children, params }: ServersLayoutProps) {
           />
         </div>
       </div>
-      <div className="flex w-full h-full mr-2  rounded-2xl border-[1px] border-gray-300 overflow-hidden">
+      <div className="flex w-full h-full m-2  rounded-2xl border-[1px] border-gray-300 overflow-hidden">
         <ResizeComponent>
           <ChannelSidebar serverId={serverId} />
         </ResizeComponent>
