@@ -70,7 +70,7 @@ model Member {
 
 model Message {
   id        String   @id @default(uuid())
-  content   String
+  content   String?
   fileUrl   String?
   deleted   Boolean  @default(false)
   createdAt DateTime @default(now())

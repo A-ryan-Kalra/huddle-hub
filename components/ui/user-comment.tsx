@@ -13,6 +13,8 @@ import queryString from "query-string";
 import axios from "axios";
 import { useModal } from "@/hooks/use-modal-store";
 import { format } from "date-fns";
+import Image from "next/image";
+import Link from "next/link";
 
 interface UserCommentProps {
   message: Message & { member: Member & { profile: Profile } };
@@ -218,8 +220,33 @@ function UserComment({
                 "w-full  min-h-[40px]",
                 isDeleted && "text-xs text-zinc-600 tracking-wide"
               )}
-              dangerouslySetInnerHTML={{ __html: message?.content }}
-            />
+            >
+              <div
+                className="w-full"
+                dangerouslySetInnerHTML={{ __html: message?.content as string }}
+              />
+              {message?.fileUrl && (
+                <div className="relative max-w-[500px] shadow-sm shadow-current my-2 max-h-[400px] rounded-lg overflow-hidden">
+                  <Link
+                    href={message?.fileUrl}
+                    draggable="false"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className=""
+                  >
+                    <Image
+                      src={message?.fileUrl}
+                      alt="message"
+                      width={300}
+                      height={300}
+                      loading="lazy"
+                      className=" object-cover w-full h-fit aspect-square hover:scale-110 cursor-pointer transition"
+                      // fill
+                    />
+                  </Link>
+                </div>
+              )}
+            </div>
           )}
         </div>
       </div>

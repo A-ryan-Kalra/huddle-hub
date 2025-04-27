@@ -24,10 +24,6 @@ export default async function handler(
       return res.status(400).json({ error: "Channel Id is Missing" });
     }
 
-    if (!content) {
-      return res.status(400).json({ error: "Content is Missing" });
-    }
-
     const server = await db.server.findUnique({
       where: {
         id: serverId as string,
@@ -76,7 +72,7 @@ export default async function handler(
       data: {
         memberId: member[0].id as string,
         channelId: channel.id as string,
-        content: content as string,
+        ...(content && { content: content }),
         ...(fileUrl && { fileUrl }),
       },
       include: {

@@ -2,7 +2,14 @@
 
 import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import { Editor, EditorTextChangeEvent } from "primereact/editor";
-import { Hash, ImageUpIcon, Lock, Send, XIcon } from "lucide-react";
+import {
+  ImageUpIcon,
+  Loader2Icon,
+  Send,
+  XCircleIcon,
+  XIcon,
+  XSquareIcon,
+} from "lucide-react";
 import { generateReactHelpers } from "@uploadthing/react";
 import { OurFileRouter } from "@/app/api/uploadthing/core";
 import { cn } from "@/lib/utils";
@@ -14,6 +21,7 @@ import EmojiPicker from "../ui/emoji-picker";
 import { ChannelVisibility } from "@prisma/client";
 import queryString from "query-string";
 import axios from "axios";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   content: z.string().optional(),
@@ -44,6 +52,8 @@ export default function ChatEditor({
   const imageReference = useRef<HTMLInputElement>(null);
   const [image, setImage] = useState<string>("");
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
   const quillRef = useRef<any>(null);
 
   const form = useForm({
@@ -134,7 +144,6 @@ export default function ChatEditor({
     return length;
   };
   const header = renderHeader();
-  const isLoading = form.formState.isSubmitting;
 
   const cleanContent = (content: string) => {
     return content
@@ -143,31 +152,60 @@ export default function ChatEditor({
   };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (imageFile) {
-      const res = await uploadFiles("messageFile", {
-        files: [imageFile],
-      });
-
-      values.fileUrl = res[0].ufsUrl;
+    console.log(values);
+    if (!cleanContent(text)?.trim() && !image) {
+      return null;
     }
+    const quill = quillRef.current?.getQuill?.();
+    if (quill) {
+      const range = quill.getSelection();
 
-    const url = queryString.stringifyUrl(
-      {
-        url: apiUrl,
-        query,
-      },
-      {
-        skipNull: true,
+      if (range) {
+        quill.deleteText(range.index, 1, "user");
+        quill.setText("");
       }
-    );
+    }
+    try {
+      setIsLoading(true);
+      if (imageFile) {
+        setImage("");
+        const res = await uploadFiles("messageFile", {
+          files: [imageFile],
+        });
 
-    await axios.post(url, { ...values, content: cleanContent(text) });
-    form.reset();
-    setImageFile(null);
-    setText("");
-    setImage("");
+        values.fileUrl = res[0].ufsUrl;
+      }
+
+      const url = queryString.stringifyUrl(
+        {
+          url: apiUrl,
+          query,
+        },
+        {
+          skipNull: true,
+        }
+      );
+
+      await axios.post(url, { ...values, content: cleanContent(text) });
+      form.reset();
+      setImageFile(null);
+      setText("");
+    } catch (error) {
+      console.error(error);
+
+      toast("Error", {
+        description: "Channel Created Successfully",
+        style: { backgroundColor: "white", color: "black" },
+        richColors: true,
+      });
+    } finally {
+      setIsLoading(false);
+      setImageFile(null);
+      setText("");
+    }
   }
-
+  console.log(image);
+  console.log(imageFile);
   function clearAllImages() {
     setImage("");
     setImageFile(null);
@@ -219,7 +257,7 @@ export default function ChatEditor({
                       }
                     }}
                     ref={quillRef}
-                    className="ql-tooltip relative ql-editing  mx-2 my-2 rounded-lg overflow-hidden border-[1px] border-slate-400"
+                    className="ql-tooltip relative ql-editing  mx-2 mt-2 mb-1 rounded-lg overflow-hidden border-[1px] border-slate-400"
                     maxLength={999}
                     value={text}
                     onTextChange={(e: EditorTextChangeEvent) => {
@@ -246,15 +284,22 @@ export default function ChatEditor({
             )}
           />
           <button
-            disabled={getTextLength(text) === 0 || isLoading}
-            className="disabled:bg-zinc-300 hover:bg-opacity-70 transition bg-green-700 rounded-md absolute bottom-4 right-10  p-2"
+            disabled={(getTextLength(text) === 0 && image === "") || isLoading}
+            className={cn(
+              "disabled:bg-zinc-300 hover:bg-opacity-70 transition bg-green-700 rounded-md absolute right-10 bottom-4 p-2",
+              text && " bottom-8"
+            )}
           >
-            <Send
-              className={cn(
-                "w-3 h-3 text-white",
-                getTextLength(text) === 0 && "text-zinc-400"
-              )}
-            />
+            {isLoading ? (
+              <Loader2Icon className="w-4 h-4 animate-spin" />
+            ) : (
+              <Send
+                className={cn(
+                  "w-3 h-3 text-white",
+                  getTextLength(text) === 0 && image === "" && "text-zinc-400"
+                )}
+              />
+            )}
           </button>
         </form>
       </FormProvider>
@@ -263,6 +308,7 @@ export default function ChatEditor({
           <div className="relative">
             <img
               src={image}
+              loading="lazy"
               alt="file-img"
               className="w-[80px] h-[80px] rounded-2xl  object-cover"
             />
@@ -270,10 +316,15 @@ export default function ChatEditor({
               onClick={clearAllImages}
               className="w-5 h-5 bg-black absolute hover:bg-zinc-400 transition cursor-pointer flex items-center justify-center top-0 right-0 rounded-full"
             >
-              <XIcon className="w-3 h-3 text-white " />
+              <XCircleIcon size={48} className=" text-white " />
             </div>
           </div>
         </div>
+      )}
+      {text && (
+        <span className="text-xs text-slate-600 ml-2">
+          Press Shift + Enter to start a new line
+        </span>
       )}
     </div>
   );

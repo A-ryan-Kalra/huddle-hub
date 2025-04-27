@@ -14,19 +14,15 @@ import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
 
 import { useModal } from "@/hooks/use-modal-store";
-import {
-  Channel,
-  ChannelOnMember,
-  Member,
-  Message,
-  Profile,
-} from "@prisma/client";
-import { useOrigin } from "@/hooks/use-origin";
+import { Member, Message, Profile } from "@prisma/client";
+import { Loader2Icon } from "lucide-react";
 
 function DeleteMessageModal() {
   const { type, onClose, data, onOpen } = useModal();
   const openModal = type === "deleteMessage";
   const params = useParams();
+  const [isLoading, setIsLoading] = useState(false);
+
   const { message } = data as {
     message?: Message & { member: Member & { profile: Profile } } & {
       conversationId: string;
@@ -36,26 +32,33 @@ function DeleteMessageModal() {
   console.log(message);
 
   const onSubmit = async () => {
-    const type = window.location.pathname?.split("/")[3];
-    const url = qs.stringifyUrl({
-      url: `/api/socket/${
-        type === "conversations" ? "direct-messages" : "messages"
-      }/${message?.id}`,
-      query: {
-        serverId: params?.serverId,
-        ...(type === "channels" && {
-          channelId: message?.channelId,
-        }),
-        ...(type === "conversations" && {
-          conversationId: message?.conversationId,
-        }),
-      },
-    });
+    try {
+      setIsLoading(true);
+      const type = window.location.pathname?.split("/")[3];
+      const url = qs.stringifyUrl({
+        url: `/api/socket/${
+          type === "conversations" ? "direct-messages" : "messages"
+        }/${message?.id}`,
+        query: {
+          serverId: params?.serverId,
+          ...(type === "channels" && {
+            channelId: message?.channelId,
+          }),
+          ...(type === "conversations" && {
+            conversationId: message?.conversationId,
+          }),
+        },
+      });
 
-    await axios.delete(url);
+      await axios.delete(url);
 
-    handleCancel();
-    router.refresh();
+      handleCancel();
+      router.refresh();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleCancel = () => {
@@ -77,8 +80,17 @@ function DeleteMessageModal() {
           <Button className="" onClick={handleCancel} variant={"default"}>
             Cancel
           </Button>
-          <Button className="" variant={"primary"} onClick={onSubmit}>
-            Confirm
+          <Button
+            disabled={isLoading}
+            className=""
+            variant={"primary"}
+            onClick={onSubmit}
+          >
+            {isLoading ? (
+              <Loader2Icon className="w-4 h-4 animate-spin" />
+            ) : (
+              "Confirm"
+            )}
           </Button>
         </div>
       </DialogContent>
