@@ -152,7 +152,6 @@ export default function ChatEditor({
   };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
     if (!cleanContent(text)?.trim() && !image) {
       return null;
     }
@@ -204,8 +203,7 @@ export default function ChatEditor({
       setText("");
     }
   }
-  console.log(image);
-  console.log(imageFile);
+
   function clearAllImages() {
     setImage("");
     setImageFile(null);

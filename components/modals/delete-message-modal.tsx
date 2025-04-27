@@ -29,7 +29,6 @@ function DeleteMessageModal() {
     };
   };
   const router = useRouter();
-  console.log(message);
 
   const onSubmit = async () => {
     try {

@@ -55,7 +55,6 @@ function ManageMemberModal() {
   const router = useRouter();
 
   const handleRole = async (id: string, role: "MODERATOR" | "GUEST") => {
-    console.log(role);
     try {
       setLoadingId(id);
       const url = qs.stringifyUrl({
@@ -80,7 +79,6 @@ function ManageMemberModal() {
   };
 
   const onKick = async (id: string) => {
-    console.log(type);
     try {
       setLoadingId(id);
       const url = qs.stringifyUrl({

@@ -6,7 +6,6 @@ export async function PUT(req: NextRequest) {
   try {
     const profile = await currentProfile();
     const serverId = req.nextUrl.pathname.split("/")[3];
-    console.log("serverId==", serverId);
     if (!profile) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }

@@ -48,8 +48,6 @@ function ChannelName({
 
   const onClick = (channel: Channel & { members: ChannelOnMember[] }) => {
     if (!accessToPrivateChannel && channel.visibility === "PRIVATE") {
-      console.log("private");
-
       toast("Unauthorized Access", {
         description: "Oops! This channel is private",
         style: { backgroundColor: "white", color: "black" },
@@ -57,7 +55,7 @@ function ChannelName({
       });
       return null;
     }
-    console.log("public");
+
     router.push(`/servers/${channel.serverId}/channels/${channel.id}`);
   };
 

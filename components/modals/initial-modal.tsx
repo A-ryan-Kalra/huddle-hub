@@ -47,9 +47,8 @@ function InitialModal() {
       url: "/api/servers",
     });
 
-    const res = await axios.post(url, values);
+    await axios.post(url, values);
 
-    console.log(res.data);
     form.reset();
     router.refresh();
   };

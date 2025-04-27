@@ -70,7 +70,7 @@ function ServerDropDown({
   }
 
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <div className="px-2 py-1 cursor-pointer hover:bg-zinc-300 duration-300 transition w-fit rounded-md">
           <h1 className="truncate  font-semibold text-lg flex items-center   ">
@@ -99,9 +99,9 @@ function ServerDropDown({
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem
-            onClick={() =>
-              onOpen("searchModal", { server, member: currentMember })
-            }
+            onClick={(e) => {
+              onOpen("searchModal", { server, member: currentMember });
+            }}
             className="cursor-pointer"
           >
             Search

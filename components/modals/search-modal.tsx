@@ -38,7 +38,6 @@ import {
 } from "@prisma/client";
 import ActionToolTip from "../ui/action-tooltip";
 import AvatarIcon from "../ui/avatar-icon";
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 const channelIconType = {
@@ -69,7 +68,6 @@ export function SearchModal() {
     member: Member;
   };
 
-  // console.log(member);
   return (
     <CommandDialog open={isModalOpen} onOpenChange={onClose}>
       <CommandInput
@@ -85,7 +83,6 @@ export function SearchModal() {
               channel.members.some(
                 (member1) => member1.memberId === member?.id
               );
-            console.log(accessToPrivateChannel);
 
             const onClick = (
               channel: Channel & { members: ChannelOnMember[] }
@@ -98,7 +95,8 @@ export function SearchModal() {
                 });
                 return null;
               }
-              console.log("wow");
+              router.push(`/servers/${server.id}/channels/${channel.id}`);
+              onClose();
             };
 
             if (!channel) {
@@ -109,6 +107,7 @@ export function SearchModal() {
               <CommandItem
                 onSelect={() => onClick(channel)}
                 key={index}
+                className="cursor-pointer"
                 value={`${channel.name}-${channel.id}`}
               >
                 {channelIconType[channel.visibility]}
@@ -122,29 +121,38 @@ export function SearchModal() {
         </CommandGroup>
         <CommandSeparator />
         <CommandGroup heading={"Members"}>
-          {server?.members?.map((member, index) => {
-            if (!member) {
-              return null;
-            }
-            return (
-              <CommandItem
-                key={index}
-                value={`${member.profile.name}-${member.id}`}
-              >
-                <div className="relative">
-                  <AvatarIcon
-                    imageUrl={member.profile.imageUrl}
-                    height={40}
-                    width={40}
-                  />
-                </div>
-                <span>{member.profile.name}</span>
-                <ActionToolTip side="right" label={member.role}>
-                  {memberRoleIcon[member.role]}
-                </ActionToolTip>
-              </CommandItem>
-            );
-          })}
+          {server?.members
+            ?.filter((profile) => profile?.profileId !== member?.profileId)
+            ?.map((member, index) => {
+              if (!member) {
+                return null;
+              }
+              return (
+                <CommandItem
+                  key={index}
+                  className="cursor-pointer"
+                  onSelect={() => {
+                    router.push(
+                      `/servers/${server.id}/conversations/${member.id}`
+                    );
+                    onClose();
+                  }}
+                  value={`${member.profile.name}-${member.id}`}
+                >
+                  <div className="relative">
+                    <AvatarIcon
+                      imageUrl={member.profile.imageUrl}
+                      height={40}
+                      width={40}
+                    />
+                  </div>
+                  <span>{member.profile.name}</span>
+                  <ActionToolTip side="right" label={member.role}>
+                    {memberRoleIcon[member.role]}
+                  </ActionToolTip>
+                </CommandItem>
+              );
+            })}
         </CommandGroup>
       </CommandList>
     </CommandDialog>

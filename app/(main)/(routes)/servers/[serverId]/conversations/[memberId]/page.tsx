@@ -48,8 +48,6 @@ async function ConversationPage({ params }: ConversationPageProps) {
       ? conversation?.conversationInitiator
       : conversation?.conversationReceiver;
 
-  // console.log(conversation);
-  // console.log(anotherMember);
   return (
     <div className="flex flex-col flex-1 h-full">
       <ChatHeader type="message" member={anotherMember} />

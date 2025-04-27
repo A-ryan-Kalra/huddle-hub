@@ -104,8 +104,7 @@ function CustomizeChannelModal() {
           serverId: params?.serverId,
         },
       });
-      const res = await axios.patch(url, values);
-      console.log(res.data);
+      await axios.patch(url, values);
 
       toast("Success", {
         description: "Channel Created Successfully",

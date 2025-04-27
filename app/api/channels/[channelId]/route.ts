@@ -52,7 +52,6 @@ export async function PATCH(req: NextRequest) {
       });
     }
 
-    console.log("channelOwner=", channelOwner);
     if (!channelOwner && !adminMember) {
       return NextResponse.json(
         {
@@ -99,8 +98,6 @@ export async function PATCH(req: NextRequest) {
         skipDuplicates: true,
       });
 
-      console.log("private==", addAllMemberToNewChannel);
-
       return NextResponse.json({ addAllMemberToNewChannel, success: true });
     }
     await db.channel.update({
@@ -125,7 +122,6 @@ export async function PATCH(req: NextRequest) {
         id: true,
       },
     });
-    console.log("allmembers==", allMembers);
     await db.channelOnMember.deleteMany({
       where: {
         channelId,
@@ -140,8 +136,6 @@ export async function PATCH(req: NextRequest) {
       })),
       skipDuplicates: true,
     });
-
-    console.log(addAllMemberToNewChannel);
 
     return NextResponse.json({ addAllMemberToNewChannel, success: true });
   } catch (error) {

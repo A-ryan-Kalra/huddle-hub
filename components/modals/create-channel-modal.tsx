@@ -93,16 +93,11 @@ function CreateChannelModal() {
         },
       });
       const res = await axios.post(url, values);
-      console.log(res.data);
 
       toast("Success", {
         description: "Channel Created Successfully",
         style: { backgroundColor: "white", color: "black" },
         richColors: true,
-        // action: {
-        //   label: "Undo",
-        //   onClick: () => console.log("Undo"),
-        // },
       });
       close();
 

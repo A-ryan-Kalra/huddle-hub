@@ -52,7 +52,6 @@ function CreateServerModal() {
 
     const res = await axios.post(url, values);
 
-    console.log(res.data);
     onClose();
     router.refresh();
   };
