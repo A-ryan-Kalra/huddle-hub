@@ -17,7 +17,7 @@ async function ServersLayout({ children, params }: ServersLayoutProps) {
       <div className="max-md:hidden">
         <NavigationSidebar />
       </div>
-      <div className="flex w-full h-full m-2  rounded-2xl border-[1px] border-gray-300 overflow-hidden">
+      <div className="flex w-full h-full   rounded-2xl border-[1px] border-gray-300 overflow-hidden">
         <ResizeComponent>
           <ChannelSidebar serverId={serverId} />
         </ResizeComponent>
