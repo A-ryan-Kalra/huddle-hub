@@ -8,6 +8,10 @@ body,
   height: 100%;
   --font-righteous: "Righteous", sans-serif;
 }
+svg.lucide-x {
+  display: none !important;
+  background-color: aqua;
+}
 .ql-tooltip.ql-editing {
   left: 0 !important;
   top: 0 !important;
