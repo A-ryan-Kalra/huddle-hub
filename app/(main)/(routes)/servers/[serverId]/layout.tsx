@@ -1,4 +1,5 @@
 import ChannelSidebar from "@/components/sidebar/channel-sidebar";
+import NavigationSidebar from "@/components/sidebar/navigation-sidebar";
 import ResizeComponent from "@/components/ui/resize-component";
 import { UserButton } from "@clerk/nextjs";
 
@@ -13,16 +14,8 @@ async function ServersLayout({ children, params }: ServersLayoutProps) {
 
   return (
     <div className="w-full h-full  flex">
-      <div className="min-w-[70px] md:flex max-md:hidden flex-col h-full ">
-        <div className=" mt-auto pb-7 w-fit mx-auto">
-          <UserButton
-            appearance={{
-              elements: {
-                avatarBox: "h-[48px] w-[48px]",
-              },
-            }}
-          />
-        </div>
+      <div className="max-md:hidden">
+        <NavigationSidebar />
       </div>
       <div className="flex w-full h-full m-2  rounded-2xl border-[1px] border-gray-300 overflow-hidden">
         <ResizeComponent>

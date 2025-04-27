@@ -16,7 +16,7 @@ function ChatHeaderDetails({ type, channel, member }: ChatHeaderDetailsProps) {
   return (
     <>
       {type === "channel" && (
-        <div className="flex gap-x-1 items-center ">
+        <div className=" flex gap-x-1 items-center ">
           <h1 className="hover:bg-zinc-100 flex gap-x-1 transition cursor-pointer p-0.5 rounded-md">
             <span>{channel?.members?.length}</span>
             {channel && channel?.members?.length > 1 ? "Members" : "Member"}

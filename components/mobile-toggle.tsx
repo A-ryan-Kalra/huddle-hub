@@ -1,5 +1,6 @@
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import ChannelSidebar from "./sidebar/channel-sidebar";
+import NavigationSidebar from "./sidebar/navigation-sidebar";
 
 interface MobileToggleProps {
   children: React.ReactNode;
@@ -10,8 +11,13 @@ export function MobileToggle({ children, serverId }: MobileToggleProps) {
   return (
     <Sheet>
       <SheetTrigger asChild>{children}</SheetTrigger>
-      <SheetContent side="left">
-        <ChannelSidebar serverId={serverId} />
+      <SheetContent className="" side="left">
+        <div className="flex h-full">
+          <div className="w-16 border-r-[1px] border-gray-200">
+            <NavigationSidebar />
+          </div>
+          <ChannelSidebar serverId={serverId} />
+        </div>
       </SheetContent>
     </Sheet>
   );
