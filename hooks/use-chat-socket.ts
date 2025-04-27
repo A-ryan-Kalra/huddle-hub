@@ -7,12 +7,18 @@ interface ChatSockerProps {
   addKey: string;
   queryKey: string;
   updateKey: string;
+  audioRef: React.RefObject<HTMLAudioElement | null>;
 }
 type MessageWithMember = Message & {
   member: Member & { profile: Profile };
 };
 
-function useChatSocket({ addKey, queryKey, updateKey }: ChatSockerProps) {
+function useChatSocket({
+  addKey,
+  queryKey,
+  updateKey,
+  audioRef,
+}: ChatSockerProps) {
   const { socket, isConnected } = useSocket();
   const queryClient = useQueryClient();
 
@@ -32,6 +38,7 @@ function useChatSocket({ addKey, queryKey, updateKey }: ChatSockerProps) {
           ...newData[0],
           items: [message, ...newData[0].items],
         };
+        audioRef.current?.play();
 
         return {
           ...oldData,

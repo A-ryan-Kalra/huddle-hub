@@ -6,7 +6,7 @@ function NavigationSidebar() {
   return (
     <div className="min-w-[70px] flex items-center flex-col h-full ">
       <div className="w-fit px-1">
-        <div className="bg-black/20 mt-3 w-fit px-1 rounded-md py-1">
+        <div className="bg-zinc-300 mt-3 w-fit px-1 rounded-md py-1">
           <HomeIcon className="w-6 h-6 cursor-pointer hover:scale-105 transition" />
         </div>
         <span className="text-xs">Home</span>

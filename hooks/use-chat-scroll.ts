@@ -43,6 +43,7 @@ function useChatScroll({
         topDiv?.scrollHeight - (topDiv?.clientHeight + topDiv?.scrollTop) >= 50;
       return distanceFromBottom;
     }
+
     if (checkDistance()) {
       bottomDiv?.scrollIntoView({
         behavior: "smooth",

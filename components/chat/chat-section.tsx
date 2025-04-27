@@ -1,7 +1,7 @@
 "use client";
 import { Channel, ChannelOnMember, Member, Profile } from "@prisma/client";
 import { HashIcon, Loader2 } from "lucide-react";
-import React, { Fragment } from "react";
+import React, { Fragment, useRef } from "react";
 import ChatWelcome from "./chat-welcome";
 import useChatQuery from "@/hooks/use-chat-query";
 import UserComment from "../ui/user-comment";
@@ -44,16 +44,17 @@ function ChatSection({
   const updateKey = `chat:${chatId}:messages:update`;
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage, status } =
     useChatQuery({ queryKey, paramKey, paramValue, apiUrl });
-
+  const audioRef = useRef(null);
   useChatScroll({
     chatRef,
     bottomRef,
+
     loadMore: fetchNextPage,
     shouldLoadMore: !!hasNextPage && !isFetchingNextPage,
     count: data?.pages[0]?.items?.length ?? 0,
   });
 
-  useChatSocket({ addKey, queryKey, updateKey });
+  useChatSocket({ audioRef, addKey, queryKey, updateKey });
 
   return (
     <div
@@ -106,6 +107,8 @@ function ChatSection({
           </Fragment>
         ))}
       </div>
+      <audio className="bg-black p-2" ref={audioRef} src="/notification.mp3" />
+
       <div ref={bottomRef} />
     </div>
   );
