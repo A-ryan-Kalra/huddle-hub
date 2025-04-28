@@ -1,6 +1,6 @@
 "use client";
 import { Channel, ChannelOnMember, Member, Profile } from "@prisma/client";
-import { HashIcon, Loader2 } from "lucide-react";
+import { HashIcon, Loader2, ServerCrashIcon } from "lucide-react";
 import React, { Fragment, useRef } from "react";
 import ChatWelcome from "./chat-welcome";
 import useChatQuery from "@/hooks/use-chat-query";
@@ -55,6 +55,23 @@ function ChatSection({
   });
 
   useChatSocket({ audioRef, addKey, queryKey, updateKey });
+
+  if (status === "pending") {
+    return (
+      <div className="flex flex-col items-center gap-y-2 justify-center flex-1">
+        <Loader2 className="animate-spin  text-zinc-500" />
+        <h1 className="text-xs text-zinc-400">Loading Messages...</h1>
+      </div>
+    );
+  }
+  if (status === "error") {
+    return (
+      <div className="flex flex-col items-center gap-y-2 justify-center flex-1">
+        <ServerCrashIcon className="text-zinc-500" />
+        <h1 className="text-xs text-zinc-400">Something went wrong</h1>
+      </div>
+    );
+  }
 
   return (
     <div
