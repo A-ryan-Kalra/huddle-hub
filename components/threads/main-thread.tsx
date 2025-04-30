@@ -1,4 +1,4 @@
-import { Member, Message, Profile } from "@prisma/client";
+import { DirectMessage, Member, Message, Profile } from "@prisma/client";
 import React from "react";
 import AvatarIcon from "../ui/avatar-icon";
 import ActionToolTip from "../ui/action-tooltip";
@@ -7,7 +7,18 @@ import Link from "next/link";
 import Image from "next/image";
 
 interface MainThreadProps {
-  message: Message & { member: Member & { profile: Profile } };
+  message: {
+    id: string;
+    content: string | null;
+    fileUrl: string | null;
+    deleted: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+    memberId: string;
+    channelId?: string;
+    conversationId?: string;
+    member: Member & { profile: Profile };
+  };
 }
 
 const TIME_FORMAT = "hh:mm a";

@@ -9,14 +9,14 @@ export async function GET(req: NextRequest, res: NextResponse) {
   try {
     const profile = await currentProfile();
     const { searchParams } = new URL(req.url);
-    const messageId = searchParams.get("messageId");
+    const directMessageId = searchParams.get("directMessageId");
     const cursor = searchParams.get("cursor");
 
     if (!profile) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 500 });
     }
 
-    if (!messageId) {
+    if (!directMessageId) {
       return NextResponse.json(
         { error: "Message Id is missing" },
         { status: 500 }
@@ -27,7 +27,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
     if (cursor) {
       messages = await db.threads.findMany({
         where: {
-          messageId,
+          directMessageId,
         },
         take: MESSAGE_BATCH,
         cursor: {
@@ -48,7 +48,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
       messages = await db.threads.findMany({
         take: MESSAGE_BATCH,
         where: {
-          messageId,
+          directMessageId,
         },
         orderBy: {
           createdAt: "desc",

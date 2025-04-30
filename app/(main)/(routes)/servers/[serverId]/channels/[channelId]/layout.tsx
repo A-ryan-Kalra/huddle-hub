@@ -2,6 +2,7 @@
 import ChatThreads from "@/components/chat/chat-threads";
 import ResizeComponent from "@/components/ui/resize-component";
 import { useModal } from "@/hooks/use-modal-store";
+import { useParams } from "next/navigation";
 import React from "react";
 
 interface ServersLayoutProps {
@@ -9,6 +10,8 @@ interface ServersLayoutProps {
 }
 function ChannelsLayout({ children }: ServersLayoutProps) {
   const { data, type } = useModal();
+  const params = useParams();
+
   return (
     <div className="w-full h-full  flex">
       <div className="bg-slate-20 w-ful flex flex-col flex-1 h-full ">
@@ -16,7 +19,7 @@ function ChannelsLayout({ children }: ServersLayoutProps) {
       </div>
       {type === "openThread" && (
         <ResizeComponent type="openThread">
-          <ChatThreads />
+          <ChatThreads params={params} />
         </ResizeComponent>
       )}
     </div>

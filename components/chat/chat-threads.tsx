@@ -2,15 +2,32 @@ import { useModal } from "@/hooks/use-modal-store";
 import { X, XCircle } from "lucide-react";
 import React from "react";
 import MainThread from "../threads/main-thread";
-import { Member, Message, Profile } from "@prisma/client";
+import { DirectMessage, Member, Message, Profile } from "@prisma/client";
 import ChatEditor from "./chat-editor";
 import ChatSection from "./chat-section";
 
-function ChatThreads() {
+interface ChatThreadsProps {
+  params: Record<string, any> | null;
+}
+interface ChatMessage {
+  id: string;
+  content: string | null;
+  fileUrl: string | null;
+  deleted: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  memberId: string;
+  channelId?: string;
+  conversationId?: string;
+  member: Member & { profile: Profile };
+}
+
+function ChatThreads({ params }: ChatThreadsProps) {
   const { type, data, onClose } = useModal();
-  const { message } = data as {
-    message: Message & { member: Member & { profile: Profile } };
-  };
+  const { message } = params?.member
+    ? (data as { message: ChatMessage })
+    : (data as { message: ChatMessage });
+  console.log(params);
   console.log({ type, data });
   return (
     <div className="w-full h-full flex flex-col flex- p-2 bg-white border-l-[1px]">
@@ -37,8 +54,12 @@ function ChatThreads() {
               })
             : ""
         }
-        apiUrl="/api/messages/threads"
-        paramKey={"messageId"}
+        apiUrl={
+          params?.channelId
+            ? "/api/messages/threads"
+            : "/api/direct-messages/threads"
+        }
+        paramKey={params?.channelId ? "messageId" : "directMessageId"}
         paramValue={message?.id}
         socketQuery={{
           channelId: message?.channelId,
@@ -49,11 +70,17 @@ function ChatThreads() {
       />
       <ChatEditor
         type="threads"
-        apiUrl="/api/socket/messages/threads"
+        apiUrl={
+          params?.channelId
+            ? "/api/socket/messages/threads"
+            : "/api/socket/direct-messages/threads"
+        }
         query={{
-          messageId: message?.id,
+          ...(params?.channelId && { messageId: message?.id }),
+          ...(params?.channelId && { channelId: message?.channelId }),
+          ...(params?.memberId && { directMessageId: message?.id }),
+          ...(params?.memberId && { conversationId: message?.conversationId }),
           serverId: message?.member?.serverId,
-          channelId: message?.channelId,
         }}
         name={""}
       />
