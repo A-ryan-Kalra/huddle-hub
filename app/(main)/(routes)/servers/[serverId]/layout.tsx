@@ -1,7 +1,7 @@
+import ChatThreads from "@/components/chat/chat-threads";
 import ChannelSidebar from "@/components/sidebar/channel-sidebar";
 import NavigationSidebar from "@/components/sidebar/navigation-sidebar";
 import ResizeComponent from "@/components/ui/resize-component";
-import { UserButton } from "@clerk/nextjs";
 
 interface ServersLayoutProps {
   children: React.ReactNode;
@@ -21,9 +21,7 @@ async function ServersLayout({ children, params }: ServersLayoutProps) {
         <ResizeComponent>
           <ChannelSidebar serverId={serverId} />
         </ResizeComponent>
-        <div className="bg-slate-20 w-ful flex flex-col flex-1 h-full ">
-          {children}
-        </div>
+        <div className="w-full flex-1 h-full ">{children}</div>
       </div>
     </div>
   );

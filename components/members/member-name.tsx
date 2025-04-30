@@ -2,16 +2,19 @@ import { Member, Profile } from "@prisma/client";
 import AvatarIcon from "../ui/avatar-icon";
 import { useParams, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { useModal } from "@/hooks/use-modal-store";
 
 interface MemberNameProps {
   member: Member & { profile: Profile };
 }
 
 function MemberName({ member }: MemberNameProps) {
+  const { onClose } = useModal();
   const router = useRouter();
   const params = useParams();
   function routeToMemberPage() {
     router.push(`/servers/${member.serverId}/conversations/${member.id}`);
+    onClose();
   }
   return (
     <div

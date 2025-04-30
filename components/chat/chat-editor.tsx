@@ -29,7 +29,7 @@ const formSchema = z.object({
 });
 
 interface ChatEditorProps {
-  type: "channel" | "conversation";
+  type: "channel" | "conversation" | "threads";
   apiUrl: string;
   query: Record<string, any>;
   visibility?: "PUBLIC" | "PRIVATE";
@@ -189,11 +189,9 @@ export default function ChatEditor({
       form.reset();
       setImageFile(null);
       setText("");
-    } catch (error) {
-      console.error(error);
-
+    } catch (error: Error | any) {
       toast("Error", {
-        description: "Channel Created Successfully",
+        description: error?.response?.data?.error ?? "Something went wrong",
         style: { backgroundColor: "white", color: "black" },
         richColors: true,
       });
@@ -237,7 +235,9 @@ export default function ChatEditor({
                       type === "channel"
                         ? visibility &&
                           `Message ${channelIconType[visibility]} ${name}`
-                        : `Message ${name}`
+                        : type === "conversation"
+                        ? `Message ${name}`
+                        : "Reply..."
                     }
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && !e.shiftKey) {

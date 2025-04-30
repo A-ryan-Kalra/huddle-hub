@@ -4,10 +4,11 @@ import React, { useRef, useState } from "react";
 
 interface ResizeComponentProps {
   children: React.ReactNode;
+  type?: "openThread";
 }
 
-function ResizeComponent({ children }: ResizeComponentProps) {
-  const [width, setWidth] = useState(325);
+function ResizeComponent({ children, type }: ResizeComponentProps) {
+  const [width, setWidth] = useState(type !== "openThread" ? 325 : 425);
   const isResizing = useRef(false);
 
   const verticalBar = useRef<HTMLDivElement>(null);
@@ -26,9 +27,14 @@ function ResizeComponent({ children }: ResizeComponentProps) {
       if (!isResizing.current) {
         return null;
       }
-      const newWidth = startWidth + (event.clientX - startX);
-
-      setWidth(Math.min(Math.max(newWidth, 250), 1400));
+      const newWidth =
+        type === "openThread"
+          ? startWidth + (startX - event.clientX)
+          : startWidth + (event.clientX - startX);
+      //  const newWidth = startWidth + (startX - event.clientX);
+      setWidth(
+        Math.min(Math.max(newWidth, 250), type === "openThread" ? 600 : 1400)
+      );
     };
 
     const handleMouseUp = () => {
@@ -56,7 +62,8 @@ function ResizeComponent({ children }: ResizeComponentProps) {
         onMouseDown={handleDrag}
         ref={verticalBar}
         className={cn(
-          "absolute h-full border-r-zinc-400 w-[8px] active:opacity-100 opacity-0 hover:opacity-100 duration-500 transition  cursor-ew-resize hover:border-r-indigo-400 hover:border-r-[3px] top-0 right-0"
+          "absolute h-full border-r-zinc-400 w-[8px] active:opacity-100 opacity-0 hover:opacity-100 duration-500 transition  cursor-ew-resize hover:border-r-indigo-400 hover:border-r-[3px] top-0 right-0",
+          type === "openThread" && "!left-0"
         )}
       />
       {children}
