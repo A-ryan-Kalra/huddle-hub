@@ -1,6 +1,6 @@
 import { currentProfile } from "@/lib/currentProfile";
 import { db } from "@/lib/db";
-import { Message } from "@prisma/client";
+import { Message, Threads } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 const MESSAGE_BATCH = 10;
@@ -9,25 +9,25 @@ export async function GET(req: NextRequest, res: NextResponse) {
   try {
     const profile = await currentProfile();
     const { searchParams } = new URL(req.url);
-    const channelId = searchParams.get("channelId");
+    const messageId = searchParams.get("messageId");
     const cursor = searchParams.get("cursor");
 
     if (!profile) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 500 });
     }
 
-    if (!channelId) {
+    if (!messageId) {
       return NextResponse.json(
-        { error: "Channel Id is missing" },
+        { error: "Message Id is missing" },
         { status: 500 }
       );
     }
 
-    let messages: Message[];
+    let messages: Threads[];
     if (cursor) {
-      messages = await db.message.findMany({
+      messages = await db.threads.findMany({
         where: {
-          channelId,
+          messageId,
         },
         take: MESSAGE_BATCH,
         cursor: {
@@ -39,21 +39,16 @@ export async function GET(req: NextRequest, res: NextResponse) {
               profile: true,
             },
           },
-          threads: {
-            include: {
-              message: true,
-            },
-          },
         },
         orderBy: {
           createdAt: "desc",
         },
       });
     } else {
-      messages = await db.message.findMany({
+      messages = await db.threads.findMany({
         take: MESSAGE_BATCH,
         where: {
-          channelId,
+          messageId,
         },
         orderBy: {
           createdAt: "desc",
@@ -62,11 +57,6 @@ export async function GET(req: NextRequest, res: NextResponse) {
           member: {
             include: {
               profile: true,
-            },
-          },
-          threads: {
-            include: {
-              message: true,
             },
           },
         },

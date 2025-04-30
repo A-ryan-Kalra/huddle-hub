@@ -21,7 +21,7 @@ interface UserCommentProps {
   createdAt: Date;
   socketQuery: Record<string, any>;
   currentMember: Member & { profile: Profile };
-  type: "channel" | "conversation";
+  type: "channel" | "conversation" | "threads";
 }
 
 const formSchema = z.object({

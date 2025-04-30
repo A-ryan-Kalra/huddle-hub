@@ -65,14 +65,8 @@ function MainThread({ message }: MainThreadProps) {
               </Link>
             </div>
           )}
-          {
-            <span className="mt-2 flex items-center gap-x-2">
-              <span className="text-nowrap  text-sm text-slate-600">
-                2 replies{" "}
-              </span>
-              <hr className="border-[1px]  w-full" />
-            </span>
-          }
+
+          <hr className="border-[1px] my-1 w-full" />
         </div>
       </div>
     </div>

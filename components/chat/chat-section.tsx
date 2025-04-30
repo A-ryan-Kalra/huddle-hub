@@ -1,17 +1,17 @@
 "use client";
-import { Channel, ChannelOnMember, Member, Profile } from "@prisma/client";
+import { Member, Profile } from "@prisma/client";
 import { HashIcon, Loader2, ServerCrashIcon } from "lucide-react";
 import React, { Fragment, useRef } from "react";
 import ChatWelcome from "./chat-welcome";
 import useChatQuery from "@/hooks/use-chat-query";
 import UserComment from "../ui/user-comment";
-import { format } from "date-fns";
+
 import useChatSocket from "@/hooks/use-chat-socket";
 import useChatScroll from "@/hooks/use-chat-scroll";
 import { cn } from "@/lib/utils";
 
 interface ChatSectionProps {
-  type: "channel" | "conversation";
+  type: "channel" | "conversation" | "threads";
 
   paramKey: string;
   paramValue: string;
@@ -19,7 +19,7 @@ interface ChatSectionProps {
   chatId: string;
   name: string;
   createdAt?: string;
-  chatName: string;
+  chatName?: string;
   socketQuery: Record<string, any>;
   currentMember: Member & { profile: Profile };
 }
@@ -55,7 +55,7 @@ function ChatSection({
   });
 
   useChatSocket({ audioRef, addKey, queryKey, updateKey });
-
+  console.log(data);
   if (status === "pending") {
     return (
       <div className="flex flex-col items-center gap-y-2 justify-center flex-1">
@@ -79,12 +79,12 @@ function ChatSection({
       className="flex flex-1 mt-auto flex-col h-full overflow-y-auto !scroll-smooth"
     >
       {!hasNextPage && <div className=" flex-1" />}
-      {!hasNextPage && (
+      {type !== "threads" && !hasNextPage && (
         <ChatWelcome
           type={type}
           name={name}
           createdAt={createdAt as string}
-          chatName={chatName}
+          chatName={chatName as string}
         />
       )}
       <div className="flex justify-center items-center">

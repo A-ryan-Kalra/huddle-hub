@@ -41,6 +41,11 @@ export async function GET(req: Request) {
               profile: true,
             },
           },
+          threads: {
+            include: {
+              directMessage: true,
+            },
+          },
         },
       });
     } else {
@@ -54,6 +59,11 @@ export async function GET(req: Request) {
           member: {
             include: {
               profile: true,
+            },
+          },
+          threads: {
+            include: {
+              message: true,
             },
           },
         },

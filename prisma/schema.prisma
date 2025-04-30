@@ -80,7 +80,7 @@ model Message {
   channelId String
   channel   Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
   member    Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
-  threads               Threads[]
+  threads   Threads[] @relation("MessagesToThreads")
 
   @@index([channelId])
   @@index([memberId])
@@ -113,7 +113,8 @@ model DirectMessage {
   memberId       String
   member         Member  @relation(fields: [memberId],references: [id],onDelete: Cascade)
 
-  threads               Threads[]
+  threads        Threads[] @relation("DirectMessageToThreads")
+ 
 }
 
 model Threads {
@@ -125,10 +126,10 @@ model Threads {
   updatedAt DateTime @updatedAt
 
   directMessageId  String?
-  directMessage    DirectMessage?   @relation(fields: [directMessageId], references: [id], onDelete: Cascade)
+  directMessage    DirectMessage?   @relation("DirectMessageToThreads",fields: [directMessageId], references: [id], onDelete: Cascade)
 
   messageId  String?
-  message    Message?   @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  message    Message?   @relation("MessagesToThreads",fields: [messageId], references: [id], onDelete: Cascade)
 
   memberId  String
   member    Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)

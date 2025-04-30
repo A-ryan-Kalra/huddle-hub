@@ -4,6 +4,7 @@ import React from "react";
 import MainThread from "../threads/main-thread";
 import { Member, Message, Profile } from "@prisma/client";
 import ChatEditor from "./chat-editor";
+import ChatSection from "./chat-section";
 
 function ChatThreads() {
   const { type, data, onClose } = useModal();
@@ -12,7 +13,7 @@ function ChatThreads() {
   };
   console.log({ type, data });
   return (
-    <div className="w-full h-full p-2 bg-white border-l-[1px]">
+    <div className="w-full h-full flex flex-col flex- p-2 bg-white border-l-[1px]">
       <div className="flex justify-between items-center">
         <h1 className="text-lg font-semibold">Thread</h1>
         <button
@@ -23,8 +24,31 @@ function ChatThreads() {
         </button>
       </div>
       <MainThread message={message} />
+      <ChatSection
+        type="threads"
+        chatId={message?.id}
+        name={message?.member?.profile?.name?.split(" ")[0]}
+        createdAt={
+          message?.createdAt
+            ? new Date(message.createdAt).toLocaleDateString("en-GB", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })
+            : ""
+        }
+        apiUrl="/api/messages/threads"
+        paramKey={"messageId"}
+        paramValue={message?.id}
+        socketQuery={{
+          channelId: message?.channelId,
+          messageId: message?.id,
+          serverId: message?.member?.serverId,
+        }}
+        currentMember={message?.member}
+      />
       <ChatEditor
-        type="channel"
+        type="threads"
         apiUrl="/api/socket/messages/threads"
         query={{
           messageId: message?.id,

@@ -87,7 +87,7 @@ export default async function handler(
       },
     });
 
-    const channelKey = `chat:${threads.id}:messages`;
+    const channelKey = `chat:${messageId}:messages`;
 
     res?.socket?.server?.io?.emit(channelKey, threads);
 

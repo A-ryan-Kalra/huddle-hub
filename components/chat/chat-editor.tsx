@@ -29,7 +29,7 @@ const formSchema = z.object({
 });
 
 interface ChatEditorProps {
-  type: "channel" | "conversation";
+  type: "channel" | "conversation" | "threads";
   apiUrl: string;
   query: Record<string, any>;
   visibility?: "PUBLIC" | "PRIVATE";
@@ -237,7 +237,9 @@ export default function ChatEditor({
                       type === "channel"
                         ? visibility &&
                           `Message ${channelIconType[visibility]} ${name}`
-                        : `Message ${name}`
+                        : type === "conversation"
+                        ? `Message ${name}`
+                        : "Reply..."
                     }
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && !e.shiftKey) {
