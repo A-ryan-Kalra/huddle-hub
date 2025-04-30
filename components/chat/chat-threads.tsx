@@ -1,13 +1,17 @@
 import { useModal } from "@/hooks/use-modal-store";
 import { X, XCircle } from "lucide-react";
 import React from "react";
+import MainThread from "../threads/main-thread";
+import { Member, Message, Profile } from "@prisma/client";
 
 function ChatThreads() {
   const { type, data, onClose } = useModal();
-
+  const { message } = data as {
+    message: Message & { member: Member & { profile: Profile } };
+  };
   console.log({ type, data });
   return (
-    <div className="w-full h-full p-2">
+    <div className="w-full h-full p-2 bg-white border-l-[1px]">
       <div className="flex justify-between items-center">
         <h1 className="text-lg font-semibold">Thread</h1>
         <button
@@ -17,6 +21,7 @@ function ChatThreads() {
           <XCircle className=" w-5 h-5" />
         </button>
       </div>
+      <MainThread message={message} />
     </div>
   );
 }
