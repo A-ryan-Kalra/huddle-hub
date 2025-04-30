@@ -3,6 +3,7 @@ import { X, XCircle } from "lucide-react";
 import React from "react";
 import MainThread from "../threads/main-thread";
 import { Member, Message, Profile } from "@prisma/client";
+import ChatEditor from "./chat-editor";
 
 function ChatThreads() {
   const { type, data, onClose } = useModal();
@@ -22,6 +23,13 @@ function ChatThreads() {
         </button>
       </div>
       <MainThread message={message} />
+      {/* <ChatEditor
+        type="channel"
+        apiUrl="/api/socket/messages"
+        query={{ serverId: channel?.serverId, channelId: channel?.id }}
+        visibility={channel?.visibility}
+        name={channel?.name}
+      /> */}
     </div>
   );
 }
