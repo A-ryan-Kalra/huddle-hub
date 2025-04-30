@@ -76,7 +76,9 @@ function ChatSection({
   return (
     <div
       ref={chatRef}
-      className="flex flex-1 mt-auto flex-col h-full overflow-y-auto !scroll-smooth"
+      className={`flex ${
+        type !== "threads" ? "flex-1 mt-auto h-full" : "mb-auto h-fit"
+      } flex-col  overflow-y-auto !scroll-smooth`}
     >
       {!hasNextPage && <div className=" flex-1" />}
       {type !== "threads" && !hasNextPage && (

@@ -14,6 +14,7 @@ import { Hash, Lock, Mic, UserIcon, Video } from "lucide-react";
 import { toast } from "sonner";
 import CustomizeChannelComp from "./customize-channels-comp";
 import { useRouter } from "next/navigation";
+import { useModal } from "@/hooks/use-modal-store";
 
 interface ChannelNameProps {
   channel: Channel & { members: ChannelOnMember[] };
@@ -40,6 +41,8 @@ function ChannelName({
   allMembers,
   role,
 }: ChannelNameProps) {
+  const { onClose } = useModal();
+
   const ownerOfChannel = channel.profileId === currentMember.profileId;
   const accessToPrivateChannel =
     channel.visibility === "PRIVATE" &&
@@ -57,6 +60,7 @@ function ChannelName({
     }
 
     router.push(`/servers/${channel.serverId}/channels/${channel.id}`);
+    onClose();
   };
 
   return (

@@ -117,42 +117,41 @@ function UserComment({
             message.id !== messageId && "hover:bg-neutral-50  transition"
           )}
         >
-          {!isDeleted && ownerOfMessage && (
-            <div className="gap-x-1 z-10 absolute right-3 p-1 bg-zinc-300 -top-4 invisible rounded-md group-hover:visible flex">
-              {ownerOfMessage && (
-                <ActionToolTip
-                  label="Edit"
-                  onClick={() => {
-                    setMessageId(message.id);
-                    setIsEditing(true);
-                  }}
-                  className="px-2 py-1 hover:bg-zinc-200 "
-                >
-                  <Edit className="!w-4 !h-4" />
-                </ActionToolTip>
-              )}
-              <ActionToolTip
-                label="Reply in thread"
-                onClick={() => {
-                  // setMessageId(message.id);
+          <div className="gap-x-1 z-10 absolute right-3 p-1 bg-zinc-300 -top-4 invisible rounded-md group-hover:visible flex">
+            <ActionToolTip
+              label="Reply in thread"
+              onClick={() => {
+                // setMessageId(message.id);
 
-                  onOpen("openThread", { message: message });
+                onOpen("openThread", { message: message });
+              }}
+              className="px-2 py-1 hover:bg-zinc-200 "
+            >
+              <MessageCircleMore className="!w-4 !h-4" />
+            </ActionToolTip>
+            {!isDeleted && ownerOfMessage && ownerOfMessage && (
+              <ActionToolTip
+                label="Edit"
+                onClick={() => {
+                  setMessageId(message.id);
+                  setIsEditing(true);
                 }}
                 className="px-2 py-1 hover:bg-zinc-200 "
               >
-                <MessageCircleMore className="!w-4 !h-4" />
+                <Edit className="!w-4 !h-4" />
               </ActionToolTip>
-              {(isAdmin || isModerator || ownerOfMessage) && (
-                <ActionToolTip
-                  label="Delete"
-                  onClick={() => onOpen("deleteMessage", { message })}
-                  className="px-2 py-1 hover:bg-zinc-200 "
-                >
-                  <TrashIcon className="!w-4 !h-4" />
-                </ActionToolTip>
-              )}
-            </div>
-          )}
+            )}
+
+            {(isAdmin || isModerator || ownerOfMessage) && (
+              <ActionToolTip
+                label="Delete"
+                onClick={() => onOpen("deleteMessage", { message })}
+                className="px-2 py-1 hover:bg-zinc-200 "
+              >
+                <TrashIcon className="!w-4 !h-4" />
+              </ActionToolTip>
+            )}
+          </div>
           <div className="flex items-center justify-start">
             <h1 className="text-sm font-semibold hover:underline cursor-pointer transition">
               {message?.member?.profile?.name}

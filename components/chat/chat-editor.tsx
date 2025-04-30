@@ -189,11 +189,9 @@ export default function ChatEditor({
       form.reset();
       setImageFile(null);
       setText("");
-    } catch (error) {
-      console.error(error);
-
+    } catch (error: Error | any) {
       toast("Error", {
-        description: "Channel Created Successfully",
+        description: error?.response?.data?.error ?? "Something went wrong",
         style: { backgroundColor: "white", color: "black" },
         richColors: true,
       });
