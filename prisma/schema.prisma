@@ -64,7 +64,7 @@ model Member {
   channels              ChannelOnMember[]
   messages              Message[]
   directMessages        DirectMessage[]
- 
+  threads               Threads[]
  
   @@index([serverId])
 }
@@ -127,8 +127,10 @@ model Threads {
   directMessage    DirectMessage   @relation(fields: [directMessageId], references: [id], onDelete: Cascade)
   messageId  String
   message    Message   @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  memberId  String
+  member    Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
 
-  @@index([directMessageId,messageId])
+  @@index([directMessageId,messageId,memberId])
 }
 
 model ChannelOnMember{

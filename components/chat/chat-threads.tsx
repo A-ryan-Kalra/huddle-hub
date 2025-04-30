@@ -23,13 +23,16 @@ function ChatThreads() {
         </button>
       </div>
       <MainThread message={message} />
-      {/* <ChatEditor
+      <ChatEditor
         type="channel"
-        apiUrl="/api/socket/messages"
-        query={{ serverId: channel?.serverId, channelId: channel?.id }}
-        visibility={channel?.visibility}
-        name={channel?.name}
-      /> */}
+        apiUrl="/api/socket/messages/threads"
+        query={{
+          messageId: message?.id,
+          serverId: message?.member?.serverId,
+          channelId: message?.channelId,
+        }}
+        name={""}
+      />
     </div>
   );
 }
