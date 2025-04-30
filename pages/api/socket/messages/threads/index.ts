@@ -71,10 +71,10 @@ export default async function handler(
         .json({ error: "Channel does not exist in server" });
     }
 
-    const message = await db.threads.create({
+    const threads = await db.threads.create({
       data: {
         memberId: member[0].id as string,
-        channelId: channel.id as string,
+        messageId: messageId as string,
         ...(content && { content: content }),
         ...(fileUrl && { fileUrl }),
       },
@@ -87,13 +87,13 @@ export default async function handler(
       },
     });
 
-    const channelKey = `chat:${channel.id}:messages`;
+    const channelKey = `chat:${threads.id}:messages`;
 
-    res?.socket?.server?.io?.emit(channelKey, message);
+    res?.socket?.server?.io?.emit(channelKey, threads);
 
-    return res.status(201).json(message);
+    return res.status(201).json(threads);
   } catch (error) {
-    console.error("[SOCKET>API>MESSAGES_POST]", error);
+    console.error("[SOCKET>API>THREADS_POST]", error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 }
