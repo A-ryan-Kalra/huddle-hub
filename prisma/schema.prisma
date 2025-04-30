@@ -64,6 +64,7 @@ model Member {
   channels              ChannelOnMember[]
   messages              Message[]
   directMessages        DirectMessage[]
+  threads               Threads[]
  
   @@index([serverId])
 }
@@ -110,6 +111,19 @@ model DirectMessage {
 
   memberId       String
   member         Member  @relation(fields: [memberId],references: [id],onDelete: Cascade)
+}
+
+model Threads {
+  id        String   @id @default(uuid())
+  content   String?
+  fileUrl   String?
+  deleted   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  memberId  String
+  member    Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@index([memberId])
 }
 
 model ChannelOnMember{

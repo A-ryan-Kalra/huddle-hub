@@ -14,7 +14,7 @@ function ChannelsLayout({ children }: ServersLayoutProps) {
       <div className="bg-slate-20 w-ful flex flex-col flex-1 h-full ">
         {children}
       </div>
-      {type !== "openThread" && (
+      {type === "openThread" && (
         <ResizeComponent type="openThread">
           <ChatThreads />
         </ResizeComponent>

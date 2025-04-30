@@ -1,7 +1,7 @@
 import { Member, MemberRole, Message, Profile } from "@prisma/client";
 import React, { useEffect, useRef, useState } from "react";
 import AvatarIcon from "./avatar-icon";
-import { Edit, TrashIcon } from "lucide-react";
+import { Edit, MessageCircleMore, TrashIcon } from "lucide-react";
 import ActionToolTip from "./action-tooltip";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -131,6 +131,17 @@ function UserComment({
                   <Edit className="!w-4 !h-4" />
                 </ActionToolTip>
               )}
+              <ActionToolTip
+                label="Reply in thread"
+                onClick={() => {
+                  // setMessageId(message.id);
+
+                  onOpen("openThread", { message: message });
+                }}
+                className="px-2 py-1 hover:bg-zinc-200 "
+              >
+                <MessageCircleMore className="!w-4 !h-4" />
+              </ActionToolTip>
               {(isAdmin || isModerator || ownerOfMessage) && (
                 <ActionToolTip
                   label="Delete"
