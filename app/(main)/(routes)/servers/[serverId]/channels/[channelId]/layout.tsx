@@ -10,7 +10,7 @@ interface ServersLayoutProps {
   children: React.ReactNode;
 }
 function ChannelsLayout({ children }: ServersLayoutProps) {
-  const { data, type } = useModal();
+  const { type } = useModal();
   const params = useParams();
 
   return (

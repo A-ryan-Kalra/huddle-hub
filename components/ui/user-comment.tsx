@@ -21,7 +21,7 @@ interface UserCommentProps {
   message: Message & {
     member: Member & { profile: Profile };
     directMessageId?: string;
-    threads: Threads[];
+    threads: (Threads & { member: Member & { profile: Profile } })[];
   };
   createdAt: Date;
   socketQuery: Record<string, any>;
@@ -56,6 +56,13 @@ function UserComment({
   const isDeleted = message.deleted;
   const showTime = format(new Date(message?.createdAt), TIME_FORMAT);
   const showDate = format(new Date(message?.createdAt), DATE_FORMAT);
+  const threadLastReply =
+    message?.threads &&
+    message?.threads?.length !== 0 &&
+    format(
+      message?.threads[message?.threads?.length - 1]?.updatedAt,
+      "dd/MMM, hh:mm a"
+    );
   const params = useParams();
   const cleanContent = (html: string) => {
     return html
@@ -289,14 +296,17 @@ function UserComment({
                   className="w-1/2 m-1 p-1 hover:ring-1 ring-zinc-300 hover:bg-white rounded-md flex items-center gap-x-2"
                 >
                   <AvatarIcon
-                    imageUrl={message?.member?.profile?.imageUrl}
+                    imageUrl={
+                      message?.threads[message?.threads?.length - 1]?.member
+                        ?.profile?.imageUrl
+                    }
                     width={20}
                     height={20}
                     className="!rounded-md border-[1px] border-current mt-auto !sticky bottom-0"
                   />
-                  <span className="text-sm hover:underline font-semibold text-blue-500">
-                    {message?.threads?.length}{" "}
-                    {message?.threads?.length > 1 ? "replies" : "reply"}
+                  <span className="text-xs hover:underline flex gap-x-2 items-center text-zinc-500 tracking-wide">
+                    View last reply at
+                    {threadLastReply && <span>{threadLastReply}</span>}
                   </span>
                 </button>
               )}

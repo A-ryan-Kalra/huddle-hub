@@ -128,7 +128,7 @@ function ChatSection({
       >
         {data?.pages?.map((group, index) => (
           <Fragment key={index}>
-            {group?.items?.map((item, index) => (
+            {group?.items?.map((item: any, index) => (
               <UserComment
                 type={type}
                 key={index}

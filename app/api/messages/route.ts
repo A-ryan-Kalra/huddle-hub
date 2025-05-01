@@ -42,6 +42,11 @@ export async function GET(req: NextRequest, res: NextResponse) {
           threads: {
             include: {
               message: true,
+              member: {
+                include: {
+                  profile: true,
+                },
+              },
             },
           },
         },
@@ -67,6 +72,11 @@ export async function GET(req: NextRequest, res: NextResponse) {
           threads: {
             include: {
               message: true,
+              member: {
+                include: {
+                  profile: true,
+                },
+              },
             },
           },
         },
