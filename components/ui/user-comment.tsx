@@ -1,4 +1,4 @@
-import { Member, MemberRole, Message, Profile } from "@prisma/client";
+import { Member, MemberRole, Message, Profile, Threads } from "@prisma/client";
 import React, { useEffect, useRef, useState } from "react";
 import AvatarIcon from "./avatar-icon";
 import { Edit, MessageCircleMore, TrashIcon } from "lucide-react";
@@ -21,6 +21,7 @@ interface UserCommentProps {
   message: Message & {
     member: Member & { profile: Profile };
     directMessageId?: string;
+    threads: Threads[];
   };
   createdAt: Date;
   socketQuery: Record<string, any>;
@@ -131,7 +132,7 @@ function UserComment({
 
     router.refresh();
   }
-  console.log(type);
+
   console.log(message);
   console.log("-------");
   return (
@@ -146,7 +147,7 @@ function UserComment({
         <div
           className={cn(
             "flex flex-col w-full  group rounded-tl-2xl rounded-r-2xl my-1 px-3 border-gray-200 border-[1px] relative ",
-            message.id !== messageId && "hover:bg-neutral-50  transition"
+            message.id !== messageId && "hover:bg-neutral-100  transition"
           )}
         >
           {!isDeleted && (
@@ -280,6 +281,25 @@ function UserComment({
                 className="w-full"
                 dangerouslySetInnerHTML={{ __html: message?.content as string }}
               />
+              {message?.threads?.length > 0 && (
+                <button
+                  onClick={() => {
+                    onOpen("openThread", { message: message });
+                  }}
+                  className="w-1/2 m-1 p-1 hover:ring-1 ring-zinc-300 hover:bg-white rounded-md flex items-center gap-x-2"
+                >
+                  <AvatarIcon
+                    imageUrl={message?.member?.profile?.imageUrl}
+                    width={20}
+                    height={20}
+                    className="!rounded-md border-[1px] border-current mt-auto !sticky bottom-0"
+                  />
+                  <span className="text-sm hover:underline font-semibold text-blue-500">
+                    {message?.threads?.length}{" "}
+                    {message?.threads?.length > 1 ? "replies" : "reply"}
+                  </span>
+                </button>
+              )}
               {message?.fileUrl && (
                 <div className="relative max-w-[500px] shadow-sm shadow-current my-2 max-h-[400px] rounded-lg overflow-hidden">
                   <Link

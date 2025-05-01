@@ -16,8 +16,6 @@ export default async function handler(
     const { serverId, messageId } = req.query;
     const { content } = req.body;
 
-    console.log("req.query==", req.query);
-    console.log("req.body==", req.body);
     if (!profile) {
       return res.status(401).json({ error: "Unauthorized" });
     }

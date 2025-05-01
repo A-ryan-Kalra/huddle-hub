@@ -15,7 +15,7 @@ export default async function handler(
     const profile = await currentProfilePages(req);
     const { messageId, serverId, memberId } = req.query;
     const { content } = req.body;
-    console.log("req.query", req.query);
+
     if (!profile) {
       return res.status(401).json({ error: "Unauthorized" });
     }
