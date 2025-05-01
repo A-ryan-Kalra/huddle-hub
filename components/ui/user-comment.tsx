@@ -20,7 +20,7 @@ import { useParams, useRouter } from "next/navigation";
 interface UserCommentProps {
   message: Message & {
     member: Member & { profile: Profile };
-    conversationId?: string;
+    directMessageId?: string;
   };
   createdAt: Date;
   socketQuery: Record<string, any>;
@@ -122,7 +122,7 @@ function UserComment({
           channelId: message?.channelId,
         }),
         ...(typeMessage === "conversations" && {
-          conversationId: message?.conversationId,
+          messageId: message?.directMessageId,
         }),
       },
     });
@@ -131,7 +131,9 @@ function UserComment({
 
     router.refresh();
   }
-
+  console.log(type);
+  console.log(message);
+  console.log("-------");
   return (
     <div className="flex px-4 h-full">
       <div className="relative flex gap-x-2 w-full  items-start">
