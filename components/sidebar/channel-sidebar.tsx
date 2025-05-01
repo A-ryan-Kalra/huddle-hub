@@ -86,7 +86,7 @@ async function ChannelSidebar({ serverId }: ChannelSideBarProps) {
   });
 
   return (
-    <div className="truncate max-md:w-full p-2 flex flex-col gap-y-2  h-full overflow-hidden">
+    <div className="truncate max-lg:w-full p-2 flex flex-col gap-y-2  h-full overflow-hidden">
       <div className="flex relative justify-between items-center">
         <ServerDropDown
           server={server}

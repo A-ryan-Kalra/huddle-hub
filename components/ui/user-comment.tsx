@@ -1,4 +1,4 @@
-import { Member, MemberRole, Message, Profile } from "@prisma/client";
+import { Member, MemberRole, Message, Profile, Threads } from "@prisma/client";
 import React, { useEffect, useRef, useState } from "react";
 import AvatarIcon from "./avatar-icon";
 import { Edit, MessageCircleMore, TrashIcon } from "lucide-react";
@@ -15,9 +15,14 @@ import { useModal } from "@/hooks/use-modal-store";
 import { format } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
 
 interface UserCommentProps {
-  message: Message & { member: Member & { profile: Profile } };
+  message: Message & {
+    member: Member & { profile: Profile };
+    directMessageId?: string;
+    threads: (Threads & { member: Member & { profile: Profile } })[];
+  };
   createdAt: Date;
   socketQuery: Record<string, any>;
   currentMember: Member & { profile: Profile };
@@ -37,6 +42,8 @@ function UserComment({
   type,
   currentMember,
 }: UserCommentProps) {
+  const router = useRouter();
+
   const [messageId, setMessageId] = useState<string>("");
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [content, setContent] = useState("");
@@ -49,7 +56,14 @@ function UserComment({
   const isDeleted = message.deleted;
   const showTime = format(new Date(message?.createdAt), TIME_FORMAT);
   const showDate = format(new Date(message?.createdAt), DATE_FORMAT);
-
+  const threadLastReply =
+    message?.threads &&
+    message?.threads?.length !== 0 &&
+    format(
+      message?.threads[message?.threads?.length - 1]?.updatedAt,
+      "dd/MMM, hh:mm a"
+    );
+  const params = useParams();
   const cleanContent = (html: string) => {
     return html
       .replace(/^(?:\s*<p>(?:<br\s*\/?>|\s|&nbsp;)*<\/p>\s*)+/gi, "")
@@ -73,8 +87,8 @@ function UserComment({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const url = queryString.stringifyUrl({
       url: `/api/socket/${
-        type === "channel" ? "messages" : "direct-messages"
-      }/${message.id}`,
+        type === "channel" || params?.channelId ? "messages" : "direct-messages"
+      }${type === "threads" ? "/threads" : ""}/${message.id}`,
       query: socketQuery,
     });
 
@@ -102,6 +116,32 @@ function UserComment({
     }
   }, [message.content, isEditing]);
 
+  async function deleteThreads() {
+    const typeMessage = window.location.pathname?.split("/")[3];
+    const url = queryString.stringifyUrl({
+      url: `/api/socket/${
+        typeMessage === "channel" || params?.channelId
+          ? "messages"
+          : "direct-messages"
+      }${type === "threads" ? "/threads" : ""}/${message?.id}`,
+      query: {
+        serverId: params?.serverId,
+        ...(typeMessage === "channels" && {
+          channelId: message?.channelId,
+        }),
+        ...(typeMessage === "conversations" && {
+          messageId: message?.directMessageId,
+        }),
+      },
+    });
+
+    await axios.delete(url);
+
+    router.refresh();
+  }
+
+  console.log(message);
+  console.log("-------");
   return (
     <div className="flex px-4 h-full">
       <div className="relative flex gap-x-2 w-full  items-start">
@@ -114,44 +154,57 @@ function UserComment({
         <div
           className={cn(
             "flex flex-col w-full  group rounded-tl-2xl rounded-r-2xl my-1 px-3 border-gray-200 border-[1px] relative ",
-            message.id !== messageId && "hover:bg-neutral-50  transition"
+            message.id !== messageId && "hover:bg-neutral-100  transition"
           )}
         >
-          <div className="gap-x-1 z-10 absolute right-3 p-1 bg-zinc-300 -top-4 invisible rounded-md group-hover:visible flex">
-            <ActionToolTip
-              label="Reply in thread"
-              onClick={() => {
-                // setMessageId(message.id);
+          {!isDeleted && (
+            <div className="gap-x-1 z-10 absolute right-3 p-1 bg-zinc-300 -top-4 invisible rounded-md group-hover:visible flex">
+              {!isDeleted && type !== "threads" && (
+                <ActionToolTip
+                  label="Reply in thread"
+                  onClick={() => {
+                    onOpen("openThread", { message: message });
+                  }}
+                  className="px-2 py-1 hover:bg-zinc-200 "
+                >
+                  <MessageCircleMore className="!w-4 !h-4" />
+                </ActionToolTip>
+              )}
 
-                onOpen("openThread", { message: message });
-              }}
-              className="px-2 py-1 hover:bg-zinc-200 "
-            >
-              <MessageCircleMore className="!w-4 !h-4" />
-            </ActionToolTip>
-            {!isDeleted && ownerOfMessage && ownerOfMessage && (
-              <ActionToolTip
-                label="Edit"
-                onClick={() => {
-                  setMessageId(message.id);
-                  setIsEditing(true);
-                }}
-                className="px-2 py-1 hover:bg-zinc-200 "
-              >
-                <Edit className="!w-4 !h-4" />
-              </ActionToolTip>
-            )}
+              {!isDeleted && ownerOfMessage && ownerOfMessage && (
+                <ActionToolTip
+                  label="Edit"
+                  onClick={() => {
+                    setMessageId(message.id);
+                    setIsEditing(true);
+                    if (isEditing) {
+                      setIsEditing(false);
+                      setMessageId("");
+                    }
+                  }}
+                  className="px-2 py-1 hover:bg-zinc-200 "
+                >
+                  <Edit className="!w-4 !h-4" />
+                </ActionToolTip>
+              )}
 
-            {(isAdmin || isModerator || ownerOfMessage) && (
-              <ActionToolTip
-                label="Delete"
-                onClick={() => onOpen("deleteMessage", { message })}
-                className="px-2 py-1 hover:bg-zinc-200 "
-              >
-                <TrashIcon className="!w-4 !h-4" />
-              </ActionToolTip>
-            )}
-          </div>
+              {(isAdmin || isModerator || ownerOfMessage) && (
+                <ActionToolTip
+                  label="Delete"
+                  onClick={() => {
+                    if (type === "threads") {
+                      deleteThreads();
+                    } else {
+                      onOpen("deleteMessage", { message });
+                    }
+                  }}
+                  className="px-2 py-1 hover:bg-zinc-200 "
+                >
+                  <TrashIcon className="!w-4 !h-4" />
+                </ActionToolTip>
+              )}
+            </div>
+          )}
           <div className="flex items-center justify-start">
             <h1 className="text-sm font-semibold hover:underline cursor-pointer transition">
               {message?.member?.profile?.name}
@@ -206,7 +259,7 @@ function UserComment({
                           suppressContentEditableWarning
                         ></div>
                       </FormControl>
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between my-1">
                         <span className="text-xs text-zinc-500 font-semibold py-1">
                           Press escape to cancel, enter to save
                         </span>
@@ -235,6 +288,28 @@ function UserComment({
                 className="w-full"
                 dangerouslySetInnerHTML={{ __html: message?.content as string }}
               />
+              {message?.threads?.length > 0 && (
+                <button
+                  onClick={() => {
+                    onOpen("openThread", { message: message });
+                  }}
+                  className="w-1/2 m-1 p-1 hover:ring-1 ring-zinc-300 hover:bg-white rounded-md flex items-center gap-x-2"
+                >
+                  <AvatarIcon
+                    imageUrl={
+                      message?.threads[message?.threads?.length - 1]?.member
+                        ?.profile?.imageUrl
+                    }
+                    width={20}
+                    height={20}
+                    className="!rounded-md border-[1px] border-current mt-auto !sticky bottom-0"
+                  />
+                  <span className="text-xs hover:underline flex gap-x-2 items-center text-zinc-500 tracking-wide">
+                    View last reply at
+                    {threadLastReply && <span>{threadLastReply}</span>}
+                  </span>
+                </button>
+              )}
               {message?.fileUrl && (
                 <div className="relative max-w-[500px] shadow-sm shadow-current my-2 max-h-[400px] rounded-lg overflow-hidden">
                   <Link

@@ -1,6 +1,6 @@
 "use client";
 import { Member, Profile } from "@prisma/client";
-import { HashIcon, Loader2, ServerCrashIcon } from "lucide-react";
+import { HashIcon, Loader2, PenLine, ServerCrashIcon } from "lucide-react";
 import React, { Fragment, useRef } from "react";
 import ChatWelcome from "./chat-welcome";
 import useChatQuery from "@/hooks/use-chat-query";
@@ -38,6 +38,7 @@ function ChatSection({
   currentMember,
 }: ChatSectionProps) {
   const chatRef = React.useRef<HTMLDivElement | null>(null);
+  const threadRef = React.useRef<HTMLDivElement | null>(null);
   const bottomRef = React.useRef<HTMLDivElement | null>(null);
   const queryKey = `chat:${chatId}`;
   const addKey = `chat:${chatId}:messages`;
@@ -55,7 +56,7 @@ function ChatSection({
   });
 
   useChatSocket({ audioRef, addKey, queryKey, updateKey });
-  console.log(data);
+
   if (status === "pending") {
     return (
       <div className="flex flex-col items-center gap-y-2 justify-center flex-1">
@@ -72,12 +73,25 @@ function ChatSection({
       </div>
     );
   }
+  if (type === "threads" && data?.pages[0]?.items?.length === 0) {
+    return (
+      <div className="flex flex-col items-center gap-y-2 justify-center flex-1">
+        <PenLine className="text-zinc-500" />
+        <h1 className="text-xs text-zinc-400">Leave a reply</h1>
+      </div>
+    );
+  }
 
   return (
     <div
       ref={chatRef}
       className={`flex ${
-        type !== "threads" ? "flex-1 mt-auto h-full" : "mb-auto h-fit"
+        type !== "threads"
+          ? "flex-1 mt-auto h-full"
+          : `mb-auto h-fit ${
+              (threadRef?.current?.clientHeight ?? 0) >
+                (chatRef?.current?.clientHeight ?? 0) && "flex-1"
+            }`
       } flex-col  overflow-y-auto !scroll-smooth`}
     >
       {!hasNextPage && <div className=" flex-1" />}
@@ -106,6 +120,7 @@ function ChatSection({
         )}
       </div>
       <div
+        ref={threadRef}
         className={cn(
           "flex flex-col-reverse mt-auto my-2",
           hasNextPage && "flex-1"
@@ -113,7 +128,7 @@ function ChatSection({
       >
         {data?.pages?.map((group, index) => (
           <Fragment key={index}>
-            {group?.items?.map((item, index) => (
+            {group?.items?.map((item: any, index) => (
               <UserComment
                 type={type}
                 key={index}

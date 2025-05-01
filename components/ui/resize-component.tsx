@@ -55,7 +55,9 @@ function ResizeComponent({ children, type }: ResizeComponentProps) {
     <div
       style={{ width }}
       className={cn(
-        "relative max-md:hidden overflow-hidden h-full bg-slate-100"
+        "relative  overflow-hidden h-full bg-slate-100",
+        type !== "openThread" && "max-lg:hidden",
+        type === "openThread" && "max-lg:min-w-full"
       )}
     >
       <div
