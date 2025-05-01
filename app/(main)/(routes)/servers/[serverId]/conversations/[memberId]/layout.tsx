@@ -17,7 +17,7 @@ function ChannelsLayout({ children }: ServersLayoutProps) {
     <div className="w-full h-full  flex">
       <div
         className={cn(
-          `bg-slate-20 w-ful max-lg:hidden flex-col flex-1 h-full ${
+          `w-ful max-lg:hidden flex-col flex-1 h-full ${
             type !== "openThread" && "flex"
           }`
         )}

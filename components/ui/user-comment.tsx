@@ -15,6 +15,7 @@ import { useModal } from "@/hooks/use-modal-store";
 import { format } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 
 interface UserCommentProps {
   message: Message & { member: Member & { profile: Profile } };
@@ -49,7 +50,7 @@ function UserComment({
   const isDeleted = message.deleted;
   const showTime = format(new Date(message?.createdAt), TIME_FORMAT);
   const showDate = format(new Date(message?.createdAt), DATE_FORMAT);
-
+  const params = useParams();
   const cleanContent = (html: string) => {
     return html
       .replace(/^(?:\s*<p>(?:<br\s*\/?>|\s|&nbsp;)*<\/p>\s*)+/gi, "")
@@ -73,8 +74,8 @@ function UserComment({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const url = queryString.stringifyUrl({
       url: `/api/socket/${
-        type === "channel" ? "messages" : "direct-messages"
-      }/${message.id}`,
+        type === "channel" || params?.channelId ? "messages" : "direct-messages"
+      }${type === "threads" ? "/threads" : ""}/${message.id}`,
       query: socketQuery,
     });
 
@@ -135,6 +136,10 @@ function UserComment({
                 onClick={() => {
                   setMessageId(message.id);
                   setIsEditing(true);
+                  if (isEditing) {
+                    setIsEditing(false);
+                    setMessageId("");
+                  }
                 }}
                 className="px-2 py-1 hover:bg-zinc-200 "
               >
@@ -206,7 +211,7 @@ function UserComment({
                           suppressContentEditableWarning
                         ></div>
                       </FormControl>
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between my-1">
                         <span className="text-xs text-zinc-500 font-semibold py-1">
                           Press escape to cancel, enter to save
                         </span>

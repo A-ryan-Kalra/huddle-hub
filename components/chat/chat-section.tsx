@@ -82,11 +82,6 @@ function ChatSection({
     );
   }
 
-  console.log(data?.pages[0]?.items?.length);
-  console.log(
-    (threadRef?.current?.clientHeight ?? 0) >=
-      (chatRef?.current?.clientHeight ?? 0)
-  );
   return (
     <div
       ref={chatRef}
