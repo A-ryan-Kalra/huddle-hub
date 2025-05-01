@@ -2,6 +2,7 @@
 import ChatThreads from "@/components/chat/chat-threads";
 import ResizeComponent from "@/components/ui/resize-component";
 import { useModal } from "@/hooks/use-modal-store";
+import { cn } from "@/lib/utils";
 import { useParams } from "next/navigation";
 import React from "react";
 
@@ -14,7 +15,13 @@ function ChannelsLayout({ children }: ServersLayoutProps) {
 
   return (
     <div className="w-full h-full  flex">
-      <div className="bg-slate-20 w-ful flex flex-col flex-1 h-full ">
+      <div
+        className={cn(
+          `bg-slate-20 w-ful max-lg:hidden flex-col flex-1 h-full ${
+            type !== "openThread" && "flex"
+          }`
+        )}
+      >
         {children}
       </div>
       {type === "openThread" && (

@@ -14,7 +14,7 @@ async function ServersLayout({ children, params }: ServersLayoutProps) {
 
   return (
     <div className="w-full h-full  flex">
-      <div className="max-md:hidden">
+      <div className="max-lg:hidden">
         <NavigationSidebar />
       </div>
       <div className="flex w-full h-full   rounded-2xl border-[1px] border-gray-300 overflow-hidden">

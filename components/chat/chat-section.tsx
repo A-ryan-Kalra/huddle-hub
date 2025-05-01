@@ -1,6 +1,6 @@
 "use client";
 import { Member, Profile } from "@prisma/client";
-import { HashIcon, Loader2, ServerCrashIcon } from "lucide-react";
+import { HashIcon, Loader2, PenLine, ServerCrashIcon } from "lucide-react";
 import React, { Fragment, useRef } from "react";
 import ChatWelcome from "./chat-welcome";
 import useChatQuery from "@/hooks/use-chat-query";
@@ -73,7 +73,20 @@ function ChatSection({
       </div>
     );
   }
+  if (type === "threads" && data?.pages[0]?.items?.length === 0) {
+    return (
+      <div className="flex flex-col items-center gap-y-2 justify-center flex-1">
+        <PenLine className="text-zinc-500" />
+        <h1 className="text-xs text-zinc-400">Leave a reply</h1>
+      </div>
+    );
+  }
 
+  console.log(data?.pages[0]?.items?.length);
+  console.log(
+    (threadRef?.current?.clientHeight ?? 0) >=
+      (chatRef?.current?.clientHeight ?? 0)
+  );
   return (
     <div
       ref={chatRef}
@@ -81,7 +94,7 @@ function ChatSection({
         type !== "threads"
           ? "flex-1 mt-auto h-full"
           : `mb-auto h-fit ${
-              (threadRef?.current?.clientHeight ?? 0) >=
+              (threadRef?.current?.clientHeight ?? 0) >
                 (chatRef?.current?.clientHeight ?? 0) && "flex-1"
             }`
       } flex-col  overflow-y-auto !scroll-smooth`}
