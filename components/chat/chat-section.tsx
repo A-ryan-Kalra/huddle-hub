@@ -38,6 +38,7 @@ function ChatSection({
   currentMember,
 }: ChatSectionProps) {
   const chatRef = React.useRef<HTMLDivElement | null>(null);
+  const threadRef = React.useRef<HTMLDivElement | null>(null);
   const bottomRef = React.useRef<HTMLDivElement | null>(null);
   const queryKey = `chat:${chatId}`;
   const addKey = `chat:${chatId}:messages`;
@@ -55,7 +56,7 @@ function ChatSection({
   });
 
   useChatSocket({ audioRef, addKey, queryKey, updateKey });
-  console.log(data);
+
   if (status === "pending") {
     return (
       <div className="flex flex-col items-center gap-y-2 justify-center flex-1">
@@ -77,7 +78,12 @@ function ChatSection({
     <div
       ref={chatRef}
       className={`flex ${
-        type !== "threads" ? "flex-1 mt-auto h-full" : "mb-auto h-fit"
+        type !== "threads"
+          ? "flex-1 mt-auto h-full"
+          : `mb-auto h-fit ${
+              (threadRef?.current?.clientHeight ?? 0) >=
+                (chatRef?.current?.clientHeight ?? 0) && "flex-1"
+            }`
       } flex-col  overflow-y-auto !scroll-smooth`}
     >
       {!hasNextPage && <div className=" flex-1" />}
@@ -106,6 +112,7 @@ function ChatSection({
         )}
       </div>
       <div
+        ref={threadRef}
         className={cn(
           "flex flex-col-reverse mt-auto my-2",
           hasNextPage && "flex-1"
