@@ -15,10 +15,13 @@ import { useModal } from "@/hooks/use-modal-store";
 import { format } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 interface UserCommentProps {
-  message: Message & { member: Member & { profile: Profile } };
+  message: Message & {
+    member: Member & { profile: Profile };
+    conversationId?: string;
+  };
   createdAt: Date;
   socketQuery: Record<string, any>;
   currentMember: Member & { profile: Profile };
@@ -38,6 +41,8 @@ function UserComment({
   type,
   currentMember,
 }: UserCommentProps) {
+  const router = useRouter();
+
   const [messageId, setMessageId] = useState<string>("");
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [content, setContent] = useState("");
@@ -103,6 +108,30 @@ function UserComment({
     }
   }, [message.content, isEditing]);
 
+  async function deleteThreads() {
+    const typeMessage = window.location.pathname?.split("/")[3];
+    const url = queryString.stringifyUrl({
+      url: `/api/socket/${
+        typeMessage === "channel" || params?.channelId
+          ? "messages"
+          : "direct-messages"
+      }${type === "threads" ? "/threads" : ""}/${message?.id}`,
+      query: {
+        serverId: params?.serverId,
+        ...(typeMessage === "channels" && {
+          channelId: message?.channelId,
+        }),
+        ...(typeMessage === "conversations" && {
+          conversationId: message?.conversationId,
+        }),
+      },
+    });
+
+    await axios.delete(url);
+
+    router.refresh();
+  }
+
   return (
     <div className="flex px-4 h-full">
       <div className="relative flex gap-x-2 w-full  items-start">
@@ -118,45 +147,54 @@ function UserComment({
             message.id !== messageId && "hover:bg-neutral-50  transition"
           )}
         >
-          <div className="gap-x-1 z-10 absolute right-3 p-1 bg-zinc-300 -top-4 invisible rounded-md group-hover:visible flex">
-            <ActionToolTip
-              label="Reply in thread"
-              onClick={() => {
-                // setMessageId(message.id);
+          {!isDeleted && (
+            <div className="gap-x-1 z-10 absolute right-3 p-1 bg-zinc-300 -top-4 invisible rounded-md group-hover:visible flex">
+              {!isDeleted && type !== "threads" && (
+                <ActionToolTip
+                  label="Reply in thread"
+                  onClick={() => {
+                    onOpen("openThread", { message: message });
+                  }}
+                  className="px-2 py-1 hover:bg-zinc-200 "
+                >
+                  <MessageCircleMore className="!w-4 !h-4" />
+                </ActionToolTip>
+              )}
 
-                onOpen("openThread", { message: message });
-              }}
-              className="px-2 py-1 hover:bg-zinc-200 "
-            >
-              <MessageCircleMore className="!w-4 !h-4" />
-            </ActionToolTip>
-            {!isDeleted && ownerOfMessage && ownerOfMessage && (
-              <ActionToolTip
-                label="Edit"
-                onClick={() => {
-                  setMessageId(message.id);
-                  setIsEditing(true);
-                  if (isEditing) {
-                    setIsEditing(false);
-                    setMessageId("");
-                  }
-                }}
-                className="px-2 py-1 hover:bg-zinc-200 "
-              >
-                <Edit className="!w-4 !h-4" />
-              </ActionToolTip>
-            )}
+              {!isDeleted && ownerOfMessage && ownerOfMessage && (
+                <ActionToolTip
+                  label="Edit"
+                  onClick={() => {
+                    setMessageId(message.id);
+                    setIsEditing(true);
+                    if (isEditing) {
+                      setIsEditing(false);
+                      setMessageId("");
+                    }
+                  }}
+                  className="px-2 py-1 hover:bg-zinc-200 "
+                >
+                  <Edit className="!w-4 !h-4" />
+                </ActionToolTip>
+              )}
 
-            {(isAdmin || isModerator || ownerOfMessage) && (
-              <ActionToolTip
-                label="Delete"
-                onClick={() => onOpen("deleteMessage", { message })}
-                className="px-2 py-1 hover:bg-zinc-200 "
-              >
-                <TrashIcon className="!w-4 !h-4" />
-              </ActionToolTip>
-            )}
-          </div>
+              {(isAdmin || isModerator || ownerOfMessage) && (
+                <ActionToolTip
+                  label="Delete"
+                  onClick={() => {
+                    if (type === "threads") {
+                      deleteThreads();
+                    } else {
+                      onOpen("deleteMessage", { message });
+                    }
+                  }}
+                  className="px-2 py-1 hover:bg-zinc-200 "
+                >
+                  <TrashIcon className="!w-4 !h-4" />
+                </ActionToolTip>
+              )}
+            </div>
+          )}
           <div className="flex items-center justify-start">
             <h1 className="text-sm font-semibold hover:underline cursor-pointer transition">
               {message?.member?.profile?.name}

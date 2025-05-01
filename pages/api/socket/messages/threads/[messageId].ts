@@ -13,16 +13,13 @@ export default async function handler(
       return res.status(405).json({ error: "Method not allowed" });
     }
     const profile = await currentProfilePages(req);
-    const { channelId, serverId, messageId } = req.query;
+    const { serverId, messageId } = req.query;
     const { content } = req.body;
 
     console.log("req.query==", req.query);
     console.log("req.body==", req.body);
     if (!profile) {
       return res.status(401).json({ error: "Unauthorized" });
-    }
-    if (!channelId) {
-      return res.status(400).json({ error: "Channel Id Missing" });
     }
 
     if (!serverId) {
