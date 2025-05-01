@@ -43,7 +43,12 @@ export async function GET(req: Request) {
           },
           threads: {
             include: {
-              directMessage: true,
+              message: true,
+              member: {
+                include: {
+                  profile: true,
+                },
+              },
             },
           },
         },
@@ -64,6 +69,11 @@ export async function GET(req: Request) {
           threads: {
             include: {
               message: true,
+              member: {
+                include: {
+                  profile: true,
+                },
+              },
             },
           },
         },

@@ -293,7 +293,7 @@ function UserComment({
                   onClick={() => {
                     onOpen("openThread", { message: message });
                   }}
-                  className="w-1/2 m-1 p-1 hover:ring-1 ring-zinc-300 hover:bg-white rounded-md flex items-center gap-x-2"
+                  className="md:w-1/2 w-full m-1 p-1 hover:ring-1 ring-zinc-300 hover:bg-white rounded-md flex items-center gap-x-2"
                 >
                   <AvatarIcon
                     imageUrl={
