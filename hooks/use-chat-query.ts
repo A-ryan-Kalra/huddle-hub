@@ -2,7 +2,7 @@ import queryString from "query-string";
 import { useSocket } from "@/components/providers/socket-providers";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Member, Message, Profile } from "@prisma/client";
+import { member, message, profile } from "@prisma/client";
 
 interface ChatQueryProps {
   queryKey: string;
@@ -40,8 +40,8 @@ function useChatQuery({
 
       getNextPageParam: (lastpage: {
         nextCursor: string | any;
-        items: (Message & {
-          member: Member & { profile: Profile };
+        items: (message & {
+          member: member & { profile: profile };
         })[];
       }) => lastpage?.nextCursor,
       initialPageParam: undefined,

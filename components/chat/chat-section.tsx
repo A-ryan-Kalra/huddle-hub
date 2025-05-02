@@ -49,13 +49,12 @@ function ChatSection({
   useChatScroll({
     chatRef,
     bottomRef,
-
     loadMore: fetchNextPage,
     shouldLoadMore: !!hasNextPage && !isFetchingNextPage,
     count: data?.pages[0]?.items?.length ?? 0,
   });
 
-  useChatSocket({ audioRef, addKey, queryKey, updateKey });
+  useChatSocket({ audioRef, addKey, queryKey, updateKey, type });
 
   if (status === "pending") {
     return (

@@ -300,12 +300,12 @@ function UserComment({
                     }
                     width={20}
                     height={20}
-                    className="!rounded-md border-[1px] border-current mt-auto !sticky bottom-0"
+                    className="!rounded-md aspect-square border-[1px] border-current mt-auto !sticky bottom-0"
                   />
-                  <span className="text-xs hover:underline flex gap-x-2 items-center text-zinc-500 tracking-wide">
+                  <p className="text-xs hover:underline truncate flex gap-x-2 items-center text-zinc-500 tracking-wide">
                     View last reply at
                     {threadLastReply && <span>{threadLastReply}</span>}
-                  </span>
+                  </p>
                 </button>
               )}
               {message?.fileUrl && (
