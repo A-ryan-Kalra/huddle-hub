@@ -1,4 +1,4 @@
-import { Channel, Member, Message, Profile, Server } from "@prisma/client";
+import { channel, member, message, profile, server } from "@prisma/client";
 import { create } from "zustand";
 export type ModalType =
   | "createServer"
@@ -15,11 +15,11 @@ export type ModalType =
   | "openThread";
 
 interface ModalData {
-  server?: Server;
-  channel?: Channel;
-  member?: Member | (Member & { profile: Profile })[];
+  server?: server;
+  channel?: channel;
+  member?: member | (member & { profile: profile })[];
   channelType?: string;
-  message?: Message & { member: Member & { profile: Profile } };
+  message?: message & { member: member & { profile: profile } };
 }
 
 interface ModalStore {

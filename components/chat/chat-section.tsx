@@ -1,5 +1,5 @@
 "use client";
-import { Member, Profile } from "@prisma/client";
+import { member, profile } from "@prisma/client";
 import { HashIcon, Loader2, PenLine, ServerCrashIcon } from "lucide-react";
 import React, { Fragment, useRef } from "react";
 import ChatWelcome from "./chat-welcome";
@@ -21,7 +21,7 @@ interface ChatSectionProps {
   createdAt?: string;
   chatName?: string;
   socketQuery: Record<string, any>;
-  currentMember: Member & { profile: Profile };
+  currentMember: member & { profile: profile };
 }
 
 const DATE_FORMAT = "d/MM/yyyy, hh:mm a";

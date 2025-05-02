@@ -1,7 +1,7 @@
 import { currentProfilePages } from "@/lib/currentProfilePages";
 import { db } from "@/lib/db";
 import { NextApiResponseServerIO } from "@/type";
-import { MemberRole } from "@prisma/client";
+import { memberRole } from "@prisma/client";
 import { NextApiRequest } from "next";
 
 export default async function handler(
@@ -53,8 +53,8 @@ export default async function handler(
       },
     });
 
-    const isAdmin = currentMember?.role === MemberRole.ADMIN;
-    const isModerator = isAdmin || currentMember?.role === MemberRole.MODERATOR;
+    const isAdmin = currentMember?.role === memberRole.ADMIN;
+    const isModerator = isAdmin || currentMember?.role === memberRole.MODERATOR;
     const isOwner = currentMember?.profileId === profile.id;
 
     const canModify = isAdmin || isModerator || isOwner;

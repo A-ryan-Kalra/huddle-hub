@@ -1,4 +1,4 @@
-import { DirectMessage, Member, Message, Profile } from "@prisma/client";
+import { directMessage, member, message, profile } from "@prisma/client";
 import React from "react";
 import AvatarIcon from "../ui/avatar-icon";
 import ActionToolTip from "../ui/action-tooltip";
@@ -17,7 +17,7 @@ interface MainThreadProps {
     memberId: string;
     channelId?: string;
     conversationId?: string;
-    member: Member & { profile: Profile };
+    member: member & { profile: profile };
   };
 }
 

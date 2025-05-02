@@ -1,6 +1,5 @@
 import { currentProfile } from "@/lib/currentProfile";
 import { db } from "@/lib/db";
-import { MemberRole } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { v4 as uuid } from "uuid";
 

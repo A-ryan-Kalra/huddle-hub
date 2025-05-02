@@ -1,6 +1,6 @@
 import { currentProfile } from "@/lib/currentProfile";
 import { db } from "@/lib/db";
-import { Conversation, DirectMessage } from "@prisma/client";
+import { conversation, directMessage } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 const MESSAGES_BATCH = 10;
@@ -22,7 +22,7 @@ export async function GET(req: Request) {
       );
     }
 
-    let directMessages: (DirectMessage & { conversation: Conversation })[];
+    let directMessages: (directMessage & { conversation: conversation })[];
 
     if (cursor) {
       directMessages = await db.directMessage.findMany({

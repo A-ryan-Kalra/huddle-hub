@@ -2,7 +2,7 @@ import { useModal } from "@/hooks/use-modal-store";
 import { X, XCircle } from "lucide-react";
 import React from "react";
 import MainThread from "../threads/main-thread";
-import { DirectMessage, Member, Message, Profile } from "@prisma/client";
+import { directMessage, member, message, profile } from "@prisma/client";
 import ChatEditor from "./chat-editor";
 import ChatSection from "./chat-section";
 
@@ -19,7 +19,7 @@ interface ChatMessage {
   memberId: string;
   channelId?: string;
   conversationId?: string;
-  member: Member & { profile: Profile };
+  member: member & { profile: profile };
 }
 
 function ChatThreads({ params }: ChatThreadsProps) {

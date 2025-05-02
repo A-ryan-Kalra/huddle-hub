@@ -1,6 +1,6 @@
 import { currentProfile } from "@/lib/currentProfile";
 import { db } from "@/lib/db";
-import { Message } from "@prisma/client";
+import { message } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 const MESSAGE_BATCH = 10;
@@ -23,7 +23,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
       );
     }
 
-    let messages: Message[];
+    let messages: message[];
     if (cursor) {
       messages = await db.message.findMany({
         where: {

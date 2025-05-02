@@ -1,4 +1,4 @@
-import { Member, MemberRole, Message, Profile, Threads } from "@prisma/client";
+import { member, memberRole, message, profile, threads } from "@prisma/client";
 import React, { useEffect, useRef, useState } from "react";
 import AvatarIcon from "./avatar-icon";
 import { Edit, MessageCircleMore, TrashIcon } from "lucide-react";
@@ -18,14 +18,14 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 
 interface UserCommentProps {
-  message: Message & {
-    member: Member & { profile: Profile };
+  message: message & {
+    member: member & { profile: profile };
     directMessageId?: string;
-    threads: (Threads & { member: Member & { profile: Profile } })[];
+    threads: (threads & { member: member & { profile: profile } })[];
   };
   createdAt: Date;
   socketQuery: Record<string, any>;
-  currentMember: Member & { profile: Profile };
+  currentMember: member & { profile: profile };
   type: "channel" | "conversation" | "threads";
 }
 
@@ -50,8 +50,8 @@ function UserComment({
   const contentRef = useRef<HTMLDivElement>(null);
   const { onOpen } = useModal();
   const isUpdated = message.createdAt !== message.updatedAt;
-  const isAdmin = type === "channel" && currentMember.role === MemberRole.ADMIN;
-  const isModerator = isAdmin || currentMember.role === MemberRole.MODERATOR;
+  const isAdmin = type === "channel" && currentMember.role === memberRole.ADMIN;
+  const isModerator = isAdmin || currentMember.role === memberRole.MODERATOR;
   const ownerOfMessage = message.memberId === currentMember.id;
   const isDeleted = message.deleted;
   const showTime = format(new Date(message?.createdAt), TIME_FORMAT);
@@ -140,8 +140,6 @@ function UserComment({
     router.refresh();
   }
 
-  console.log(message);
-  console.log("-------");
   return (
     <div className="flex px-4 h-full">
       <div className="relative flex gap-x-2 w-full  items-start">

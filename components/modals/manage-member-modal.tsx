@@ -22,7 +22,7 @@ import {
   ShieldQuestionIcon,
 } from "lucide-react";
 import { useModal } from "@/hooks/use-modal-store";
-import { Member, MemberRole, Profile, Server } from "@prisma/client";
+import { member, memberRole, profile, server } from "@prisma/client";
 
 import AvatarIcon from "../ui/avatar-icon";
 import ActionToolTip from "../ui/action-tooltip";
@@ -40,9 +40,9 @@ import {
 } from "../ui/dropdown-menu";
 
 const memberRoleIcon = {
-  [MemberRole.ADMIN]: <ShieldAlert className="w-4 h-4 text-red-500" />,
-  [MemberRole.MODERATOR]: <ShieldCheck className="w-4 h-4 text-blue-500" />,
-  [MemberRole.GUEST]: null,
+  [memberRole.ADMIN]: <ShieldAlert className="w-4 h-4 text-red-500" />,
+  [memberRole.MODERATOR]: <ShieldCheck className="w-4 h-4 text-blue-500" />,
+  [memberRole.GUEST]: null,
 };
 
 function ManageMemberModal() {
@@ -50,7 +50,7 @@ function ManageMemberModal() {
   const openModal = type === "customizeMember";
   const [loadingId, setLoadingId] = useState("");
   const { server } = data as {
-    server: Server & { members: (Member & { profile: Profile })[] };
+    server: server & { members: (member & { profile: profile })[] };
   };
   const router = useRouter();
 

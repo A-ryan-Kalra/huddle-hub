@@ -24,14 +24,14 @@ import {
 } from "@clerk/nextjs";
 import AvatarIcon from "../ui/avatar-icon";
 import { useModal } from "@/hooks/use-modal-store";
-import { Member, MemberRole } from "@prisma/client";
+import { member, memberRole } from "@prisma/client";
 import { toast } from "sonner";
 import Link from "next/link";
 interface ServerDropDownProps {
   server: ServerSchema;
-  role: MemberRole;
+  role: memberRole;
   allServers: ServerSchema[];
-  currentMember: Member;
+  currentMember: member;
 }
 
 function ServerDropDown({
@@ -42,8 +42,8 @@ function ServerDropDown({
 }: ServerDropDownProps) {
   const { onOpen } = useModal();
   const { sessionId } = useAuth();
-  const admin = role === MemberRole.ADMIN;
-  const moderator = role === MemberRole.MODERATOR || admin;
+  const admin = role === memberRole.ADMIN;
+  const moderator = role === memberRole.MODERATOR || admin;
   useEffect(() => {
     function keyPress(e: KeyboardEvent) {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {

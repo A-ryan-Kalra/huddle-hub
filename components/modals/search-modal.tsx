@@ -27,32 +27,32 @@ import {
 } from "@/components/ui/command";
 import { useModal } from "@/hooks/use-modal-store";
 import {
-  Channel,
-  ChannelOnMember,
-  ChannelType,
-  ChannelVisibility,
-  Member,
-  MemberRole,
-  Profile,
-  Server,
+  channel,
+  channelOnMember,
+  channelType,
+  channelVisibility,
+  member,
+  memberRole,
+  profile,
+  server,
 } from "@prisma/client";
 import ActionToolTip from "../ui/action-tooltip";
 import AvatarIcon from "../ui/avatar-icon";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-const channelIconType = {
-  [ChannelVisibility.PUBLIC]: <Hash className="w-4 h-4" />,
-  [ChannelVisibility.PRIVATE]: <Lock className="w-4 h-4" />,
+const channelIconVisibilityType = {
+  [channelVisibility.PUBLIC]: <Hash className="w-4 h-4" />,
+  [channelVisibility.PRIVATE]: <Lock className="w-4 h-4" />,
 };
-const channelType = {
-  [ChannelType.AUDIO]: <Mic className="w-4 h-4" />,
-  [ChannelType.VIDEO]: <Video className="w-4 h-4" />,
-  [ChannelType.TEXT]: null,
+const channelTypeIcon = {
+  [channelType.AUDIO]: <Mic className="w-4 h-4" />,
+  [channelType.VIDEO]: <Video className="w-4 h-4" />,
+  [channelType.TEXT]: null,
 };
 const memberRoleIcon = {
-  [MemberRole.ADMIN]: <ShieldAlert className="w-4 h-4 text-red-500" />,
-  [MemberRole.MODERATOR]: <ShieldCheck className="w-4 h-4 text-blue-500" />,
-  [MemberRole.GUEST]: null,
+  [memberRole.ADMIN]: <ShieldAlert className="w-4 h-4 text-red-500" />,
+  [memberRole.MODERATOR]: <ShieldCheck className="w-4 h-4 text-blue-500" />,
+  [memberRole.GUEST]: null,
 };
 
 export function SearchModal() {
@@ -60,12 +60,12 @@ export function SearchModal() {
   const router = useRouter();
   const isModalOpen = type === "searchModal";
   const { server, member } = data as {
-    server: Server & {
-      channels: (Channel & { members: ChannelOnMember[] })[];
+    server: server & {
+      channels: (channel & { members: channelOnMember[] })[];
     } & {
-      members: (Member & { profile: Profile })[];
+      members: (member & { profile: profile })[];
     };
-    member: Member;
+    member: member;
   };
 
   return (
@@ -85,7 +85,7 @@ export function SearchModal() {
               );
 
             const onClick = (
-              channel: Channel & { members: ChannelOnMember[] }
+              channel: channel & { members: channelOnMember[] }
             ) => {
               if (!accessToPrivateChannel && channel.visibility === "PRIVATE") {
                 toast("Unauthorized Access", {
@@ -110,10 +110,10 @@ export function SearchModal() {
                 className="cursor-pointer"
                 value={`${channel.name}-${channel.id}`}
               >
-                {channelIconType[channel.visibility]}
+                {channelIconVisibilityType[channel.visibility]}
                 <span>{channel.name}</span>
                 <ActionToolTip side="right" label={channel.type}>
-                  {channelType[channel.type]}
+                  {channelTypeIcon[channel.type]}
                 </ActionToolTip>
               </CommandItem>
             );

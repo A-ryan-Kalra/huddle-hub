@@ -7,7 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Profile {
+model profile {
   id        String    @id @default(uuid())
   userId    String    @unique
   name      String
@@ -15,12 +15,12 @@ model Profile {
   email     String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  channels  Channel[]
-  members   Member[]
-  servers   Server[]
+  channels  channel[]
+  members   member[]
+  servers   server[]
 }
 
-model Server {
+model server {
   id         String    @id @default(uuid())
   name       String
   imageUrl   String
@@ -28,48 +28,51 @@ model Server {
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   profileId  String
-  channels   Channel[]
-  channelOnMembers ChannelOnMember[]
-  members    Member[]
-  profile    Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  channels   channel[]
+  channelOnMembers channelOnMember[]
+  members    member[]
+  profile    profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
 }
 
-model Channel {
+model channel {
   id         String            @id @default(uuid())
   name       String
   profileId  String
-  type       ChannelType       @default(TEXT)
+  type       channelType       @default(TEXT)
   serverId String
-  visibility ChannelVisibility @default(PUBLIC)
+  visibility channelVisibility @default(PUBLIC)
   createdAt  DateTime          @default(now())
   updatedAt  DateTime          @updatedAt
-  profile    Profile           @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  server     Server @relation(fields: [serverId],references: [id],onDelete: Cascade)
-  members    ChannelOnMember[]
-  messages   Message[]
+  profile    profile           @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  server     server @relation(fields: [serverId],references: [id],onDelete: Cascade)
+  members    channelOnMember[]
+  messages   message[]
+
+
 }
 
-model Member {
+model member {
   id                    String         @id @default(uuid())
-  role                  MemberRole     @default(GUEST)
+  role                  memberRole     @default(GUEST)
   profileId             String
   serverId              String
   createdAt             DateTime       @default(now())
   updatedAt             DateTime       @updatedAt
-  conversationInitiated Conversation[] @relation("conversationInitiater")
-  concersationReceived  Conversation[] @relation("conversationReceiver")
+  conversationInitiated conversation[] @relation("conversationInitiater")
+  concersationReceived  conversation[] @relation("conversationReceiver")
 
-  profile               Profile        @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  server                Server         @relation(fields: [serverId], references: [id], onDelete: Cascade)
-  channels              ChannelOnMember[]
-  messages              Message[]
-  directMessages        DirectMessage[]
-  threads               Threads[]
- 
+  profile               profile        @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  server                server         @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  channels              channelOnMember[]
+  messages              message[]
+  directMessages        directMessage[]
+  threads               threads[]
+  notificationInitiated notification[] @relation("notificationInitiater")
+  notificationReceived  notification[] @relation("notificationReceiver")
   @@index([serverId])
 }
 
-model Message {
+model message {
   id        String   @id @default(uuid())
   content   String?
   fileUrl   String?
@@ -78,28 +81,28 @@ model Message {
   updatedAt DateTime @updatedAt
   memberId  String
   channelId String
-  channel   Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
-  member    Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
-  threads               Threads[]
+  channel   channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  member    member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  threads              threads[]
 
   @@index([channelId])
   @@index([memberId])
 }
 
-model Conversation {
+model conversation {
   id                      String          @id @default(uuid())
   conversationInitiaterId String
   conversationReceiverId  String
-  conversationInitiator   Member          @relation("conversationInitiater", fields: [conversationInitiaterId], references: [id], onDelete: Cascade)
-  conversationReceiver    Member          @relation("conversationReceiver", fields: [conversationReceiverId], references: [id], onDelete: Cascade)
-  directMessages          DirectMessage[]
+  conversationInitiator   member          @relation("conversationInitiater", fields: [conversationInitiaterId], references: [id], onDelete: Cascade)
+  conversationReceiver    member          @relation("conversationReceiver", fields: [conversationReceiverId], references: [id], onDelete: Cascade)
+  directMessages          directMessage[]
 
   @@unique([conversationInitiaterId, conversationReceiverId])
   @@index([conversationInitiaterId])
   @@index([conversationReceiverId])
 }
 
-model DirectMessage {
+model directMessage {
   id             String       @id @default(uuid())
   content        String
   fileUrl        String?
@@ -108,15 +111,15 @@ model DirectMessage {
   deleted        Boolean      @default(false)
 
   conversationId String
-  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  conversation   conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
   memberId       String
-  member         Member  @relation(fields: [memberId],references: [id],onDelete: Cascade)
+  member         member  @relation(fields: [memberId],references: [id],onDelete: Cascade)
 
-  threads               Threads[]
+  threads               threads[]
 }
 
-model Threads {
+model threads {
   id        String   @id @default(uuid())
   content   String?
   fileUrl   String?
@@ -125,41 +128,64 @@ model Threads {
   updatedAt DateTime @updatedAt
 
   directMessageId  String?
-  directMessage    DirectMessage?   @relation(fields: [directMessageId], references: [id], onDelete: Cascade)
+  directMessage    directMessage?   @relation(fields: [directMessageId], references: [id], onDelete: Cascade)
 
   messageId  String?
-  message    Message?   @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  message    message?   @relation(fields: [messageId], references: [id], onDelete: Cascade)
 
   memberId  String
-  member    Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  member    member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
 
   @@index([directMessageId,messageId,memberId])
 }
 
-model ChannelOnMember{
+model channelOnMember{
   memberId String
-  member                Member        @relation(fields: [memberId],references: [id],onDelete: Cascade)
+  member                member        @relation(fields: [memberId],references: [id],onDelete: Cascade)
   channelId             String
-  channel               Channel       @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  channel               channel       @relation(fields: [channelId], references: [id], onDelete: Cascade)
   serverId              String
-  server                Server        @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  server                server        @relation(fields: [serverId], references: [id], onDelete: Cascade)
   createdAt      DateTime     @default(now())
  
   @@id([memberId,channelId,serverId])
 }
 
-enum ChannelType {
+model notification{
+  id String  @id @default(uuid())
+
+
+  notificationInitiaterId String
+  notificationReceiverId  String
+  notificationInitiater     member @relation("notificationInitiater",fields: [notificationInitiaterId],references: [id],onDelete: Cascade)
+  notificationReceiver     member @relation("notificationReceiver",fields: [notificationReceiverId],references: [id],onDelete: Cascade)
+
+  notification_contents    notification_content[]
+ 
+}
+
+model notification_content{
+  id String  @id @default(uuid())
+  content String
+  createdAt DateTime @default(now())
+
+  notifiactionId String
+  notification notification @relation(fields: [notifiactionId],references: [id],onDelete: Cascade)
+}
+
+
+enum channelType {
   TEXT
   AUDIO
   VIDEO
 }
 
-enum ChannelVisibility {
+enum channelVisibility {
   PUBLIC
   PRIVATE
 }
 
-enum MemberRole {
+enum memberRole {
   ADMIN
   MODERATOR
   GUEST

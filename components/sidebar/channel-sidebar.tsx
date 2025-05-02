@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import ActionToolTip from "../ui/action-tooltip";
 import ServerDropDown from "../channels/server-drop-down";
 import CommunicationSection from "./communication-section";
-import { MemberRole } from "@prisma/client";
+import { memberRole } from "@prisma/client";
 import { currentProfile } from "@/lib/currentProfile";
 
 interface ChannelSideBarProps {
@@ -68,7 +68,7 @@ async function ChannelSidebar({ serverId }: ChannelSideBarProps) {
     (member) => member.profileId === profile.id
   );
 
-  const role: MemberRole = currentMember[0]!.role;
+  const role: memberRole = currentMember[0]!.role;
 
   const allMembers = await db.member.findMany({
     where: {

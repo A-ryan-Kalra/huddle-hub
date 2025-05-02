@@ -1,11 +1,11 @@
-import { Member, Profile } from "@prisma/client";
+import { member, profile } from "@prisma/client";
 import AvatarIcon from "../ui/avatar-icon";
 import { useParams, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useModal } from "@/hooks/use-modal-store";
 
 interface MemberNameProps {
-  member: Member & { profile: Profile };
+  member: member & { profile: profile };
 }
 
 function MemberName({ member }: MemberNameProps) {
