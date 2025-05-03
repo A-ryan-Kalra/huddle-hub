@@ -52,6 +52,9 @@ export async function GET(req: Request) {
             },
           },
         },
+        orderBy: {
+          createdAt: "desc",
+        },
       });
     } else {
       directMessages = await db.directMessage.findMany({
@@ -76,6 +79,9 @@ export async function GET(req: Request) {
               },
             },
           },
+        },
+        orderBy: {
+          createdAt: "desc",
         },
       });
     }

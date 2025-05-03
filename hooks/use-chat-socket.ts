@@ -44,9 +44,8 @@ function useChatSocket({
           items: [message, ...newData[0].items],
         };
 
-        if (type === "threads") {
-          queryClient.refetchQueries({ queryKey: [triggerKey] });
-        }
+        queryClient.refetchQueries({ queryKey: [triggerKey] });
+
         // queryClient.refetchQueries();
 
         audioRef.current?.play();
@@ -87,7 +86,7 @@ function useChatSocket({
       socket.off(addKey);
       socket.off(updateKey);
     };
-  }, [isConnected, queryKey, addKey, updateKey]);
+  }, [isConnected, queryKey, addKey, updateKey, type]);
 }
 
 export default useChatSocket;

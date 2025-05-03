@@ -63,6 +63,16 @@ export default async function handler(
             profile: true,
           },
         },
+        threads: {
+          include: {
+            message: true,
+            member: {
+              include: {
+                profile: true,
+              },
+            },
+          },
+        },
       },
     });
     // const notifiaction = await db.notification.create({
