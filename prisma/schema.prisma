@@ -67,8 +67,7 @@ model member {
   messages              message[]
   directMessages        directMessage[]
   threads               threads[]
-  notificationInitiated notification[] @relation("notificationInitiater")
-  notificationReceived  notification[] @relation("notificationReceiver")
+  noificationSent       noification[] 
   @@index([serverId])
 }
 
@@ -151,28 +150,15 @@ model channelOnMember{
   @@id([memberId,channelId,serverId])
 }
 
-model notification{
-  id String  @id @default(uuid())
-
-
-  notificationInitiaterId String
-  notificationReceiverId  String
-  notificationInitiater     member @relation("notificationInitiater",fields: [notificationInitiaterId],references: [id],onDelete: Cascade)
-  notificationReceiver     member @relation("notificationReceiver",fields: [notificationReceiverId],references: [id],onDelete: Cascade)
-
-  notification_contents    notification_content[]
- 
-}
-
-model notification_content{
-  id String  @id @default(uuid())
+model noification{
+  id  String @id @default(uuid())
   content String
-  createdAt DateTime @default(now())
 
-  notifiactionId String
-  notification notification @relation(fields: [notifiactionId],references: [id],onDelete: Cascade)
-}
+  senderId String
+  notificaionSent member @relation(fields: [senderId],references: [id],onDelete: Cascade)
+  
 
+} 
 
 enum channelType {
   TEXT

@@ -65,6 +65,35 @@ export default async function handler(
         },
       },
     });
+    // const notifiaction = await db.notification.create({
+    //   data: {
+    //     notificationInitiaterId: conversation.conversationInitiaterId,
+    //     notificationReceiverId: conversation.conversationReceiverId,
+    //     notification_contents: {
+    //       c,
+    //     },
+    //   },
+    // });
+
+    // const notifiactionContent = await db.notification_content.create({
+    //   data: {
+    //     content: "ss",
+    //     notification: {
+    //       connectOrCreate: {
+    //         where: {
+    //           notificationInitiaterId_notificationReceiverId: {
+    //             notificationInitiaterId: conversation.conversationInitiaterId,
+    //             notificationReceiverId: conversation.conversationReceiverId,
+    //           },
+    //         },
+    //         create: {
+    //           notificationInitiaterId: conversation.conversationInitiaterId,
+    //           notificationReceiverId: conversation.conversationReceiverId,
+    //         },
+    //       },
+    //     },
+    //   },
+    // });
 
     const chat = `chat:${conversationId}:messages`;
 

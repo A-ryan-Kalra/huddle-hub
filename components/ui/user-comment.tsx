@@ -302,8 +302,12 @@ function UserComment({
                     height={20}
                     className="!rounded-md aspect-square border-[1px] border-current mt-auto !sticky bottom-0"
                   />
+                  <p className="text-xs hover:underline text-blue-500 truncate flex gap-x-2 items-center font-semibold">
+                    {message?.threads?.length}{" "}
+                    {message?.threads?.length > 1 ? "replies" : "reply"}
+                  </p>
                   <p className="text-xs hover:underline truncate flex gap-x-2 items-center text-zinc-500 tracking-wide">
-                    View last reply at
+                    last reply at
                     {threadLastReply && <span>{threadLastReply}</span>}
                   </p>
                 </button>

@@ -9,6 +9,7 @@ interface ChatSockerProps {
   updateKey: string;
   audioRef: React.RefObject<HTMLAudioElement | null>;
   type: "channel" | "conversation" | "threads";
+  triggerKey?: string;
 }
 type MessageWithMember = message & {
   member: member & { profile: profile };
@@ -20,6 +21,7 @@ function useChatSocket({
   updateKey,
   audioRef,
   type,
+  triggerKey,
 }: ChatSockerProps) {
   const { socket, isConnected } = useSocket();
   const queryClient = useQueryClient();
@@ -28,18 +30,24 @@ function useChatSocket({
     if (!socket) {
       return;
     }
-    console.log(type);
+
     socket?.on(addKey, (message: MessageWithMember) => {
       queryClient.setQueryData([queryKey], (oldData: any) => {
         if (!oldData || !oldData.pages || oldData.pages.length === 0) {
           return { pages: [{ items: [message] }] };
         }
+
         const newData = [...oldData.pages];
+
         newData[0] = {
           ...newData[0],
           items: [message, ...newData[0].items],
         };
-        // queryClient.refetchQueries({ queryKey: [queryKey] });
+
+        if (type === "threads") {
+          queryClient.refetchQueries({ queryKey: [triggerKey] });
+        }
+        // queryClient.refetchQueries();
 
         audioRef.current?.play();
 

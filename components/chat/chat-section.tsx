@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 
 interface ChatSectionProps {
   type: "channel" | "conversation" | "threads";
-
+  triggerChatId?: string;
   paramKey: string;
   paramValue: string;
   apiUrl: string;
@@ -36,16 +36,20 @@ function ChatSection({
   chatName,
   socketQuery,
   currentMember,
+  triggerChatId,
 }: ChatSectionProps) {
   const chatRef = React.useRef<HTMLDivElement | null>(null);
   const threadRef = React.useRef<HTMLDivElement | null>(null);
   const bottomRef = React.useRef<HTMLDivElement | null>(null);
   const queryKey = `chat:${chatId}`;
+  const triggerKey = `chat:${triggerChatId}`;
   const addKey = `chat:${chatId}:messages`;
   const updateKey = `chat:${chatId}:messages:update`;
+  const audioRef = useRef(null);
+  console.log(triggerKey);
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage, status } =
     useChatQuery({ queryKey, paramKey, paramValue, apiUrl });
-  const audioRef = useRef(null);
+
   useChatScroll({
     chatRef,
     bottomRef,
@@ -54,7 +58,7 @@ function ChatSection({
     count: data?.pages[0]?.items?.length ?? 0,
   });
 
-  useChatSocket({ audioRef, addKey, queryKey, updateKey, type });
+  useChatSocket({ audioRef, addKey, queryKey, updateKey, type, triggerKey });
 
   if (status === "pending") {
     return (

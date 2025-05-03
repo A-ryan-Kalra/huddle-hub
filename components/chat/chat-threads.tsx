@@ -27,7 +27,7 @@ function ChatThreads({ params }: ChatThreadsProps) {
   const { message } = params?.member
     ? (data as { message: ChatMessage })
     : (data as { message: ChatMessage });
-
+  console.log(message);
   return (
     <div className="w-full h-full flex flex-col flex- p-2 bg-white border-l-[1px]">
       <div className="flex justify-between items-center">
@@ -43,6 +43,7 @@ function ChatThreads({ params }: ChatThreadsProps) {
       <ChatSection
         type="threads"
         chatId={message?.id}
+        triggerChatId={message?.channelId || message?.conversationId}
         name={message?.member?.profile?.name?.split(" ")[0]}
         createdAt={
           message?.createdAt
