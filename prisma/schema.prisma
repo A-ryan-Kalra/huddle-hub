@@ -67,7 +67,7 @@ model member {
   messages              message[]
   directMessages        directMessage[]
   threads               threads[]
-  noificationSent       noification[] 
+  notificationSent       notification[] 
   notificationRecipient notificationRecipient[]
 
   @@index([serverId,profileId])
@@ -152,12 +152,13 @@ model channelOnMember{
   @@id([memberId,channelId,serverId])
 }
 
-model noification{
+model notification{
   id  String @id @default(uuid())
   message String
-  type notificationType @default(REPLY)
-  typeId String // could be commentId or replyId
-  entityId String?
+  type notificationType @default(MESSAGE)
+  typeId String // could be messageId or replyId
+  channel_direct_messageId String
+  threadId String?
   senderId String
   notificaionSent member @relation(fields: [senderId],references: [id],onDelete: Cascade)
   createdAt DateTime @default(now())
@@ -168,14 +169,15 @@ model noification{
 model notificationRecipient {
   id String @id @default(uuid())
   isRead Boolean @default(false)
-  noificationId String
-  notification noification @relation(fields: [noificationId],references: [id],onDelete: Cascade)
+  notificationId String
+  notification notification @relation(fields: [notificationId],references: [id],onDelete: Cascade)
   memberId String
   member member @relation(fields: [memberId],references: [id],onDelete: Cascade)
 }
 
 enum notificationType {
-  COMMENT
+  MESSAGE
+  DIRECT_MESSAGE
   REPLY
 }
 

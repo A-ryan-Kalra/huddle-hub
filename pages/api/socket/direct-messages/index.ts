@@ -1,6 +1,7 @@
 import { currentProfilePages } from "@/lib/currentProfilePages";
 import { db } from "@/lib/db";
 import { NextApiResponseServerIO } from "@/type";
+import { notificationType } from "@prisma/client";
 import { NextApiRequest } from "next";
 
 export default async function handler(
@@ -75,39 +76,29 @@ export default async function handler(
         },
       },
     });
-    // const notifiaction = await db.notification.create({
-    //   data: {
-    //     notificationInitiaterId: conversation.conversationInitiaterId,
-    //     notificationReceiverId: conversation.conversationReceiverId,
-    //     notification_contents: {
-    //       c,
-    //     },
-    //   },
-    // });
 
-    // const notifiactionContent = await db.notification_content.create({
-    //   data: {
-    //     content: "ss",
-    //     notification: {
-    //       connectOrCreate: {
-    //         where: {
-    //           notificationInitiaterId_notificationReceiverId: {
-    //             notificationInitiaterId: conversation.conversationInitiaterId,
-    //             notificationReceiverId: conversation.conversationReceiverId,
-    //           },
-    //         },
-    //         create: {
-    //           notificationInitiaterId: conversation.conversationInitiaterId,
-    //           notificationReceiverId: conversation.conversationReceiverId,
-    //         },
-    //       },
-    //     },
-    //   },
-    // });
+    const notifiaction = await db.notification.create({
+      data: {
+        message: `You have a new message from ${profile.name}`,
+        type: notificationType.DIRECT_MESSAGE,
+        typeId: conversationId as string,
+        channel_direct_messageId: currentMember?.id,
+        senderId: currentMember?.id,
+        recipients: {
+          create: [
+            {
+              memberId: conversation.conversationReceiverId,
+            },
+          ],
+        },
+      },
+    });
 
     const chat = `chat:${conversationId}:messages`;
+    const notificationQueryKey = `notification:${currentMember?.id}:newAlert`;
 
     res?.socket?.server?.io?.emit(chat, directMessage);
+    res?.socket?.server?.io?.emit(notificationQueryKey, notifiaction);
 
     return res.json({ directMessage });
   } catch (error) {

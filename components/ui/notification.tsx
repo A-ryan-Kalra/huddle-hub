@@ -14,6 +14,9 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { Bell } from "lucide-react";
+import useChatSocket from "@/hooks/use-chat-socket";
+import { useParams } from "next/navigation";
+import useChatQuery from "@/hooks/use-chat-query";
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -54,6 +57,16 @@ const components: { title: string; href: string; description: string }[] = [
 ];
 
 export function Notification() {
+  const params = useParams();
+  // const triggerKey = `chat:${triggerChatId}`;
+  const notificationQuery = params?.memberId || params?.channelId;
+  const queryKey = `notification:${notificationQuery}`;
+  const addKey = `notification:${notificationQuery}:newAlert`;
+  // const {}=useChatQuery({queryKey})
+  // const updateKey = `chat:${chatId}:messages:update`;
+  // const audioRef = useRef(null);
+  console.log(params);
+  // useChatSocket({  addKey,   queryKey});
   return (
     <NavigationMenu className="">
       <NavigationMenuList className="!h-fit !m-0 !p-0">

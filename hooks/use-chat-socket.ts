@@ -5,10 +5,10 @@ import { useEffect } from "react";
 
 interface ChatSockerProps {
   addKey: string;
-  queryKey: string;
-  updateKey: string;
-  audioRef: React.RefObject<HTMLAudioElement | null>;
-  type: "channel" | "conversation" | "threads";
+  queryKey?: string;
+  updateKey?: string;
+  audioRef?: React.RefObject<HTMLAudioElement | null>;
+  type?: "channel" | "conversation" | "threads";
   triggerKey?: string;
 }
 type MessageWithMember = message & {
@@ -43,12 +43,13 @@ function useChatSocket({
           ...newData[0],
           items: [message, ...newData[0].items],
         };
-
-        queryClient.refetchQueries({ queryKey: [triggerKey] });
+        if (triggerKey) {
+          queryClient.refetchQueries({ queryKey: [triggerKey] });
+        }
 
         // queryClient.refetchQueries();
 
-        audioRef.current?.play();
+        audioRef?.current?.play();
 
         return {
           ...oldData,
@@ -57,7 +58,7 @@ function useChatSocket({
       });
     });
 
-    socket?.on(updateKey, (message: MessageWithMember) => {
+    socket?.on(updateKey as string, (message: MessageWithMember) => {
       queryClient.setQueryData([queryKey], (oldData: any) => {
         if (!oldData || !oldData.pages || oldData.pages.length === 0) {
           return oldData;

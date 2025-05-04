@@ -47,7 +47,7 @@ async function ConversationPage({ params }: ConversationPageProps) {
     conversation?.conversationInitiaterId === paramsResolved?.memberId
       ? conversation?.conversationInitiator
       : conversation?.conversationReceiver;
-  console.log("conversation?.id=", conversation?.id);
+
   return (
     <div className="flex flex-col flex-1 h-full">
       <ChatHeader type="message" member={anotherMember} />
