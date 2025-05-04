@@ -58,6 +58,13 @@ async function ChannelSidebar({ serverId }: ChannelSideBarProps) {
     redirect("/");
   }
   const allServers = await db.server.findMany({
+    where: {
+      members: {
+        some: {
+          profileId: profile?.id,
+        },
+      },
+    },
     include: {
       members: true,
       channels: { include: { members: true } },

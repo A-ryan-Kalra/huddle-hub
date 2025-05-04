@@ -114,6 +114,12 @@ function ServerDropDown({
           >
             Invite People
           </DropdownMenuItem>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => onOpen("createServer")}
+          >
+            Create Server
+          </DropdownMenuItem>
         </DropdownMenuGroup>
         {admin && (
           <>
@@ -137,7 +143,7 @@ function ServerDropDown({
         <DropdownMenuSeparator />
 
         <DropdownMenuGroup>
-          {admin ? (
+          {true ? (
             <>
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger
@@ -168,12 +174,6 @@ function ServerDropDown({
                 )}
               </DropdownMenuSub>
 
-              <DropdownMenuItem
-                className="cursor-pointer"
-                onClick={() => onOpen("createServer")}
-              >
-                Create Server
-              </DropdownMenuItem>
               <DropdownMenuItem
                 className="cursor-pointer text-red-500 focus:text-red-500"
                 onClick={() => onOpen("deleteServer", { server })}

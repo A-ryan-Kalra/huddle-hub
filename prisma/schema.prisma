@@ -154,9 +154,10 @@ model channelOnMember{
 
 model noification{
   id  String @id @default(uuid())
-  content String
-  type notificationType @default(MESSAGE)
-  typeId String // could be commentId or messageId
+  message String
+  type notificationType @default(REPLY)
+  typeId String // could be commentId or replyId
+  entityId String?
   senderId String
   notificaionSent member @relation(fields: [senderId],references: [id],onDelete: Cascade)
   createdAt DateTime @default(now())
@@ -175,7 +176,7 @@ model notificationRecipient {
 
 enum notificationType {
   COMMENT
-  MESSAGE
+  REPLY
 }
 
 enum channelType {

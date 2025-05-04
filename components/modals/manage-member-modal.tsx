@@ -148,7 +148,7 @@ function ManageMemberModal() {
                               <ShieldQuestionIcon className="w-4 h-4 mr-2" />
                               Role
                             </DropdownMenuSubTrigger>
-                            <DropdownMenuPortal>
+                            <DropdownMenuPortal forceMount>
                               <DropdownMenuSubContent>
                                 <DropdownMenuItem
                                   onClick={() => handleRole(member.id, "GUEST")}
