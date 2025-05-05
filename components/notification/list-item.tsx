@@ -11,26 +11,29 @@ interface ListItemProps {
 
 function ListItem({ imageUrl, title, className, children }: ListItemProps) {
   return (
-    <li>
-      <div>
-        <a className={cn("flex flex-col gap-y-2 p-2", className)}>
-          <div className="text-xs  line-clamp-2 text-black leading-none">
+    <div>
+      <a
+        className={cn(
+          "flex  gap-x-3 p-2 cursor-pointer hover:bg-zinc-100 transition",
+          className
+        )}
+      >
+        <AvatarIcon
+          imageUrl={imageUrl}
+          width={35}
+          height={35}
+          className="!rounded-md !aspect-square"
+        />
+        <div className="flex flex-col gap-y-1">
+          <div className="text-xs  line-clamp-2 text-zinc-800 leading-none font-semibold font-sans">
             {title}
           </div>
-          <div className="flex gap-x-1">
-            <AvatarIcon
-              imageUrl={imageUrl}
-              width={30}
-              height={30}
-              className="!aspect-square"
-            />
-            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-              {children}
-            </p>
-          </div>
-        </a>
-      </div>
-    </li>
+          <p className="line-clamp-2 text-sm leading-snug text-neutral-500">
+            {children}
+          </p>
+        </div>
+      </a>
+    </div>
   );
 }
 

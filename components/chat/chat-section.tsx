@@ -46,6 +46,7 @@ function ChatSection({
   const addKey = `chat:${chatId}:messages`;
   const updateKey = `chat:${chatId}:messages:update`;
   const audioRef = useRef(null);
+  const [countNotification, setCountNotification] = React.useState(0);
 
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage, status } =
     useChatQuery({ queryKey, paramKey, paramValue, apiUrl });
@@ -58,7 +59,15 @@ function ChatSection({
     count: data?.pages[0]?.items?.length ?? 0,
   });
 
-  useChatSocket({ audioRef, addKey, queryKey, updateKey, type, triggerKey });
+  useChatSocket({
+    audioRef,
+    addKey,
+    queryKey,
+    updateKey,
+    type,
+    triggerKey,
+    setCountNotification: () => setCountNotification((prev) => prev + 1),
+  });
 
   if (status === "pending") {
     return (

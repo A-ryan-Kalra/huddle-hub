@@ -107,7 +107,7 @@ export default async function handler(
       },
     });
 
-    const notifiaction = await db.notification.create({
+    const notification = await db.notification.create({
       data: {
         message: `You have a new message from ${profile.name} in ${channel?.name} channel`,
         type: notificationType.MESSAGE,
@@ -121,14 +121,34 @@ export default async function handler(
           })),
         },
       },
+      include: {
+        recipients: {
+          include: {
+            member: {
+              include: {
+                profile: true,
+              },
+            },
+            notification: {
+              include: {
+                notificaionSent: {
+                  include: {
+                    profile: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     });
 
     const channelKey = `chat:${channel.id}:messages`;
 
     res?.socket?.server?.io?.emit(channelKey, message);
-    allMembers.forEach((member) => {
+    notification?.recipients.forEach((member) => {
       const notificationQueryKey = `notification:${member.id}:newAlert`;
-      res?.socket?.server?.io?.emit(notificationQueryKey, notifiaction);
+      res?.socket?.server?.io?.emit(notificationQueryKey, member);
     });
 
     return res.status(201).json(message);
