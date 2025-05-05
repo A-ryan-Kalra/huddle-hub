@@ -76,29 +76,58 @@ export default async function handler(
         },
       },
     });
+    const reciever =
+      currentMember.id === conversation?.conversationInitiaterId
+        ? conversation.conversationReceiverId
+        : conversation.conversationInitiaterId;
 
-    const notifiaction = await db.notification.create({
+    const notification = await db.notification.create({
       data: {
         message: `You have a new message from ${profile.name}`,
         type: notificationType.DIRECT_MESSAGE,
+        content,
         typeId: conversationId as string,
         channel_direct_messageId: currentMember?.id,
         senderId: currentMember?.id,
         recipients: {
           create: [
             {
-              memberId: conversation.conversationReceiverId,
+              memberId: reciever,
             },
           ],
+        },
+      },
+      include: {
+        recipients: {
+          include: {
+            member: {
+              include: {
+                profile: true,
+              },
+            },
+            notification: {
+              include: {
+                notificaionSent: {
+                  include: {
+                    profile: true,
+                  },
+                },
+              },
+            },
+          },
         },
       },
     });
 
     const chat = `chat:${conversationId}:messages`;
-    const notificationQueryKey = `notification:${currentMember?.id}:newAlert`;
+
+    const notificationQueryKey = `notification:${reciever}:newAlert`;
 
     res?.socket?.server?.io?.emit(chat, directMessage);
-    res?.socket?.server?.io?.emit(notificationQueryKey, notifiaction);
+    res?.socket?.server?.io?.emit(
+      notificationQueryKey,
+      notification.recipients[0]
+    );
 
     return res.json({ directMessage });
   } catch (error) {

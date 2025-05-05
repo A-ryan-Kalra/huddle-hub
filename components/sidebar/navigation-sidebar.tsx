@@ -3,7 +3,10 @@ import { UserButton } from "@clerk/nextjs";
 import { HomeIcon } from "lucide-react";
 import { Notification } from "../ui/notification";
 
-function NavigationSidebar() {
+interface NavigationSidebarProps {
+  currentMemberId: string;
+}
+function NavigationSidebar({ currentMemberId }: NavigationSidebarProps) {
   return (
     <div className="min-w-[70px] flex gap-y-3 items-center flex-col h-full ">
       <div className="w-fit px-1">
@@ -13,7 +16,7 @@ function NavigationSidebar() {
         <span className="text-xs">Home</span>
       </div>
       <div className="">
-        <Notification />
+        <Notification currentMemberId={currentMemberId} />
       </div>
 
       <div className=" mt-auto pb-7 w-fit mx-auto">

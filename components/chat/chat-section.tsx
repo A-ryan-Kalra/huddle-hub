@@ -144,7 +144,7 @@ function ChatSection({
           </Fragment>
         ))}
       </div>
-      <audio className="bg-black p-2" ref={audioRef} src="/notification.mp3" />
+      <audio className="" ref={audioRef} src="/notification.mp3" />
 
       <div ref={bottomRef} />
     </div>

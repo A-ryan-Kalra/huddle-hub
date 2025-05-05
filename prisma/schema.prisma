@@ -157,8 +157,10 @@ model notification{
   message String
   type notificationType @default(MESSAGE)
   typeId String // could be messageId or replyId
+  content String
   channel_direct_messageId String
   threadId String?
+  threadMessage String?
   senderId String
   notificaionSent member @relation(fields: [senderId],references: [id],onDelete: Cascade)
   createdAt DateTime @default(now())
@@ -173,6 +175,9 @@ model notificationRecipient {
   notification notification @relation(fields: [notificationId],references: [id],onDelete: Cascade)
   memberId String
   member member @relation(fields: [memberId],references: [id],onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
 }
 
 enum notificationType {
