@@ -23,7 +23,6 @@ export function Notification({ currentMemberId }: NotificationProps) {
   const queryKey = `notification:${notificationQuery}`;
   const addKey = `notification:${notificationQuery}:newAlert`;
   const chatRef = React.useRef<HTMLDivElement | null>(null);
-  const [countNotification, setCountNotification] = React.useState(0);
 
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage, status } =
     useChatQuery({
@@ -36,7 +35,7 @@ export function Notification({ currentMemberId }: NotificationProps) {
     addKey,
     queryKey,
   });
-  console.log(countNotification);
+
   React.useEffect(() => {
     const topDiv = chatRef?.current;
 
