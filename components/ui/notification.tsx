@@ -4,21 +4,14 @@ import * as React from "react";
 import Link from "next/link";
 
 import { cn } from "@/lib/utils";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
+
 import { Bell, Loader2 } from "lucide-react";
-import useChatSocket from "@/hooks/use-chat-socket";
+
 import useChatQuery from "@/hooks/use-chat-query";
-import AvatarIcon from "./avatar-icon";
-import useChatScroll from "@/hooks/use-chat-scroll";
+
 import ListItem from "../notification/list-item";
+import useNotificationSocket from "@/hooks/use-notification-socket";
+import useChatSocket from "@/hooks/use-chat-socket";
 
 interface NotificationProps {
   currentMemberId: string;
@@ -39,8 +32,11 @@ export function Notification({ currentMemberId }: NotificationProps) {
       type: "notification",
     });
 
-  useChatSocket({ addKey, queryKey });
-
+  useNotificationSocket({
+    addKey,
+    queryKey,
+  });
+  console.log(countNotification);
   React.useEffect(() => {
     const topDiv = chatRef?.current;
 

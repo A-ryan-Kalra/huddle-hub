@@ -59,15 +59,7 @@ function ChatSection({
     count: data?.pages[0]?.items?.length ?? 0,
   });
 
-  useChatSocket({
-    audioRef,
-    addKey,
-    queryKey,
-    updateKey,
-    type,
-    triggerKey,
-    setCountNotification: () => setCountNotification((prev) => prev + 1),
-  });
+  useChatSocket({ audioRef, addKey, queryKey, updateKey, type, triggerKey });
 
   if (status === "pending") {
     return (
