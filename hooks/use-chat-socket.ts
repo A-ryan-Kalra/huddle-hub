@@ -49,8 +49,9 @@ function useChatSocket({
 
         // queryClient.refetchQueries();
 
-        audioRef?.current?.play();
-
+        audioRef?.current?.play().catch((err) => {
+          console.warn("Playback failed:", err);
+        });
         return {
           ...oldData,
           pages: newData,
@@ -87,7 +88,7 @@ function useChatSocket({
       socket.off(addKey);
       socket.off(updateKey);
     };
-  }, [isConnected, queryKey, addKey, updateKey, type]);
+  }, [isConnected, queryKey, addKey, updateKey, type, audioRef]);
 }
 
 export default useChatSocket;

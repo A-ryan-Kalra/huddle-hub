@@ -127,6 +127,7 @@ model threads {
   deleted   Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  messageOwnerId String
 
   directMessageId  String?
   directMessage    directMessage?   @relation(fields: [directMessageId], references: [id], onDelete: Cascade)
@@ -161,6 +162,7 @@ model notification{
   channel_direct_messageId String
   threadId String?
   threadMessage String?
+  threadMessageOwnerId String?
   senderId String
   notificaionSent member @relation(fields: [senderId],references: [id],onDelete: Cascade)
   createdAt DateTime @default(now())

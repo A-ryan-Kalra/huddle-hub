@@ -89,6 +89,12 @@ export function Notification({ currentMemberId }: NotificationProps) {
               <React.Fragment key={index}>
                 {component?.items?.map((member, index) => (
                   <ListItem
+                    profile={member?.member?.profile?.name}
+                    threadOwnerId={
+                      member?.notification?.threadMessageOwnerId ?? ""
+                    }
+                    memberId={member?.member?.id}
+                    notificationType={member?.notification?.type}
                     key={index}
                     isRead={member?.isRead}
                     queryKey={queryKey}
@@ -100,11 +106,7 @@ export function Notification({ currentMemberId }: NotificationProps) {
                         : "conversations"
                     }
                     title={member?.notification?.message}
-                    id={
-                      member?.notification?.type === "MESSAGE"
-                        ? member?.notification?.channel_direct_messageId
-                        : member?.notification?.channel_direct_messageId
-                    }
+                    id={member?.notification?.channel_direct_messageId}
                     imageUrl={
                       member?.notification?.notificaionSent?.profile?.imageUrl
                     }

@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import React from "react";
 import AvatarIcon from "../ui/avatar-icon";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
 import { useQueryClient } from "@tanstack/react-query";
@@ -16,6 +16,10 @@ interface ListItemProps {
   receipentId: string;
   isRead: boolean;
   queryKey: string;
+  memberId: string;
+  profile: string;
+  threadOwnerId: string;
+  notificationType: "REPLY" | "MESSAGE" | "DIRECT_MESSAGE";
 }
 
 function ListItem({
@@ -28,11 +32,20 @@ function ListItem({
   receipentId,
   isRead,
   queryKey,
+  memberId,
+  notificationType,
+  profile,
+  threadOwnerId,
 }: ListItemProps) {
   const queryClient = useQueryClient();
 
   const params = useParams();
-  const router = useRouter();
+
+  const threadMessage =
+    memberId === threadOwnerId
+      ? (title as string)?.replace(`${profile}'s`, `your`)
+      : title;
+
   const onCLick = async () => {
     if (!isRead) {
       await axios.patch(`/api/notifications/${receipentId}`);
@@ -57,7 +70,8 @@ function ListItem({
         />
         <div className="flex flex-col gap-y-1">
           <div className="text-xs  line-clamp-2 text-zinc-800 leading-none font-semibold font-sans">
-            {title}
+            {notificationType === "REPLY" && threadMessage}
+            {notificationType !== "REPLY" && title}
           </div>
           <p className="line-clamp-2 text-sm leading-snug text-neutral-500">
             {children}

@@ -27,7 +27,7 @@ function ChatThreads({ params }: ChatThreadsProps) {
   const { message } = params?.member
     ? (data as { message: ChatMessage })
     : (data as { message: ChatMessage });
-  console.log(message);
+
   return (
     <div className="w-full h-full flex flex-col flex- p-2 bg-white border-l-[1px]">
       <div className="flex justify-between items-center">
@@ -80,6 +80,7 @@ function ChatThreads({ params }: ChatThreadsProps) {
           ...(params?.channelId && { channelId: message?.channelId }),
           ...(params?.memberId && { directMessageId: message?.id }),
           ...(params?.memberId && { conversationId: message?.conversationId }),
+          ...(message?.member && { messageOwnerId: message?.memberId }),
           serverId: message?.member?.serverId,
         }}
         name={""}

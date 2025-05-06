@@ -25,7 +25,6 @@ const TIME_FORMAT = "hh:mm a";
 const DATE_FORMAT = "d/MM/yyyy, hh:mm a";
 
 function MainThread({ message }: MainThreadProps) {
-  console.log(message);
   const showTime = format(new Date(message?.createdAt), TIME_FORMAT);
   const showDate = format(new Date(message?.createdAt), DATE_FORMAT);
 
