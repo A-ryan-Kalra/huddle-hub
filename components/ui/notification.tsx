@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
 
 import { cn } from "@/lib/utils";
 
@@ -30,14 +29,17 @@ export function Notification({ currentMemberId }: NotificationProps) {
       apiUrl: `/api/notifications`,
       type: "notification",
     });
+  const [notReadTotal, setNotReadTotal] = React.useState<number>(0);
 
   useNotificationSocket({
     addKey,
     queryKey,
+    notReadTotal: (count: number) => setNotReadTotal((prev) => prev + count),
   });
 
   React.useEffect(() => {
     const topDiv = chatRef?.current;
+    setNotReadTotal(data?.pages[0]?.notReadTotal as number);
 
     const handleScroll = () => {
       const distanceFromBottom = !topDiv
@@ -54,8 +56,16 @@ export function Notification({ currentMemberId }: NotificationProps) {
     return () => {
       topDiv?.removeEventListener("scroll", handleScroll);
     };
-  }, [chatRef, isFetchingNextPage, hasNextPage, fetchNextPage]);
+  }, [
+    chatRef,
+    isFetchingNextPage,
+    hasNextPage,
+    fetchNextPage,
+    data?.pages[0]?.notReadTotal,
+  ]);
 
+  console.log(data);
+  console.log(notReadTotal);
   return (
     <div className="relative group">
       <button className="hover:bg-zinc-200 transition rounded-md p-1">
@@ -80,9 +90,21 @@ export function Notification({ currentMemberId }: NotificationProps) {
                 {component?.items?.map((member, index) => (
                   <ListItem
                     key={index}
+                    isRead={member?.isRead}
+                    queryKey={queryKey}
+                    receipentId={member?.id}
                     className="border-b-[1px] flex gap-x-1"
-                    // href={component.href}
+                    type={
+                      member?.notification?.type === "MESSAGE"
+                        ? "channels"
+                        : "conversations"
+                    }
                     title={member?.notification?.message}
+                    id={
+                      member?.notification?.type === "MESSAGE"
+                        ? member?.notification?.channel_direct_messageId
+                        : member?.notification?.channel_direct_messageId
+                    }
                     imageUrl={
                       member?.notification?.notificaionSent?.profile?.imageUrl
                     }

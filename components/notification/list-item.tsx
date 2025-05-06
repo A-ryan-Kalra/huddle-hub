@@ -1,20 +1,51 @@
 import { cn } from "@/lib/utils";
 import React from "react";
 import AvatarIcon from "../ui/avatar-icon";
+import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
+import axios from "axios";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ListItemProps {
   title: string;
   imageUrl: string;
   className: string;
   children: React.ReactNode;
+  id: string;
+  type: string;
+  receipentId: string;
+  isRead: boolean;
+  queryKey: string;
 }
 
-function ListItem({ imageUrl, title, className, children }: ListItemProps) {
+function ListItem({
+  imageUrl,
+  title,
+  className,
+  children,
+  id,
+  type,
+  receipentId,
+  isRead,
+  queryKey,
+}: ListItemProps) {
+  const queryClient = useQueryClient();
+
+  const params = useParams();
+  const router = useRouter();
+  const onCLick = async () => {
+    if (!isRead) {
+      await axios.patch(`/api/notifications/${receipentId}`);
+      queryClient.refetchQueries({ queryKey: [queryKey] });
+    }
+  };
   return (
-    <div>
-      <a
+    <div onClick={onCLick}>
+      <Link
+        href={`/servers/${params?.serverId}/${type}/${id}`}
         className={cn(
           "flex  gap-x-3 p-2 cursor-pointer hover:bg-zinc-100 transition",
+          !isRead && "bg-zinc-200",
           className
         )}
       >
@@ -32,7 +63,7 @@ function ListItem({ imageUrl, title, className, children }: ListItemProps) {
             {children}
           </p>
         </div>
-      </a>
+      </Link>
     </div>
   );
 }

@@ -144,7 +144,6 @@ export default async function handler(
     });
 
     const channelKey = `chat:${channel.id}:messages`;
-    console.log("notification=>", notification);
 
     res?.socket?.server?.io?.emit(channelKey, message);
     notification?.recipients?.forEach((member) => {

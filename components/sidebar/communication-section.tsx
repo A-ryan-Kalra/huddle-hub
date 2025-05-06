@@ -120,7 +120,7 @@ function CommunicationSection({
           <p className="px-1">Add Channels</p>
         </button>
       )}
-      {type === "conversation" && moderator && (
+      {type === "conversation" && (
         <button
           onClick={() => onOpen("invite", { server: server })}
           className="group p-1 text-sm gap-x-2 hover:bg-zinc-200 transition  flex items-center justify-start rounded-md"

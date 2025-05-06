@@ -89,14 +89,27 @@ export async function GET(req: Request) {
       });
     }
 
+    const notReadTotal = await db.notificationRecipient.count({
+      where: {
+        member: {
+          profileId: profile.id,
+        },
+        isRead: false,
+      },
+    });
+
     let nextCursor = undefined;
     if (allNotifications.length === MESSAGES_BATCH) {
       nextCursor = allNotifications[MESSAGES_BATCH - 1].id;
     }
 
-    return NextResponse.json({ items: allNotifications, nextCursor });
+    return NextResponse.json({
+      items: allNotifications,
+      nextCursor,
+      notReadTotal,
+    });
   } catch (error) {
-    console.error("[DIRECT_MESSAGES_GET]", error);
+    console.error("[NOTIFICATIONS_GET]", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }

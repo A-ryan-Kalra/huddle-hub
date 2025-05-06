@@ -60,6 +60,7 @@ function useChatQuery({
               notificaionSent: member & { profile: profile };
             };
           })[];
+        notReadTotal?: number;
       }) => lastpage?.nextCursor,
       initialPageParam: undefined,
       refetchInterval: isConnected ? false : 1000,
