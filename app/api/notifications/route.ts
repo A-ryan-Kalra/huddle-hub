@@ -42,7 +42,7 @@ export async function GET(req: Request) {
         include: {
           notification: {
             include: {
-              notificaionSent: {
+              notificationSent: {
                 include: {
                   profile: true,
                 },
@@ -70,7 +70,7 @@ export async function GET(req: Request) {
         include: {
           notification: {
             include: {
-              notificaionSent: {
+              notificationSent: {
                 include: {
                   profile: true,
                 },

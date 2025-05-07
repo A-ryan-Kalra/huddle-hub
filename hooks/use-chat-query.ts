@@ -57,7 +57,7 @@ function useChatQuery({
           notificationRecipient & {
             member: member & { profile: profile };
             notification: notification & {
-              notificaionSent: member & { profile: profile };
+              notificationSent: member & { profile: profile };
             };
           })[];
         notReadTotal?: number;

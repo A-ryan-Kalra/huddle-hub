@@ -18,6 +18,7 @@ interface ListItemProps {
   queryKey: string;
   memberId: string;
   profile: string;
+  communicationType: "CHANNEL" | "DIRECT_MESSAGE";
   threadOwnerId: string;
   notificationType: "REPLY" | "MESSAGE" | "DIRECT_MESSAGE";
 }
@@ -36,6 +37,7 @@ function ListItem({
   notificationType,
   profile,
   threadOwnerId,
+  communicationType,
 }: ListItemProps) {
   const queryClient = useQueryClient();
 
@@ -54,9 +56,11 @@ function ListItem({
   };
 
   return (
-    <div onClick={onCLick}>
+    <div onClick={onCLick} className="">
       <Link
-        href={`/servers/${params?.serverId}/${type}/${id}`}
+        href={`/servers/${params?.serverId}/${
+          communicationType === "CHANNEL" ? "channels" : "conversations"
+        }/${id}`}
         className={cn(
           "flex  gap-x-3 p-2 cursor-pointer hover:bg-zinc-100 transition",
           !isRead && "bg-zinc-200",

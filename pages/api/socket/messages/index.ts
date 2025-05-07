@@ -131,7 +131,7 @@ export default async function handler(
             },
             notification: {
               include: {
-                notificaionSent: {
+                notificationSent: {
                   include: {
                     profile: true,
                   },

@@ -1,7 +1,7 @@
 import { currentProfilePages } from "@/lib/currentProfilePages";
 import { db } from "@/lib/db";
 import { NextApiResponseServerIO } from "@/type";
-import { notificationType } from "@prisma/client";
+import { communicationType, notificationType } from "@prisma/client";
 import { NextApiRequest } from "next";
 
 export default async function handler(
@@ -94,6 +94,7 @@ export default async function handler(
         senderId: currentMember?.id,
         threadId: threads.id,
         threadMessageOwnerId: messageOwnerId as string,
+        communicationType: communicationType.DIRECT_MESSAGE,
         recipients: {
           create: {
             memberId: reciever,
@@ -110,7 +111,7 @@ export default async function handler(
             },
             notification: {
               include: {
-                notificaionSent: {
+                notificationSent: {
                   include: {
                     profile: true,
                   },

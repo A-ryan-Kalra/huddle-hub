@@ -4,7 +4,7 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-import { Bell, Loader2 } from "lucide-react";
+import { Bell, BotMessageSquare, Loader2 } from "lucide-react";
 
 import useChatQuery from "@/hooks/use-chat-query";
 
@@ -72,7 +72,7 @@ export function Notification({ currentMemberId }: NotificationProps) {
       <div
         className={cn(
           "absolute top-3 rounded-xl overflow-hidden left-3 z-10 bg-white gap-y-2 flex flex-col",
-          `group-hover:visible group-hover:scale-100 transition-all ease-out group-hover:opacity-100 opacity-0 border-[1px] scale-95 invisible delay-200`
+          `group-hover:visible group-hover:scale-100  transition-all ease-out group-hover:opacity-100 opacity-0 border-[1px] scale-95 invisible delay-200`
         )}
       >
         <h1 className="p-2 border-b-[1px] font-semibold tracking-wide">
@@ -80,60 +80,75 @@ export function Notification({ currentMemberId }: NotificationProps) {
         </h1>
         <div
           ref={chatRef}
-          className="flex  flex-1 max-h-[400px] !scroll-smooth overflow-y-auto flex-col gap-y-1"
+          className={cn(
+            "flex  flex-1 max-h-[400px] !scroll-smooth overflow-y-auto flex-col gap-y-1"
+          )}
         >
-          <ul className="flex flex-1 flex-col gap-y-1 w-[300px]">
-            {data?.pages?.map((component, index) => (
-              <React.Fragment key={index}>
-                {component?.items?.map((member, index) => (
-                  <ListItem
-                    profile={member?.member?.profile?.name}
-                    threadOwnerId={
-                      member?.notification?.threadMessageOwnerId ?? ""
-                    }
-                    memberId={member?.member?.id}
-                    notificationType={member?.notification?.type}
-                    key={index}
-                    isRead={member?.isRead}
-                    queryKey={queryKey}
-                    receipentId={member?.id}
-                    className="border-b-[1px] flex gap-x-1"
-                    type={
-                      member?.notification?.type === "MESSAGE"
-                        ? "channels"
-                        : "conversations"
-                    }
-                    title={member?.notification?.message}
-                    id={member?.notification?.channel_direct_messageId}
-                    imageUrl={
-                      member?.notification?.notificaionSent?.profile?.imageUrl
-                    }
-                  >
-                    {cleanContent(member?.notification?.content)}
-                  </ListItem>
-                ))}
-              </React.Fragment>
-            ))}
+          {!data?.pages[0]?.items?.length ? (
+            <div className="flex flex-col items-center gap-y-2 justify-center flex-1  w-[300px] min-h-[300px]">
+              <BotMessageSquare className="text-zinc-500" />
+              <h1 className="text-xs text-zinc-600">
+                Nothing to see here - check back later!
+              </h1>
+            </div>
+          ) : (
+            <ul className="flex flex-1 flex-col gap-y-1 w-[300px]">
+              {data?.pages?.map((component, index) => (
+                <React.Fragment key={index}>
+                  {component?.items?.map((member, index) => (
+                    <ListItem
+                      profile={member?.member?.profile?.name}
+                      threadOwnerId={
+                        member?.notification?.threadMessageOwnerId ?? ""
+                      }
+                      memberId={member?.member?.id}
+                      notificationType={member?.notification?.type}
+                      key={index}
+                      isRead={member?.isRead}
+                      queryKey={queryKey}
+                      receipentId={member?.id}
+                      communicationType={
+                        member?.notification?.communicationType
+                      }
+                      className="border-b-[1px] flex gap-x-1"
+                      type={
+                        member?.notification?.type === "MESSAGE"
+                          ? "channels"
+                          : "conversations"
+                      }
+                      title={member?.notification?.message}
+                      id={member?.notification?.channel_direct_messageId}
+                      imageUrl={
+                        member?.notification?.notificationSent?.profile
+                          ?.imageUrl
+                      }
+                    >
+                      {cleanContent(member?.notification?.content)}
+                    </ListItem>
+                  ))}
+                </React.Fragment>
+              ))}
 
-            {hasNextPage && (
-              <div className="flex justify-center items-center">
-                {isFetchingNextPage ? (
-                  <div className="my-1 animate-spin text-zinc-400">
-                    <Loader2 />
-                  </div>
-                ) : hasNextPage ? (
-                  <button
-                    onClick={() => fetchNextPage()}
-                    className="text-sm text-zinc-500 my-1"
-                  >
-                    Load more
-                  </button>
-                ) : (
-                  ""
-                )}
-              </div>
-            )}
-          </ul>
+              {hasNextPage && (
+                <div className="flex justify-center items-center">
+                  {isFetchingNextPage ? (
+                    <div className="my-1 animate-spin text-zinc-400">
+                      <Loader2 />
+                    </div>
+                  ) : hasNextPage ? (
+                    <button
+                      onClick={() => fetchNextPage()}
+                      className="text-sm text-zinc-500 my-1"
+                    >
+                      Load more
+                    </button>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              )}
+            </ul>
+          )}
         </div>
       </div>
     </div>

@@ -117,7 +117,7 @@ export default async function handler(
         type: notificationType.REPLY,
         typeId: messageId as string,
         content,
-        channel_direct_messageId: threads?.messageId as string,
+        channel_direct_messageId: channelId as string,
         senderId: member[0]?.id,
         threadId: threads.id,
         threadMessageOwnerId: messageOwnerId as string,
@@ -137,7 +137,7 @@ export default async function handler(
             },
             notification: {
               include: {
-                notificaionSent: {
+                notificationSent: {
                   include: {
                     profile: true,
                   },

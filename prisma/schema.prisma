@@ -164,7 +164,8 @@ model notification{
   threadMessage String?
   threadMessageOwnerId String?
   senderId String
-  notificaionSent member @relation(fields: [senderId],references: [id],onDelete: Cascade)
+  communicationType communicationType @default(CHANNEL)
+  notificationSent member @relation(fields: [senderId],references: [id],onDelete: Cascade)
   createdAt DateTime @default(now())
 
   recipients notificationRecipient[]
@@ -186,6 +187,10 @@ enum notificationType {
   MESSAGE
   DIRECT_MESSAGE
   REPLY
+}
+enum communicationType {
+  CHANNEL
+  DIRECT_MESSAGE
 }
 
 enum channelType {
