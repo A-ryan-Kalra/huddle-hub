@@ -50,7 +50,7 @@ function UserComment({
   const contentRef = useRef<HTMLDivElement>(null);
   const { onOpen } = useModal();
   const isUpdated = message.createdAt !== message.updatedAt;
-  const isAdmin = type === "channel" && currentMember.role === memberRole.ADMIN;
+  const isAdmin = currentMember.role === memberRole.ADMIN;
   const isModerator = isAdmin || currentMember.role === memberRole.MODERATOR;
   const ownerOfMessage = message.memberId === currentMember.id;
   const isDeleted = message.deleted;
@@ -157,8 +157,14 @@ function UserComment({
             message.id !== messageId && "hover:bg-neutral-100  transition"
           )}
         >
-          {!isDeleted && (isAdmin || isModerator || ownerOfMessage) && (
-            <div className="gap-x-1 z-10 absolute right-3 p-1 bg-zinc-300 -top-4 invisible rounded-md group-hover:visible flex">
+          {!isDeleted && (
+            <div
+              className={cn(
+                "gap-x-1 z-10 absolute right-3 p-1 bg-zinc-300 -top-4 invisible rounded-md  flex",
+                (ownerOfMessage || isModerator) && "group-hover:visible",
+                type !== "threads" && "group-hover:visible"
+              )}
+            >
               {!isDeleted && type !== "threads" && (
                 <ActionToolTip
                   label="Reply in thread"
