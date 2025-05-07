@@ -107,9 +107,6 @@ export default async function handler(
       },
     });
 
-    console.log("threads=", threads);
-    console.log("member=", member[0]?.id);
-
     const notification = await db.notification.create({
       data: {
         message: `${
