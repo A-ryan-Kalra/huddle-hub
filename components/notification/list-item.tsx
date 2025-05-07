@@ -52,7 +52,7 @@ function ListItem({
       queryClient.refetchQueries({ queryKey: [queryKey] });
     }
   };
-  const messageType = window.location.pathname?.split("/")[3];
+
   return (
     <div onClick={onCLick}>
       <Link
@@ -71,10 +71,7 @@ function ListItem({
         />
         <div className="flex flex-col gap-y-1">
           <div className="text-xs  line-clamp-2 text-zinc-800 leading-none font-semibold font-sans">
-            {notificationType === "REPLY" && type !== "conversations"
-              ? threadMessage
-              : title}
-            {notificationType !== "REPLY" && type !== "conversations" && title}
+            {notificationType === "REPLY" ? threadMessage : title}
           </div>
           <p className="line-clamp-2 text-sm leading-snug text-neutral-500">
             {children}

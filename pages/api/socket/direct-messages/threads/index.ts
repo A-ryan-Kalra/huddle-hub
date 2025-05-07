@@ -82,7 +82,11 @@ export default async function handler(
 
     const notification = await db.notification.create({
       data: {
-        message: `${profile.name} replied in your comment`,
+        message: `${profile.name} ${
+          messageOwnerId === currentMember?.id
+            ? `replied to their own comment`
+            : `replied to your comment`
+        }`,
         type: notificationType.REPLY,
         typeId: directMessageId as string,
         content,

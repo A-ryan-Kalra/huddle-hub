@@ -46,7 +46,6 @@ function ChatSection({
   const addKey = `chat:${chatId}:messages`;
   const updateKey = `chat:${chatId}:messages:update`;
   const audioRef = useRef(null);
-  const [countNotification, setCountNotification] = React.useState(0);
 
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage, status } =
     useChatQuery({ queryKey, paramKey, paramValue, apiUrl });

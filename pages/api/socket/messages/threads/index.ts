@@ -109,11 +109,11 @@ export default async function handler(
 
     const notification = await db.notification.create({
       data: {
-        message: `${
-          profile.name
-        } replied in ${`${threadOwner[0]?.profile?.name}'s comment`} in ${
-          channel?.name
-        } channel`,
+        message: `${profile.name} replied to ${`${
+          messageOwnerId === member[0].id
+            ? "to their own comment"
+            : `${threadOwner[0]?.profile?.name}'s`
+        } comment`} in ${channel?.name} channel`,
         type: notificationType.REPLY,
         typeId: messageId as string,
         content,

@@ -64,8 +64,6 @@ export function Notification({ currentMemberId }: NotificationProps) {
     data?.pages[0]?.notReadTotal,
   ]);
 
-  console.log(data);
-  console.log(notReadTotal);
   return (
     <div className="relative group">
       <button className="hover:bg-zinc-200 transition rounded-md p-1">
