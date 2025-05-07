@@ -1,7 +1,7 @@
 import { member, memberRole, message, profile, threads } from "@prisma/client";
 import React, { useEffect, useRef, useState } from "react";
 import AvatarIcon from "./avatar-icon";
-import { Edit, MessageCircleMore, TrashIcon } from "lucide-react";
+import { Edit, Loader2Icon, MessageCircleMore, TrashIcon } from "lucide-react";
 import ActionToolTip from "./action-tooltip";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -56,6 +56,7 @@ function UserComment({
   const isDeleted = message.deleted;
   const showTime = format(new Date(message?.createdAt), TIME_FORMAT);
   const showDate = format(new Date(message?.createdAt), DATE_FORMAT);
+  const [loading, setIsLoading] = useState(false);
   const threadLastReply =
     message?.threads &&
     message?.threads?.length !== 0 &&
@@ -117,6 +118,7 @@ function UserComment({
   }, [message.content, isEditing]);
 
   async function deleteThreads() {
+    setIsLoading(true);
     const typeMessage = window.location.pathname?.split("/")[3];
     const url = queryString.stringifyUrl({
       url: `/api/socket/${
@@ -136,7 +138,7 @@ function UserComment({
     });
 
     await axios.delete(url);
-
+    setIsLoading(false);
     router.refresh();
   }
 
@@ -155,13 +157,16 @@ function UserComment({
             message.id !== messageId && "hover:bg-neutral-100  transition"
           )}
         >
-          {!isDeleted && (
+          {!isDeleted && (isAdmin || isModerator || ownerOfMessage) && (
             <div className="gap-x-1 z-10 absolute right-3 p-1 bg-zinc-300 -top-4 invisible rounded-md group-hover:visible flex">
               {!isDeleted && type !== "threads" && (
                 <ActionToolTip
                   label="Reply in thread"
                   onClick={() => {
-                    onOpen("openThread", { message: message });
+                    onOpen("openThread", {
+                      message: message,
+                      member: currentMember,
+                    });
                   }}
                   className="px-2 py-1 hover:bg-zinc-200 "
                 >
@@ -169,7 +174,7 @@ function UserComment({
                 </ActionToolTip>
               )}
 
-              {!isDeleted && ownerOfMessage && ownerOfMessage && (
+              {!isDeleted && ownerOfMessage && (
                 <ActionToolTip
                   label="Edit"
                   onClick={() => {
@@ -198,7 +203,11 @@ function UserComment({
                   }}
                   className="px-2 py-1 hover:bg-zinc-200 "
                 >
-                  <TrashIcon className="!w-4 !h-4" />
+                  {!loading ? (
+                    <TrashIcon className="!w-4 !h-4" />
+                  ) : (
+                    <Loader2Icon className="!w-4 !h-4 animate-spin" />
+                  )}
                 </ActionToolTip>
               )}
             </div>
@@ -289,7 +298,10 @@ function UserComment({
               {message?.threads?.length > 0 && (
                 <button
                   onClick={() => {
-                    onOpen("openThread", { message: message });
+                    onOpen("openThread", {
+                      message: message,
+                      member: currentMember,
+                    });
                   }}
                   className="md:w-1/2 w-full m-1 p-1 hover:ring-1 ring-zinc-300 hover:bg-white rounded-md flex items-center gap-x-2"
                 >

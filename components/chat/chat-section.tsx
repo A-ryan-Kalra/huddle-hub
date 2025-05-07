@@ -24,7 +24,6 @@ interface ChatSectionProps {
   currentMember: member & { profile: profile };
 }
 
-const DATE_FORMAT = "d/MM/yyyy, hh:mm a";
 function ChatSection({
   type,
   paramKey,

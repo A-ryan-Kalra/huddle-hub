@@ -27,7 +27,6 @@ async function ServersLayout({ children, params }: ServersLayoutProps) {
     return redirect("/sign-in");
   }
 
-  console.log(currentMember);
   return (
     <div className="w-full h-full  flex">
       <div className="max-lg:hidden">

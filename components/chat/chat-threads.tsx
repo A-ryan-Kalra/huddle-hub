@@ -24,9 +24,9 @@ interface ChatMessage {
 
 function ChatThreads({ params }: ChatThreadsProps) {
   const { type, data, onClose } = useModal();
-  const { message } = params?.member
-    ? (data as { message: ChatMessage })
-    : (data as { message: ChatMessage });
+  const { message, member } = params?.member
+    ? (data as { message: ChatMessage; member: member & { profile: profile } })
+    : (data as { message: ChatMessage; member: member & { profile: profile } });
 
   return (
     <div className="w-full h-full flex flex-col flex- p-2 bg-white border-l-[1px]">
@@ -66,7 +66,7 @@ function ChatThreads({ params }: ChatThreadsProps) {
           messageId: message?.id,
           serverId: message?.member?.serverId,
         }}
-        currentMember={message?.member}
+        currentMember={member}
       />
       <ChatEditor
         type="threads"
