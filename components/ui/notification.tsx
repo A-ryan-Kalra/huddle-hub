@@ -81,7 +81,7 @@ export function Notification({ currentMemberId }: NotificationProps) {
         <div
           ref={chatRef}
           className={cn(
-            "flex  flex-1 max-h-[400px] !scroll-smooth overflow-y-auto flex-col gap-y-1"
+            "flex  flex-1 max-sm:max-h-[330px] max-h-[400px] !scroll-smooth overflow-y-auto flex-col gap-y-1"
           )}
         >
           {!data?.pages[0]?.items?.length ? (
@@ -107,6 +107,7 @@ export function Notification({ currentMemberId }: NotificationProps) {
                       isRead={member?.isRead}
                       queryKey={queryKey}
                       receipentId={member?.id}
+                      createdAt={member?.notification?.createdAt}
                       communicationType={
                         member?.notification?.communicationType
                       }
