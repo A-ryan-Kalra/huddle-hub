@@ -63,11 +63,17 @@ export function Notification({ currentMemberId }: NotificationProps) {
     data?.pages[0]?.notReadTotal,
   ]);
   console.log(data);
-  console.log(notReadTotal);
+
   return (
     <div className="relative group">
-      <button className="hover:bg-zinc-200 transition rounded-md p-1">
+      <button className="hover:bg-zinc-200 transition relative rounded-md p-1">
         <Bell className="w-6 h-6" />
+        {notReadTotal !== 0 && (
+          <span className="absolute top-0 right-1 flex size-3">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75"></span>
+            <span className="relative inline-flex size-3 rounded-full bg-red-500"></span>
+          </span>
+        )}
       </button>
       <div
         className={cn(
@@ -75,8 +81,14 @@ export function Notification({ currentMemberId }: NotificationProps) {
           `group-hover:visible group-hover:scale-100  transition-all ease-out group-hover:opacity-100 opacity-0 border-[1px] scale-95 invisible delay-200`
         )}
       >
-        <h1 className="p-2 border-b-[1px] font-semibold tracking-wide">
+        <h1 className="p-2 border-b-[1px] flex items-center justify-between font-semibold tracking-wide">
           Notifications
+          {notReadTotal > 0 && (
+            <span className="text-xs flex items-end font-medium text-zinc-800">
+              <span className="font-semibold">{notReadTotal}</span> unread{" "}
+              {notReadTotal <= 1 ? "message" : " messages"}
+            </span>
+          )}
         </h1>
         <div
           ref={chatRef}

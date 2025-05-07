@@ -94,12 +94,12 @@ function ListItem({
             {notificationTypeIcon[notificationType]}
             <h1 className="text-[12px] text-zinc-500">
               {notificationType === "REPLY" && type === "channels"
-                ? "Thread in a channel "
+                ? "replied in a channel "
                 : notificationType === "REPLY" && type === "conversations"
-                ? "Thread in a direct-message"
+                ? "replied in a direct-message"
                 : ""}
               {notificationType !== "REPLY" && type === "channels"
-                ? "commented in a message"
+                ? "commented in a channel"
                 : notificationType !== "REPLY" && type === "conversations"
                 ? "commented in a direct-message"
                 : ""}

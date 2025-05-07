@@ -26,7 +26,7 @@ function useNotificationSocket({ addKey, queryKey }: NotificationSocketProps) {
         }
 
         const newData = [...oldData.pages];
-
+        queryClient.refetchQueries({ queryKey: [queryKey] });
         newData[0] = {
           ...newData[0],
           items: [message, ...newData[0].items],
@@ -34,7 +34,6 @@ function useNotificationSocket({ addKey, queryKey }: NotificationSocketProps) {
 
         // notReadTotal(1);
 
-        // queryClient.refetchQueries({queryKey:[queryKey]});
         // queryClient.refetchQueries();
 
         return {
