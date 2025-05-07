@@ -6,17 +6,12 @@ import { useEffect } from "react";
 interface NotificationSocketProps {
   addKey: string;
   queryKey: string;
-  notReadTotal: (count: number) => void;
 }
 type MessageWithMember = notificationRecipient & {
   member: member & { profile: profile };
 };
 
-function useNotificationSocket({
-  addKey,
-  queryKey,
-  notReadTotal,
-}: NotificationSocketProps) {
+function useNotificationSocket({ addKey, queryKey }: NotificationSocketProps) {
   const { socket, isConnected } = useSocket();
   const queryClient = useQueryClient();
 
@@ -37,7 +32,7 @@ function useNotificationSocket({
           items: [message, ...newData[0].items],
         };
 
-        notReadTotal(1);
+        // notReadTotal(1);
 
         // queryClient.refetchQueries({queryKey:[queryKey]});
         // queryClient.refetchQueries();
@@ -52,7 +47,7 @@ function useNotificationSocket({
     return () => {
       socket.off(addKey);
     };
-  }, [addKey, isConnected, queryKey, socket, notReadTotal]);
+  }, [addKey, isConnected, queryKey, socket]);
 }
 
 export default useNotificationSocket;

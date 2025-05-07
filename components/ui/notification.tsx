@@ -34,7 +34,6 @@ export function Notification({ currentMemberId }: NotificationProps) {
   useNotificationSocket({
     addKey,
     queryKey,
-    notReadTotal: (count: number) => setNotReadTotal((prev) => prev + count),
   });
 
   React.useEffect(() => {
@@ -63,7 +62,8 @@ export function Notification({ currentMemberId }: NotificationProps) {
     fetchNextPage,
     data?.pages[0]?.notReadTotal,
   ]);
-
+  console.log(data);
+  console.log(notReadTotal);
   return (
     <div className="relative group">
       <button className="hover:bg-zinc-200 transition rounded-md p-1">
