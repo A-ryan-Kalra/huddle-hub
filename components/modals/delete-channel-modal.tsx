@@ -14,14 +14,14 @@ import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
 
 import { useModal } from "@/hooks/use-modal-store";
-import { Channel, ChannelOnMember } from "@prisma/client";
+import { channel, channelOnMember } from "@prisma/client";
 
 function DeleteChannelModal() {
   const { type, onClose, data, onOpen } = useModal();
   const openModal = type === "deleteChannel";
   const params = useParams();
   const { channel } = data as {
-    channel: Channel & { members: ChannelOnMember[] };
+    channel: channel & { members: channelOnMember[] };
   };
 
   const router = useRouter();

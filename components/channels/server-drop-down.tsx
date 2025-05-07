@@ -24,14 +24,14 @@ import {
 } from "@clerk/nextjs";
 import AvatarIcon from "../ui/avatar-icon";
 import { useModal } from "@/hooks/use-modal-store";
-import { Member, MemberRole } from "@prisma/client";
+import { member, memberRole } from "@prisma/client";
 import { toast } from "sonner";
 import Link from "next/link";
 interface ServerDropDownProps {
   server: ServerSchema;
-  role: MemberRole;
+  role: memberRole;
   allServers: ServerSchema[];
-  currentMember: Member;
+  currentMember: member;
 }
 
 function ServerDropDown({
@@ -42,8 +42,8 @@ function ServerDropDown({
 }: ServerDropDownProps) {
   const { onOpen } = useModal();
   const { sessionId } = useAuth();
-  const admin = role === MemberRole.ADMIN;
-  const moderator = role === MemberRole.MODERATOR || admin;
+  const admin = role === memberRole.ADMIN;
+  const moderator = role === memberRole.MODERATOR || admin;
   useEffect(() => {
     function keyPress(e: KeyboardEvent) {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
@@ -114,6 +114,12 @@ function ServerDropDown({
           >
             Invite People
           </DropdownMenuItem>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => onOpen("createServer")}
+          >
+            Create Server
+          </DropdownMenuItem>
         </DropdownMenuGroup>
         {admin && (
           <>
@@ -137,7 +143,7 @@ function ServerDropDown({
         <DropdownMenuSeparator />
 
         <DropdownMenuGroup>
-          {admin ? (
+          {true ? (
             <>
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger
@@ -168,12 +174,6 @@ function ServerDropDown({
                 )}
               </DropdownMenuSub>
 
-              <DropdownMenuItem
-                className="cursor-pointer"
-                onClick={() => onOpen("createServer")}
-              >
-                Create Server
-              </DropdownMenuItem>
               <DropdownMenuItem
                 className="cursor-pointer text-red-500 focus:text-red-500"
                 onClick={() => onOpen("deleteServer", { server })}

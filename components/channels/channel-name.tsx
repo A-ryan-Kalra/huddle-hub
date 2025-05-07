@@ -2,13 +2,13 @@
 import React from "react";
 import ActionToolTip from "../ui/action-tooltip";
 import {
-  Channel,
-  ChannelOnMember,
-  ChannelType,
-  ChannelVisibility,
-  Member,
-  MemberRole,
-  Profile,
+  channel,
+  channelOnMember,
+  channelType,
+  channelVisibility,
+  member,
+  memberRole,
+  profile,
 } from "@prisma/client";
 import { Hash, Lock, Mic, UserIcon, Video } from "lucide-react";
 import { toast } from "sonner";
@@ -17,22 +17,22 @@ import { useRouter } from "next/navigation";
 import { useModal } from "@/hooks/use-modal-store";
 
 interface ChannelNameProps {
-  channel: Channel & { members: ChannelOnMember[] };
-  currentMember: Member;
-  allMembers: (Member & { profile: Profile })[];
+  channel: channel & { members: channelOnMember[] };
+  currentMember: member;
+  allMembers: (member & { profile: profile })[];
   role: { admin: boolean; moderator: boolean };
   type?: "channel" | "messages";
 }
 
-const channelIconType = {
-  [ChannelVisibility.PUBLIC]: <Hash className="w-4 h-4" />,
-  [ChannelVisibility.PRIVATE]: <Lock className="w-4 h-4" />,
+const channelIconVisibilityType = {
+  [channelVisibility.PUBLIC]: <Hash className="w-4 h-4" />,
+  [channelVisibility.PRIVATE]: <Lock className="w-4 h-4" />,
 };
 
-const channelType = {
-  [ChannelType.AUDIO]: <Mic className="w-4 h-4" />,
-  [ChannelType.VIDEO]: <Video className="w-4 h-4" />,
-  [ChannelType.TEXT]: null,
+const channelTypeIcon = {
+  [channelType.AUDIO]: <Mic className="w-4 h-4" />,
+  [channelType.VIDEO]: <Video className="w-4 h-4" />,
+  [channelType.TEXT]: null,
 };
 
 function ChannelName({
@@ -49,7 +49,7 @@ function ChannelName({
     channel.members.some((member) => member.memberId === currentMember?.id);
   const router = useRouter();
 
-  const onClick = (channel: Channel & { members: ChannelOnMember[] }) => {
+  const onClick = (channel: channel & { members: channelOnMember[] }) => {
     if (!accessToPrivateChannel && channel.visibility === "PRIVATE") {
       toast("Unauthorized Access", {
         description: "Oops! This channel is private",
@@ -81,7 +81,7 @@ function ChannelName({
             label={channel.visibility}
             className=""
           >
-            {channelIconType[channel.visibility]}
+            {channelIconVisibilityType[channel.visibility]}
           </ActionToolTip>
           <div className="flex items-start justify-start gap-x-1 w-full ">
             <h1 className="px-1 flex items-center ">
@@ -101,7 +101,7 @@ function ChannelName({
               label={channel.type}
               side="right"
             >
-              {channelType[channel.type]}
+              {channelTypeIcon[channel.type]}
             </ActionToolTip>
           </div>
         </div>

@@ -18,7 +18,7 @@ import { Form, FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormControl, FormField, FormItem, FormMessage } from "../ui/form";
 import EmojiPicker from "../ui/emoji-picker";
-import { ChannelVisibility } from "@prisma/client";
+import { channelVisibility } from "@prisma/client";
 import queryString from "query-string";
 import axios from "axios";
 import { toast } from "sonner";
@@ -36,8 +36,8 @@ interface ChatEditorProps {
   name: string;
 }
 const channelIconType = {
-  [ChannelVisibility.PUBLIC]: "",
-  [ChannelVisibility.PRIVATE]: "🔓️",
+  [channelVisibility.PUBLIC]: "",
+  [channelVisibility.PRIVATE]: "🔓️",
 };
 
 export default function ChatEditor({

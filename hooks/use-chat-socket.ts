@@ -1,16 +1,18 @@
 import { useSocket } from "@/components/providers/socket-providers";
-import { Member, Message, Profile } from "@prisma/client";
+import { member, message, profile } from "@prisma/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 
 interface ChatSockerProps {
   addKey: string;
-  queryKey: string;
-  updateKey: string;
-  audioRef: React.RefObject<HTMLAudioElement | null>;
+  queryKey?: string;
+  updateKey?: string;
+  audioRef?: React.RefObject<HTMLAudioElement | null>;
+  type?: "channel" | "conversation" | "threads";
+  triggerKey?: string;
 }
-type MessageWithMember = Message & {
-  member: Member & { profile: Profile };
+type MessageWithMember = message & {
+  member: member & { profile: profile };
 };
 
 function useChatSocket({
@@ -18,6 +20,8 @@ function useChatSocket({
   queryKey,
   updateKey,
   audioRef,
+  type,
+  triggerKey,
 }: ChatSockerProps) {
   const { socket, isConnected } = useSocket();
   const queryClient = useQueryClient();
@@ -34,12 +38,20 @@ function useChatSocket({
         }
 
         const newData = [...oldData.pages];
+
         newData[0] = {
           ...newData[0],
           items: [message, ...newData[0].items],
         };
-        audioRef.current?.play();
+        if (triggerKey) {
+          queryClient.refetchQueries({ queryKey: [triggerKey] });
+        }
 
+        // queryClient.refetchQueries();
+
+        audioRef?.current?.play().catch((err) => {
+          console.warn("Playback failed:", err);
+        });
         return {
           ...oldData,
           pages: newData,
@@ -47,7 +59,7 @@ function useChatSocket({
       });
     });
 
-    socket?.on(updateKey, (message: MessageWithMember) => {
+    socket?.on(updateKey as string, (message: MessageWithMember) => {
       queryClient.setQueryData([queryKey], (oldData: any) => {
         if (!oldData || !oldData.pages || oldData.pages.length === 0) {
           return oldData;
@@ -76,7 +88,7 @@ function useChatSocket({
       socket.off(addKey);
       socket.off(updateKey);
     };
-  }, [isConnected, queryKey, addKey, updateKey]);
+  }, [isConnected, queryKey, addKey, updateKey, type, audioRef]);
 }
 
 export default useChatSocket;

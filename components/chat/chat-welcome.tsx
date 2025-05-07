@@ -1,4 +1,3 @@
-import { Channel, ChannelOnMember, Profile } from "@prisma/client";
 import { HashIcon } from "lucide-react";
 
 interface ChatWelcomeProps {

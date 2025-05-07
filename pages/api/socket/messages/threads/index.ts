@@ -3,6 +3,7 @@ import { currentProfilePages } from "@/lib/currentProfilePages";
 import { db } from "@/lib/db";
 import { NextApiResponseServerIO } from "@/type";
 import { NextApiRequest } from "next";
+import { notificationType } from "@prisma/client";
 
 export default async function handler(
   req: NextApiRequest,
@@ -10,7 +11,7 @@ export default async function handler(
 ) {
   try {
     const profile = await currentProfilePages(req);
-    const { serverId, channelId, messageId } = req.query;
+    const { serverId, channelId, messageId, messageOwnerId } = req.query;
     const { content, fileUrl } = req.body;
 
     if (!profile) {
@@ -26,6 +27,9 @@ export default async function handler(
     if (!messageId) {
       return res.status(400).json({ error: "Message Id is Missing" });
     }
+    if (!messageOwnerId) {
+      return res.status(400).json({ error: "Message Owner Id is Missing" });
+    }
 
     const server = await db.server.findUnique({
       where: {
@@ -37,7 +41,7 @@ export default async function handler(
         },
       },
       include: {
-        members: true,
+        members: { include: { profile: true } },
       },
     });
 
@@ -47,6 +51,9 @@ export default async function handler(
 
     const member = server.members.filter(
       (member) => member.profileId === profile.id
+    );
+    const threadOwner = server.members.filter(
+      (member) => member.id === messageOwnerId
     );
 
     if (!member) {
@@ -75,6 +82,7 @@ export default async function handler(
       data: {
         memberId: member[0].id as string,
         messageId: messageId as string,
+        messageOwnerId,
         ...(content && { content: content }),
         ...(fileUrl && { fileUrl }),
       },
@@ -86,10 +94,69 @@ export default async function handler(
         },
       },
     });
+    const allMembers = await db.member.findMany({
+      where: {
+        profileId: {
+          not: profile?.id,
+        },
+        channels: {
+          some: {
+            channelId: channelId as string,
+          },
+        },
+      },
+    });
+
+    const notification = await db.notification.create({
+      data: {
+        message: `${profile.name} replied to ${`${
+          messageOwnerId === member[0].id
+            ? "to their own comment"
+            : `${threadOwner[0]?.profile?.name}'s`
+        } comment`} in ${channel?.name} channel`,
+        type: notificationType.REPLY,
+        typeId: messageId as string,
+        content,
+        channel_direct_messageId: channelId as string,
+        senderId: member[0]?.id,
+        threadId: threads.id,
+        threadMessageOwnerId: messageOwnerId as string,
+        recipients: {
+          create: allMembers?.map((member, index) => ({
+            memberId: member?.id,
+          })),
+        },
+      },
+      include: {
+        recipients: {
+          include: {
+            member: {
+              include: {
+                profile: true,
+              },
+            },
+            notification: {
+              include: {
+                notificationSent: {
+                  include: {
+                    profile: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
 
     const channelKey = `chat:${messageId}:messages`;
 
     res?.socket?.server?.io?.emit(channelKey, threads);
+    notification?.recipients?.forEach((member) => {
+      const notificationQueryKey = `notification:${member.memberId}:newAlert`;
+
+      res?.socket?.server?.io?.emit(notificationQueryKey, member);
+    });
 
     return res.status(201).json(threads);
   } catch (error) {

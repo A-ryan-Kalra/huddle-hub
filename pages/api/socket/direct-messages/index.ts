@@ -1,6 +1,7 @@
 import { currentProfilePages } from "@/lib/currentProfilePages";
 import { db } from "@/lib/db";
 import { NextApiResponseServerIO } from "@/type";
+import { communicationType, notificationType } from "@prisma/client";
 import { NextApiRequest } from "next";
 
 export default async function handler(
@@ -63,12 +64,71 @@ export default async function handler(
             profile: true,
           },
         },
+        threads: {
+          include: {
+            message: true,
+            member: {
+              include: {
+                profile: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    const reciever =
+      currentMember.id === conversation?.conversationInitiaterId
+        ? conversation.conversationReceiverId
+        : conversation.conversationInitiaterId;
+
+    const notification = await db.notification.create({
+      data: {
+        message: `You have a new message from ${profile.name}`,
+        type: notificationType.DIRECT_MESSAGE,
+        content,
+        typeId: conversationId as string,
+        channel_direct_messageId: currentMember?.id,
+        senderId: currentMember?.id,
+        communicationType: communicationType.DIRECT_MESSAGE,
+        recipients: {
+          create: [
+            {
+              memberId: reciever,
+            },
+          ],
+        },
+      },
+      include: {
+        recipients: {
+          include: {
+            member: {
+              include: {
+                profile: true,
+              },
+            },
+            notification: {
+              include: {
+                notificationSent: {
+                  include: {
+                    profile: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
 
     const chat = `chat:${conversationId}:messages`;
 
+    const notificationQueryKey = `notification:${reciever}:newAlert`;
+
     res?.socket?.server?.io?.emit(chat, directMessage);
+    res?.socket?.server?.io?.emit(
+      notificationQueryKey,
+      notification.recipients[0]
+    );
 
     return res.json({ directMessage });
   } catch (error) {

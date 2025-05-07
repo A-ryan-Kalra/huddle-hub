@@ -3,6 +3,7 @@ import { currentProfilePages } from "@/lib/currentProfilePages";
 import { db } from "@/lib/db";
 import { NextApiResponseServerIO } from "@/type";
 import { NextApiRequest } from "next";
+import { notificationType } from "@prisma/client";
 
 export default async function handler(
   req: NextApiRequest,
@@ -81,12 +82,75 @@ export default async function handler(
             profile: true,
           },
         },
+        threads: {
+          include: {
+            message: true,
+            member: {
+              include: {
+                profile: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    const allMembers = await db.member.findMany({
+      where: {
+        profileId: {
+          not: profile?.id,
+        },
+        channels: {
+          some: {
+            channelId: channelId as string,
+          },
+        },
+      },
+    });
+
+    const notification = await db.notification.create({
+      data: {
+        message: `You have a new message from ${profile.name} in ${channel?.name} channel`,
+        type: notificationType.MESSAGE,
+        typeId: message.id as string,
+        content,
+        channel_direct_messageId: message?.channelId,
+        senderId: member[0]?.id,
+        recipients: {
+          create: allMembers?.map((member, index) => ({
+            memberId: member?.id,
+          })),
+        },
+      },
+      include: {
+        recipients: {
+          include: {
+            member: {
+              include: {
+                profile: true,
+              },
+            },
+            notification: {
+              include: {
+                notificationSent: {
+                  include: {
+                    profile: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
 
     const channelKey = `chat:${channel.id}:messages`;
 
     res?.socket?.server?.io?.emit(channelKey, message);
+    notification?.recipients?.forEach((member) => {
+      const notificationQueryKey = `notification:${member.memberId}:newAlert`;
+
+      res?.socket?.server?.io?.emit(notificationQueryKey, member);
+    });
 
     return res.status(201).json(message);
   } catch (error) {

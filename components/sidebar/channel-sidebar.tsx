@@ -1,11 +1,12 @@
 import { db } from "@/lib/db";
-import { FilePen } from "lucide-react";
+import { FilePen, RefreshCcw } from "lucide-react";
 import { redirect } from "next/navigation";
 import ActionToolTip from "../ui/action-tooltip";
 import ServerDropDown from "../channels/server-drop-down";
 import CommunicationSection from "./communication-section";
-import { MemberRole } from "@prisma/client";
+import { memberRole } from "@prisma/client";
 import { currentProfile } from "@/lib/currentProfile";
+import Refresh from "../ui/refresh";
 
 interface ChannelSideBarProps {
   serverId: string;
@@ -58,6 +59,13 @@ async function ChannelSidebar({ serverId }: ChannelSideBarProps) {
     redirect("/");
   }
   const allServers = await db.server.findMany({
+    where: {
+      members: {
+        some: {
+          profileId: profile?.id,
+        },
+      },
+    },
     include: {
       members: true,
       channels: { include: { members: true } },
@@ -68,7 +76,7 @@ async function ChannelSidebar({ serverId }: ChannelSideBarProps) {
     (member) => member.profileId === profile.id
   );
 
-  const role: MemberRole = currentMember[0]!.role;
+  const role: memberRole = currentMember[0]!.role;
 
   const allMembers = await db.member.findMany({
     where: {
@@ -94,9 +102,12 @@ async function ChannelSidebar({ serverId }: ChannelSideBarProps) {
           role={role}
           currentMember={currentMember[0]}
         />
-        <ActionToolTip className="ml-auto" label="New message">
+        <ActionToolTip className="ml-auto" label="Refresh">
           <div className=" hover:bg-zinc-200 duration-300 transition rounded-md p-2 cursor-pointer">
-            <FilePen className="w-5 h-5" />
+            {/* <FilePen className="w-5 h-5" /> */}
+            <Refresh>
+              <RefreshCcw className="w-5 h-5" />
+            </Refresh>
           </div>
         </ActionToolTip>
       </div>

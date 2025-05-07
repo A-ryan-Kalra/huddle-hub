@@ -14,7 +14,7 @@ import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
 
 import { useModal } from "@/hooks/use-modal-store";
-import { Member, Message, Profile } from "@prisma/client";
+import { member, message, profile } from "@prisma/client";
 import { Loader2Icon } from "lucide-react";
 
 function DeleteMessageModal() {
@@ -24,7 +24,7 @@ function DeleteMessageModal() {
   const [isLoading, setIsLoading] = useState(false);
 
   const { message } = data as {
-    message?: Message & { member: Member & { profile: Profile } } & {
+    message?: message & { member: member & { profile: profile } } & {
       conversationId: string;
     };
   };

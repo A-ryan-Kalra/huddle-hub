@@ -1,6 +1,6 @@
 import { currentProfile } from "@/lib/currentProfile";
 import { db } from "@/lib/db";
-import { MemberRole } from "@prisma/client";
+import { memberRole } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -31,7 +31,7 @@ export async function POST(req: Request) {
           profileId: profile.id,
           serverId,
           role: {
-            in: [MemberRole.ADMIN, MemberRole.MODERATOR],
+            in: [memberRole.ADMIN, memberRole.MODERATOR],
           },
         },
       });

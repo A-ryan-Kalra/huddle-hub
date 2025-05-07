@@ -1,13 +1,13 @@
-import { Channel, ChannelOnMember, Member, Server } from "@prisma/client";
+import { channel, channelOnMember, member, server } from "@prisma/client";
 import { NextApiResponse } from "next";
 import { Socket, Server as NetServer } from "net";
 import { Server as SocketIoServer } from "socket.io";
 
-export type ServerSchema = Server & {
-  channels: (Channel & {
-    members: ChannelOnMember[];
+export type ServerSchema = server & {
+  channels: (channel & {
+    members: channelOnMember[];
   })[];
-  members: Member[];
+  members: member[];
 };
 
 export type NextApiResponseServerIO = NextApiResponse & {

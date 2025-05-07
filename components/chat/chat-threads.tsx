@@ -2,7 +2,7 @@ import { useModal } from "@/hooks/use-modal-store";
 import { X, XCircle } from "lucide-react";
 import React from "react";
 import MainThread from "../threads/main-thread";
-import { DirectMessage, Member, Message, Profile } from "@prisma/client";
+import { directMessage, member, message, profile } from "@prisma/client";
 import ChatEditor from "./chat-editor";
 import ChatSection from "./chat-section";
 
@@ -19,14 +19,14 @@ interface ChatMessage {
   memberId: string;
   channelId?: string;
   conversationId?: string;
-  member: Member & { profile: Profile };
+  member: member & { profile: profile };
 }
 
 function ChatThreads({ params }: ChatThreadsProps) {
   const { type, data, onClose } = useModal();
-  const { message } = params?.member
-    ? (data as { message: ChatMessage })
-    : (data as { message: ChatMessage });
+  const { message, member } = params?.member
+    ? (data as { message: ChatMessage; member: member & { profile: profile } })
+    : (data as { message: ChatMessage; member: member & { profile: profile } });
 
   return (
     <div className="w-full h-full flex flex-col flex- p-2 bg-white border-l-[1px]">
@@ -43,6 +43,7 @@ function ChatThreads({ params }: ChatThreadsProps) {
       <ChatSection
         type="threads"
         chatId={message?.id}
+        triggerChatId={message?.channelId || message?.conversationId}
         name={message?.member?.profile?.name?.split(" ")[0]}
         createdAt={
           message?.createdAt
@@ -65,7 +66,7 @@ function ChatThreads({ params }: ChatThreadsProps) {
           messageId: message?.id,
           serverId: message?.member?.serverId,
         }}
-        currentMember={message?.member}
+        currentMember={member}
       />
       <ChatEditor
         type="threads"
@@ -79,6 +80,7 @@ function ChatThreads({ params }: ChatThreadsProps) {
           ...(params?.channelId && { channelId: message?.channelId }),
           ...(params?.memberId && { directMessageId: message?.id }),
           ...(params?.memberId && { conversationId: message?.conversationId }),
+          ...(message?.member && { messageOwnerId: message?.memberId }),
           serverId: message?.member?.serverId,
         }}
         name={""}

@@ -37,12 +37,12 @@ import {
   SelectValue,
 } from "../ui/select";
 import {
-  Channel,
-  ChannelOnMember,
-  ChannelType,
-  ChannelVisibility,
-  Member,
-  Profile,
+  channel,
+  channelOnMember,
+  channelType,
+  channelVisibility,
+  member,
+  profile,
 } from "@prisma/client";
 import { Switch } from "../ui/switch";
 
@@ -57,8 +57,8 @@ const formSchema = z.object({
     .refine((name) => name !== "general", {
       message: "Channel name cannot be 'general'",
     }),
-  type: z.nativeEnum(ChannelType),
-  visibility: z.nativeEnum(ChannelVisibility),
+  type: z.nativeEnum(channelType),
+  visibility: z.nativeEnum(channelVisibility),
   members: z.array(z.string()),
 });
 
@@ -66,10 +66,10 @@ function CustomizeChannelModal() {
   const { type, onClose, data } = useModal();
   const openModal = type === "customizeChannel";
   const { channel, member } = data as {
-    channel: Channel & {
-      members: (ChannelOnMember & { member: Member & { profile: Profile } })[];
+    channel: channel & {
+      members: (channelOnMember & { member: member & { profile: profile } })[];
     };
-    member: (Member & { profile: Profile })[];
+    member: (member & { profile: profile })[];
   };
 
   const params = useParams();
@@ -88,9 +88,9 @@ function CustomizeChannelModal() {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      type: ChannelType.TEXT,
+      type: channelType.TEXT,
       name: "",
-      visibility: ChannelVisibility.PUBLIC,
+      visibility: channelVisibility.PUBLIC,
       members: [],
     },
   });

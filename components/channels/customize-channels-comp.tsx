@@ -8,18 +8,18 @@ import {
 } from "../ui/context-menu";
 import { useModal } from "@/hooks/use-modal-store";
 import {
-  Channel,
-  ChannelOnMember,
-  Member,
-  MemberRole,
-  Profile,
+  channel,
+  channelOnMember,
+  member,
+  memberRole,
+  profile,
 } from "@prisma/client";
 
 interface CustomizeChannelCompProps {
   children: React.ReactNode;
-  allMembers: (Member & { profile: Profile })[];
+  allMembers: (member & { profile: profile })[];
   role: { admin: boolean; moderator: boolean };
-  channel: Channel & { members: ChannelOnMember[] };
+  channel: channel & { members: channelOnMember[] };
   ownerOfChannel: boolean;
 }
 

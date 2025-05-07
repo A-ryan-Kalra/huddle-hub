@@ -36,7 +36,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { ChannelType, ChannelVisibility } from "@prisma/client";
+import { channelType, channelVisibility } from "@prisma/client";
 import { Switch } from "../ui/switch";
 
 import { MultiSelect } from "../ui/multi-select";
@@ -50,8 +50,8 @@ const formSchema = z.object({
     .refine((name) => name !== "general", {
       message: "Channel name cannot be 'general'",
     }),
-  type: z.nativeEnum(ChannelType),
-  visibility: z.nativeEnum(ChannelVisibility),
+  type: z.nativeEnum(channelType),
+  visibility: z.nativeEnum(channelVisibility),
   members: z.array(z.string()),
 });
 
@@ -76,9 +76,9 @@ function CreateChannelModal() {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      type: ChannelType.TEXT,
+      type: channelType.TEXT,
       name: "",
-      visibility: ChannelVisibility.PUBLIC,
+      visibility: channelVisibility.PUBLIC,
       members: [],
     },
   });

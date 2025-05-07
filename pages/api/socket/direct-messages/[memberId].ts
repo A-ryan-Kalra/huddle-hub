@@ -1,7 +1,7 @@
 import { currentProfilePages } from "@/lib/currentProfilePages";
 import { db } from "@/lib/db";
 import { NextApiResponseServerIO } from "@/type";
-import { DirectMessage, Member, Profile } from "@prisma/client";
+import { directMessage, member, profile } from "@prisma/client";
 import { NextApiRequest } from "next";
 
 export default async function handler(
@@ -29,7 +29,7 @@ export default async function handler(
       return res.status(400).json({ error: "Member Id Missing" });
     }
 
-    let direMessage: DirectMessage & { member: Member & { profile: Profile } };
+    let direMessage: directMessage & { member: member & { profile: profile } };
 
     if (req.method === "PATCH") {
       direMessage = await db.directMessage.update({

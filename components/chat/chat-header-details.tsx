@@ -1,5 +1,5 @@
 "use client";
-import { Channel, ChannelOnMember, Member, Profile } from "@prisma/client";
+import { channel, channelOnMember, member, profile } from "@prisma/client";
 import React from "react";
 import { useSocket } from "../providers/socket-providers";
 import ActionToolTip from "../ui/action-tooltip";
@@ -7,8 +7,8 @@ import { Badge } from "../ui/badge";
 
 interface ChatHeaderDetailsProps {
   type: "channel" | "message";
-  channel?: Channel & { members: ChannelOnMember[] };
-  member?: Member & { profile: Profile };
+  channel?: channel & { members: channelOnMember[] };
+  member?: member & { profile: profile };
 }
 function ChatHeaderDetails({ type, channel, member }: ChatHeaderDetailsProps) {
   const { isConnected } = useSocket();

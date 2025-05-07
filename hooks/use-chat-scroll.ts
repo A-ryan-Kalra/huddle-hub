@@ -23,7 +23,6 @@ function useChatScroll({
         loadMore();
       }
     };
-
     topDiv?.addEventListener("scroll", handleScroll);
 
     return () => {

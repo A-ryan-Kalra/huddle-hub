@@ -1,6 +1,7 @@
 import { currentProfilePages } from "@/lib/currentProfilePages";
 import { db } from "@/lib/db";
 import { NextApiResponseServerIO } from "@/type";
+import { communicationType, notificationType } from "@prisma/client";
 import { NextApiRequest } from "next";
 
 export default async function handler(
@@ -9,7 +10,8 @@ export default async function handler(
 ) {
   try {
     const profile = await currentProfilePages(req);
-    const { serverId, conversationId, directMessageId } = req.query;
+    const { serverId, conversationId, directMessageId, messageOwnerId } =
+      req.query;
 
     const { content, fileUrl } = req.body;
 
@@ -25,6 +27,9 @@ export default async function handler(
     }
     if (!directMessageId) {
       return res.status(400).json({ error: "Direct Message Id Missing" });
+    }
+    if (!messageOwnerId) {
+      return res.status(400).json({ error: "Message Owner Id Missing" });
     }
 
     const currentMember = await db.member.findFirst({
@@ -58,6 +63,7 @@ export default async function handler(
         directMessageId: directMessageId,
         content: content as string,
         memberId: currentMember?.id,
+        messageOwnerId,
         ...(fileUrl && { fileUrl }),
       },
       include: {
@@ -69,7 +75,61 @@ export default async function handler(
       },
     });
 
+    const reciever =
+      currentMember.id === conversation?.conversationInitiaterId
+        ? conversation.conversationReceiverId
+        : conversation.conversationInitiaterId;
+
+    const notification = await db.notification.create({
+      data: {
+        message: `${profile.name} ${
+          messageOwnerId === currentMember?.id
+            ? `replied to their own comment`
+            : `replied to your comment`
+        }`,
+        type: notificationType.REPLY,
+        typeId: directMessageId as string,
+        content,
+        channel_direct_messageId: messageOwnerId as string,
+        senderId: currentMember?.id,
+        threadId: threads.id,
+        threadMessageOwnerId: messageOwnerId as string,
+        communicationType: communicationType.DIRECT_MESSAGE,
+        recipients: {
+          create: {
+            memberId: reciever,
+          },
+        },
+      },
+      include: {
+        recipients: {
+          include: {
+            member: {
+              include: {
+                profile: true,
+              },
+            },
+            notification: {
+              include: {
+                notificationSent: {
+                  include: {
+                    profile: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
     const channelKey = `chat:${directMessageId}:messages`;
+    const notificationQueryKey = `notification:${reciever}:newAlert`;
+
+    res?.socket?.server?.io?.emit(
+      notificationQueryKey,
+      notification.recipients[0]
+    );
 
     res?.socket?.server?.io?.emit(channelKey, threads);
 

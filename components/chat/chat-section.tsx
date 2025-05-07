@@ -1,5 +1,5 @@
 "use client";
-import { Member, Profile } from "@prisma/client";
+import { member, profile } from "@prisma/client";
 import { HashIcon, Loader2, PenLine, ServerCrashIcon } from "lucide-react";
 import React, { Fragment, useRef } from "react";
 import ChatWelcome from "./chat-welcome";
@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 
 interface ChatSectionProps {
   type: "channel" | "conversation" | "threads";
-
+  triggerChatId?: string;
   paramKey: string;
   paramValue: string;
   apiUrl: string;
@@ -21,10 +21,9 @@ interface ChatSectionProps {
   createdAt?: string;
   chatName?: string;
   socketQuery: Record<string, any>;
-  currentMember: Member & { profile: Profile };
+  currentMember: member & { profile: profile };
 }
 
-const DATE_FORMAT = "d/MM/yyyy, hh:mm a";
 function ChatSection({
   type,
   paramKey,
@@ -36,26 +35,29 @@ function ChatSection({
   chatName,
   socketQuery,
   currentMember,
+  triggerChatId,
 }: ChatSectionProps) {
   const chatRef = React.useRef<HTMLDivElement | null>(null);
   const threadRef = React.useRef<HTMLDivElement | null>(null);
   const bottomRef = React.useRef<HTMLDivElement | null>(null);
   const queryKey = `chat:${chatId}`;
+  const triggerKey = `chat:${triggerChatId}`;
   const addKey = `chat:${chatId}:messages`;
   const updateKey = `chat:${chatId}:messages:update`;
+  const audioRef = useRef(null);
+
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage, status } =
     useChatQuery({ queryKey, paramKey, paramValue, apiUrl });
-  const audioRef = useRef(null);
+
   useChatScroll({
     chatRef,
     bottomRef,
-
     loadMore: fetchNextPage,
     shouldLoadMore: !!hasNextPage && !isFetchingNextPage,
     count: data?.pages[0]?.items?.length ?? 0,
   });
 
-  useChatSocket({ audioRef, addKey, queryKey, updateKey });
+  useChatSocket({ audioRef, addKey, queryKey, updateKey, type, triggerKey });
 
   if (status === "pending") {
     return (
@@ -141,7 +143,7 @@ function ChatSection({
           </Fragment>
         ))}
       </div>
-      <audio className="bg-black p-2" ref={audioRef} src="/notification.mp3" />
+      <audio className="" ref={audioRef} src="/notification.mp3" />
 
       <div ref={bottomRef} />
     </div>

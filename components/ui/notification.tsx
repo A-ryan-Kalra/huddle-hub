@@ -1,107 +1,163 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
 
 import { cn } from "@/lib/utils";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
-import { Bell } from "lucide-react";
 
-const components: { title: string; href: string; description: string }[] = [
-  {
-    title: "Alert Dialog",
-    href: "/docs/primitives/alert-dialog",
-    description:
-      "A modal dialog that interrupts the user with important content and expects a response.",
-  },
-  {
-    title: "Hover Card",
-    href: "/docs/primitives/hover-card",
-    description:
-      "For sighted users to preview content available behind a link.",
-  },
-  {
-    title: "Progress",
-    href: "/docs/primitives/progress",
-    description:
-      "Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.",
-  },
-  {
-    title: "Scroll-area",
-    href: "/docs/primitives/scroll-area",
-    description: "Visually or semantically separates content.",
-  },
-  {
-    title: "Tabs",
-    href: "/docs/primitives/tabs",
-    description:
-      "A set of layered sections of content—known as tab panels—that are displayed one at a time.",
-  },
-  {
-    title: "Tooltip",
-    href: "/docs/primitives/tooltip",
-    description:
-      "A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.",
-  },
-];
+import { Bell, BotMessageSquare, Loader2 } from "lucide-react";
 
-export function Notification() {
+import useChatQuery from "@/hooks/use-chat-query";
+
+import ListItem from "../notification/list-item";
+import useNotificationSocket from "@/hooks/use-notification-socket";
+import useChatSocket from "@/hooks/use-chat-socket";
+
+interface NotificationProps {
+  currentMemberId: string;
+}
+
+export function Notification({ currentMemberId }: NotificationProps) {
+  // const triggerKey = `chat:${triggerChatId}`;
+  const notificationQuery = currentMemberId;
+  const queryKey = `notification:${notificationQuery}`;
+  const addKey = `notification:${notificationQuery}:newAlert`;
+  const chatRef = React.useRef<HTMLDivElement | null>(null);
+
+  const { data, fetchNextPage, isFetchingNextPage, hasNextPage, status } =
+    useChatQuery({
+      queryKey,
+      apiUrl: `/api/notifications`,
+      type: "notification",
+    });
+  const [notReadTotal, setNotReadTotal] = React.useState<number>(0);
+
+  useNotificationSocket({
+    addKey,
+    queryKey,
+  });
+
+  React.useEffect(() => {
+    const topDiv = chatRef?.current;
+    setNotReadTotal(data?.pages[0]?.notReadTotal as number);
+
+    const handleScroll = () => {
+      const distanceFromBottom = !topDiv
+        ? false
+        : topDiv?.scrollHeight - (topDiv?.clientHeight + topDiv?.scrollTop) <=
+          15;
+
+      if (distanceFromBottom && !!hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
+      }
+    };
+    topDiv?.addEventListener("scroll", handleScroll);
+
+    return () => {
+      topDiv?.removeEventListener("scroll", handleScroll);
+    };
+  }, [
+    chatRef,
+    isFetchingNextPage,
+    hasNextPage,
+    fetchNextPage,
+    data?.pages[0]?.notReadTotal,
+  ]);
+  console.log(data);
+  console.log(notReadTotal);
   return (
-    <NavigationMenu className="">
-      <NavigationMenuList className="!h-fit !m-0 !p-0">
-        <NavigationMenuItem>
-          <NavigationMenuTrigger className="hover:bg-zinc-200 transition rounded-md p-1">
-            <Bell className="w-6 h-6" />
-          </NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-              {components.map((component) => (
-                <ListItem
-                  key={component.title}
-                  title={component.title}
-                  href={component.href}
-                >
-                  {component.description}
-                </ListItem>
+    <div className="relative group">
+      <button className="hover:bg-zinc-200 transition rounded-md p-1">
+        <Bell className="w-6 h-6" />
+      </button>
+      <div
+        className={cn(
+          "absolute top-3 rounded-xl overflow-hidden left-3 z-10 bg-white gap-y-2 flex flex-col",
+          `group-hover:visible group-hover:scale-100  transition-all ease-out group-hover:opacity-100 opacity-0 border-[1px] scale-95 invisible delay-200`
+        )}
+      >
+        <h1 className="p-2 border-b-[1px] font-semibold tracking-wide">
+          Notifications
+        </h1>
+        <div
+          ref={chatRef}
+          className={cn(
+            "flex  flex-1 max-sm:max-h-[330px] max-h-[400px] !scroll-smooth overflow-y-auto flex-col gap-y-1"
+          )}
+        >
+          {!data?.pages[0]?.items?.length ? (
+            <div className="flex flex-col items-center gap-y-2 justify-center flex-1  w-[300px] min-h-[300px]">
+              <BotMessageSquare className="text-zinc-500" />
+              <h1 className="text-xs text-zinc-600">
+                Nothing to see here - check back later!
+              </h1>
+            </div>
+          ) : (
+            <ul className="flex flex-1 flex-col gap-y-1 w-[300px]">
+              {data?.pages?.map((component, index) => (
+                <React.Fragment key={index}>
+                  {component?.items?.map((member, index) => (
+                    <ListItem
+                      profile={member?.member?.profile?.name}
+                      threadOwnerId={
+                        member?.notification?.threadMessageOwnerId ?? ""
+                      }
+                      memberId={member?.member?.id}
+                      notificationType={member?.notification?.type}
+                      key={index}
+                      isRead={member?.isRead}
+                      queryKey={queryKey}
+                      receipentId={member?.id}
+                      createdAt={member?.notification?.createdAt}
+                      communicationType={
+                        member?.notification?.communicationType
+                      }
+                      className="border-b-[1px] flex gap-x-1"
+                      type={
+                        member?.notification?.type === "MESSAGE"
+                          ? "channels"
+                          : "conversations"
+                      }
+                      title={member?.notification?.message}
+                      id={member?.notification?.channel_direct_messageId}
+                      imageUrl={
+                        member?.notification?.notificationSent?.profile
+                          ?.imageUrl
+                      }
+                    >
+                      {cleanContent(member?.notification?.content)}
+                    </ListItem>
+                  ))}
+                </React.Fragment>
               ))}
+
+              {hasNextPage && (
+                <div className="flex justify-center items-center">
+                  {isFetchingNextPage ? (
+                    <div className="my-1 animate-spin text-zinc-400">
+                      <Loader2 />
+                    </div>
+                  ) : hasNextPage ? (
+                    <button
+                      onClick={() => fetchNextPage()}
+                      className="text-sm text-zinc-500 my-1"
+                    >
+                      Load more
+                    </button>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              )}
             </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-      </NavigationMenuList>
-    </NavigationMenu>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
 
-const ListItem = React.forwardRef<
-  React.ElementRef<"a">,
-  React.ComponentPropsWithoutRef<"a">
->(({ className, title, children, ...props }, ref) => {
-  return (
-    <li>
-      <NavigationMenuLink asChild>
-        <a
-          ref={ref}
-          className={cn(
-            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-            className
-          )}
-          {...props}
-        >
-          <div className="text-sm font-medium leading-none">{title}</div>
-          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-            {children}
-          </p>
-        </a>
-      </NavigationMenuLink>
-    </li>
-  );
-});
-ListItem.displayName = "ListItem";
+const cleanContent = (content: string) => {
+  const div = document.createElement("div");
+  div.innerHTML = content;
+  return div.textContent || div.innerText || "";
+};

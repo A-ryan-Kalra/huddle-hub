@@ -1,7 +1,7 @@
-import { Member, MemberRole, Message, Profile, Threads } from "@prisma/client";
+import { member, memberRole, message, profile, threads } from "@prisma/client";
 import React, { useEffect, useRef, useState } from "react";
 import AvatarIcon from "./avatar-icon";
-import { Edit, MessageCircleMore, TrashIcon } from "lucide-react";
+import { Edit, Loader2Icon, MessageCircleMore, TrashIcon } from "lucide-react";
 import ActionToolTip from "./action-tooltip";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -18,14 +18,14 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 
 interface UserCommentProps {
-  message: Message & {
-    member: Member & { profile: Profile };
+  message: message & {
+    member: member & { profile: profile };
     directMessageId?: string;
-    threads: (Threads & { member: Member & { profile: Profile } })[];
+    threads: (threads & { member: member & { profile: profile } })[];
   };
   createdAt: Date;
   socketQuery: Record<string, any>;
-  currentMember: Member & { profile: Profile };
+  currentMember: member & { profile: profile };
   type: "channel" | "conversation" | "threads";
 }
 
@@ -50,12 +50,13 @@ function UserComment({
   const contentRef = useRef<HTMLDivElement>(null);
   const { onOpen } = useModal();
   const isUpdated = message.createdAt !== message.updatedAt;
-  const isAdmin = type === "channel" && currentMember.role === MemberRole.ADMIN;
-  const isModerator = isAdmin || currentMember.role === MemberRole.MODERATOR;
+  const isAdmin = currentMember.role === memberRole.ADMIN;
+  const isModerator = isAdmin || currentMember.role === memberRole.MODERATOR;
   const ownerOfMessage = message.memberId === currentMember.id;
   const isDeleted = message.deleted;
   const showTime = format(new Date(message?.createdAt), TIME_FORMAT);
   const showDate = format(new Date(message?.createdAt), DATE_FORMAT);
+  const [loading, setIsLoading] = useState(false);
   const threadLastReply =
     message?.threads &&
     message?.threads?.length !== 0 &&
@@ -117,6 +118,7 @@ function UserComment({
   }, [message.content, isEditing]);
 
   async function deleteThreads() {
+    setIsLoading(true);
     const typeMessage = window.location.pathname?.split("/")[3];
     const url = queryString.stringifyUrl({
       url: `/api/socket/${
@@ -136,12 +138,10 @@ function UserComment({
     });
 
     await axios.delete(url);
-
+    setIsLoading(false);
     router.refresh();
   }
 
-  console.log(message);
-  console.log("-------");
   return (
     <div className="flex px-4 h-full">
       <div className="relative flex gap-x-2 w-full  items-start">
@@ -158,12 +158,21 @@ function UserComment({
           )}
         >
           {!isDeleted && (
-            <div className="gap-x-1 z-10 absolute right-3 p-1 bg-zinc-300 -top-4 invisible rounded-md group-hover:visible flex">
+            <div
+              className={cn(
+                "gap-x-1 z-10 absolute right-3 p-1 bg-zinc-300 -top-4 invisible rounded-md  flex",
+                (ownerOfMessage || isModerator) && "group-hover:visible",
+                type !== "threads" && "group-hover:visible"
+              )}
+            >
               {!isDeleted && type !== "threads" && (
                 <ActionToolTip
                   label="Reply in thread"
                   onClick={() => {
-                    onOpen("openThread", { message: message });
+                    onOpen("openThread", {
+                      message: message,
+                      member: currentMember,
+                    });
                   }}
                   className="px-2 py-1 hover:bg-zinc-200 "
                 >
@@ -171,7 +180,7 @@ function UserComment({
                 </ActionToolTip>
               )}
 
-              {!isDeleted && ownerOfMessage && ownerOfMessage && (
+              {!isDeleted && ownerOfMessage && (
                 <ActionToolTip
                   label="Edit"
                   onClick={() => {
@@ -200,7 +209,11 @@ function UserComment({
                   }}
                   className="px-2 py-1 hover:bg-zinc-200 "
                 >
-                  <TrashIcon className="!w-4 !h-4" />
+                  {!loading ? (
+                    <TrashIcon className="!w-4 !h-4" />
+                  ) : (
+                    <Loader2Icon className="!w-4 !h-4 animate-spin" />
+                  )}
                 </ActionToolTip>
               )}
             </div>
@@ -291,7 +304,10 @@ function UserComment({
               {message?.threads?.length > 0 && (
                 <button
                   onClick={() => {
-                    onOpen("openThread", { message: message });
+                    onOpen("openThread", {
+                      message: message,
+                      member: currentMember,
+                    });
                   }}
                   className="md:w-1/2 w-full m-1 p-1 hover:ring-1 ring-zinc-300 hover:bg-white rounded-md flex items-center gap-x-2"
                 >
@@ -302,12 +318,18 @@ function UserComment({
                     }
                     width={20}
                     height={20}
-                    className="!rounded-md border-[1px] border-current mt-auto !sticky bottom-0"
+                    className="!rounded-md aspect-square border-[1px] border-current mt-auto !sticky bottom-0"
                   />
-                  <span className="text-xs hover:underline flex gap-x-2 items-center text-zinc-500 tracking-wide">
-                    View last reply at
+                  <p className="text-xs hover:underline text-blue-500 flex gap-x-1 items-center font-semibold">
+                    {message?.threads?.length}
+                    <span>
+                      {message?.threads?.length > 1 ? "replies" : "reply"}
+                    </span>
+                  </p>
+                  <p className="text-xs hover:underline truncate flex gap-x-2 items-center text-zinc-500 tracking-wide">
+                    last reply at
                     {threadLastReply && <span>{threadLastReply}</span>}
-                  </span>
+                  </p>
                 </button>
               )}
               {message?.fileUrl && (

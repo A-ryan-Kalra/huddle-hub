@@ -1,13 +1,13 @@
 "use client";
 
 import {
-  Channel,
-  ChannelOnMember,
-  ChannelVisibility,
-  Member,
-  MemberRole,
-  Profile,
-  Server,
+  channel,
+  channelOnMember,
+  channelVisibility,
+  member,
+  memberRole,
+  profile,
+  server,
 } from "@prisma/client";
 import { ChevronDown, Hash, Lock, PlusIcon } from "lucide-react";
 import React, { useState } from "react";
@@ -22,11 +22,11 @@ interface ChannelScetionProps {
   title: string;
   type: "channels" | "conversation";
   role: "ADMIN" | "MODERATOR" | "GUEST";
-  allMembers: (Member & { profile: Profile })[];
-  currentMember: Member;
-  channels?: (Channel & { members: ChannelOnMember[] })[];
-  members?: (Member & { profile: Profile })[];
-  server?: Server;
+  allMembers: (member & { profile: profile })[];
+  currentMember: member;
+  channels?: (channel & { members: channelOnMember[] })[];
+  members?: (member & { profile: profile })[];
+  server?: server;
 }
 
 function CommunicationSection({
@@ -41,8 +41,8 @@ function CommunicationSection({
 }: ChannelScetionProps) {
   const { onOpen } = useModal();
   const [showHeight, setShowHeight] = useState(false);
-  const admin = role === MemberRole.ADMIN;
-  const moderator = role === MemberRole.MODERATOR || admin;
+  const admin = role === memberRole.ADMIN;
+  const moderator = role === memberRole.MODERATOR || admin;
 
   return (
     <div className="mt-8 flex flex-col gap-y-1">
@@ -120,7 +120,7 @@ function CommunicationSection({
           <p className="px-1">Add Channels</p>
         </button>
       )}
-      {type === "conversation" && moderator && (
+      {type === "conversation" && (
         <button
           onClick={() => onOpen("invite", { server: server })}
           className="group p-1 text-sm gap-x-2 hover:bg-zinc-200 transition  flex items-center justify-start rounded-md"
