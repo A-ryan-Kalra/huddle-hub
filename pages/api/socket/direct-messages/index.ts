@@ -121,6 +121,8 @@ export default async function handler(
     });
 
     const chat = `chat:${conversationId}:messages`;
+    const notify = `${currentMember?.id}`;
+    res?.socket?.server?.io?.emit(notify);
 
     const notificationQueryKey = `notification:${reciever}:newAlert`;
 
