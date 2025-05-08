@@ -132,6 +132,8 @@ export default async function handler(
     );
 
     res?.socket?.server?.io?.emit(channelKey, threads);
+    const chatId = `chat:${conversationId}:messages`;
+    res?.socket?.server?.io?.emit(chatId);
 
     return res.status(201).json(threads);
   } catch (error) {

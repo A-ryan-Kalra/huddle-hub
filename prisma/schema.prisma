@@ -58,6 +58,7 @@ model member {
   serverId              String
   createdAt             DateTime       @default(now())
   updatedAt             DateTime       @updatedAt
+  isInvitedComplete     Boolean?        @default(false)
   conversationInitiated conversation[] @relation("conversationInitiater")
   concersationReceived  conversation[] @relation("conversationReceiver")
 
@@ -187,6 +188,7 @@ enum notificationType {
   MESSAGE
   DIRECT_MESSAGE
   REPLY
+  INVITE
 }
 enum communicationType {
   CHANNEL
