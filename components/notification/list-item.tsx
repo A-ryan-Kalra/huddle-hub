@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import React from "react";
 import AvatarIcon from "../ui/avatar-icon";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
 import { useQueryClient } from "@tanstack/react-query";
@@ -10,6 +10,7 @@ import { notificationType } from "@prisma/client";
 import {
   MessageCircleIcon,
   MessageCircleReply,
+  User,
   UsersRound,
 } from "lucide-react";
 const TIME_FORMAT = "MMM d, hh:mm a";
@@ -23,12 +24,12 @@ interface ListItemProps {
   type: "channels" | "conversations";
   receipentId: string;
   isRead: boolean;
-  queryKey: string;
+  refetch: () => void;
   memberId: string;
   profile: string;
   communicationType: "CHANNEL" | "DIRECT_MESSAGE";
   threadOwnerId: string;
-  notificationType: "REPLY" | "MESSAGE" | "DIRECT_MESSAGE";
+  notificationType: "REPLY" | "MESSAGE" | "DIRECT_MESSAGE" | "INVITE";
   createdAt: Date;
 }
 const notificationTypeIcon = {
@@ -36,11 +37,12 @@ const notificationTypeIcon = {
     <UsersRound className="w-4 h-4 text-zinc-700" />
   ),
   [notificationType.MESSAGE]: (
-    <MessageCircleIcon className="w-4 h-4 text-zinc-700" />
+    <MessageCircleIcon className="w-4 h-4 text-teal-500" />
   ),
   [notificationType.REPLY]: (
     <MessageCircleReply className="w-4 h-4 text-zinc-700" />
   ),
+  [notificationType.INVITE]: <User className="w-4 h-4 text-blue-500" />,
 };
 function ListItem({
   imageUrl,
@@ -51,7 +53,7 @@ function ListItem({
   type,
   receipentId,
   isRead,
-  queryKey,
+  refetch,
   memberId,
   notificationType,
   profile,
@@ -62,23 +64,25 @@ function ListItem({
   const queryClient = useQueryClient();
 
   const params = useParams();
+  const router = useRouter();
 
   const threadMessage =
     memberId === threadOwnerId
       ? (title as string)?.replace(`${profile}'s`, `your`)
       : title;
 
-  const onCLick = async () => {
-    if (!isRead) {
+  const onCLick = async (isread: boolean) => {
+    if (!isread) {
       await axios.patch(`/api/notifications/${receipentId}`);
-      queryClient.refetchQueries({ queryKey: [queryKey] });
+      // queryClient.refetchQueries({ queryKey: [queryKey] });
+      refetch();
     }
   };
 
   const showTime = format(new Date(createdAt), TIME_FORMAT);
 
   return (
-    <div onClick={onCLick} className="">
+    <div onClick={() => onCLick(isRead)} className="">
       <Link
         href={`/servers/${params?.serverId}/${
           communicationType === "CHANNEL" ? "channels" : "conversations"
@@ -98,11 +102,13 @@ function ListItem({
                 : notificationType === "REPLY" && type === "conversations"
                 ? "replied in a direct-message"
                 : ""}
-              {notificationType !== "REPLY" && type === "channels"
+              {notificationType === "MESSAGE" && type === "channels"
                 ? "commented in a channel"
-                : notificationType !== "REPLY" && type === "conversations"
+                : notificationType === "DIRECT_MESSAGE" &&
+                  type === "conversations"
                 ? "commented in a direct-message"
                 : ""}
+              {notificationType === "INVITE" && "New member added"}
             </h1>
           </span>
           <span className="text-xs">{showTime}</span>

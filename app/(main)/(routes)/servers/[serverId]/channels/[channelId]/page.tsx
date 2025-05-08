@@ -52,7 +52,9 @@ async function ChannelPage({ params }: ChannelPageProps) {
       <ChatHeader type="channel" channel={channel} />
       <ChatSection
         type="channel"
+        isInvitedComplete={member?.isInvitedComplete ?? false}
         chatId={channel?.id}
+        triggerChatId={channel?.id}
         name={channel?.profile?.name?.split(" ")[0]}
         createdAt={channel?.createdAt?.toLocaleDateString("en-GB", {
           day: "numeric",

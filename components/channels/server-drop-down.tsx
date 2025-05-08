@@ -143,37 +143,36 @@ function ServerDropDown({
         <DropdownMenuSeparator />
 
         <DropdownMenuGroup>
-          {true ? (
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger
+              onClick={moreServerReq}
+              disabled={allServers?.length <= 1}
+              className="border-none focus-visible:ring-offset-0 outline-none"
+            >
+              Switch Server
+              <span className="ml-3">(Total: {allServers?.length})</span>
+            </DropdownMenuSubTrigger>
+            {allServers?.length > 1 && (
+              <DropdownMenuPortal>
+                <DropdownMenuSubContent>
+                  {allServers?.map((server, index) => (
+                    <Fragment key={index}>
+                      <DropdownMenuItem className="cursor-pointer">
+                        <Link
+                          href={`/servers/${server.id}`}
+                          className="w-full cursor-pointer"
+                        >
+                          {server?.name}
+                        </Link>
+                      </DropdownMenuItem>
+                    </Fragment>
+                  ))}
+                </DropdownMenuSubContent>
+              </DropdownMenuPortal>
+            )}
+          </DropdownMenuSub>
+          {admin ? (
             <>
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger
-                  onClick={moreServerReq}
-                  disabled={allServers?.length <= 1}
-                  className="border-none focus-visible:ring-offset-0 outline-none"
-                >
-                  Switch Server
-                  <span className="ml-3">(Total: {allServers?.length})</span>
-                </DropdownMenuSubTrigger>
-                {allServers?.length > 1 && (
-                  <DropdownMenuPortal>
-                    <DropdownMenuSubContent>
-                      {allServers?.map((server, index) => (
-                        <Fragment key={index}>
-                          <DropdownMenuItem className="cursor-pointer">
-                            <Link
-                              href={`/servers/${server.id}`}
-                              className="w-full cursor-pointer"
-                            >
-                              {server?.name}
-                            </Link>
-                          </DropdownMenuItem>
-                        </Fragment>
-                      ))}
-                    </DropdownMenuSubContent>
-                  </DropdownMenuPortal>
-                )}
-              </DropdownMenuSub>
-
               <DropdownMenuItem
                 className="cursor-pointer text-red-500 focus:text-red-500"
                 onClick={() => onOpen("deleteServer", { server })}
@@ -183,7 +182,7 @@ function ServerDropDown({
             </>
           ) : (
             <DropdownMenuItem
-              className="cursor-pointer"
+              className="cursor-pointer text-red-500 focus:text-red-500"
               onClick={() => onOpen("leaveServer", { server })}
             >
               Leave Server

@@ -1,17 +1,28 @@
 import { useSocket } from "@/components/providers/socket-providers";
-import { member, notificationRecipient, profile } from "@prisma/client";
+import {
+  member,
+  notification,
+  notificationRecipient,
+  profile,
+} from "@prisma/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 
 interface NotificationSocketProps {
   addKey: string;
   queryKey: string;
+  audioRef?: React.RefObject<HTMLAudioElement | null>;
 }
 type MessageWithMember = notificationRecipient & {
   member: member & { profile: profile };
+  notification: notification & { notificationSent: member };
 };
 
-function useNotificationSocket({ addKey, queryKey }: NotificationSocketProps) {
+function useNotificationSocket({
+  addKey,
+  queryKey,
+  audioRef,
+}: NotificationSocketProps) {
   const { socket, isConnected } = useSocket();
   const queryClient = useQueryClient();
 
@@ -31,6 +42,11 @@ function useNotificationSocket({ addKey, queryKey }: NotificationSocketProps) {
           ...newData[0],
           items: [message, ...newData[0].items],
         };
+        if (message?.notification?.type === "INVITE") {
+          audioRef?.current?.play().catch((err) => {
+            console.warn("Playback failed:", err);
+          });
+        }
 
         // notReadTotal(1);
 
@@ -46,7 +62,7 @@ function useNotificationSocket({ addKey, queryKey }: NotificationSocketProps) {
     return () => {
       socket.off(addKey);
     };
-  }, [addKey, isConnected, queryKey, socket]);
+  }, [addKey, isConnected, queryKey, socket, audioRef]);
 }
 
 export default useNotificationSocket;

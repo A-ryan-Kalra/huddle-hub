@@ -22,18 +22,26 @@ export function Notification({ currentMemberId }: NotificationProps) {
   const queryKey = `notification:${notificationQuery}`;
   const addKey = `notification:${notificationQuery}:newAlert`;
   const chatRef = React.useRef<HTMLDivElement | null>(null);
+  const audioRef = React.useRef(null);
 
-  const { data, fetchNextPage, isFetchingNextPage, hasNextPage, status } =
-    useChatQuery({
-      queryKey,
-      apiUrl: `/api/notifications`,
-      type: "notification",
-    });
+  const {
+    data,
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage,
+    status,
+    refetch,
+  } = useChatQuery({
+    queryKey,
+    apiUrl: `/api/notifications`,
+    type: "notification",
+  });
   const [notReadTotal, setNotReadTotal] = React.useState<number>(0);
 
   useNotificationSocket({
     addKey,
     queryKey,
+    audioRef,
   });
 
   React.useEffect(() => {
@@ -62,13 +70,15 @@ export function Notification({ currentMemberId }: NotificationProps) {
     fetchNextPage,
     data?.pages[0]?.notReadTotal,
   ]);
-  console.log(data);
+  // console.log(data);
 
   return (
     <div className="relative group">
+      <audio className="" ref={audioRef} src="/notification.mp3" />
+
       <button className="hover:bg-zinc-200 transition relative rounded-md p-1">
         <Bell className="w-6 h-6" />
-        {notReadTotal !== 0 && (
+        {notReadTotal > 0 && (
           <span className="absolute top-0 right-1 flex size-3">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75"></span>
             <span className="relative inline-flex size-3 rounded-full bg-red-500"></span>
@@ -84,9 +94,9 @@ export function Notification({ currentMemberId }: NotificationProps) {
         <h1 className="p-2 border-b-[1px] flex items-center justify-between font-semibold tracking-wide">
           Notifications
           {notReadTotal > 0 && (
-            <span className="text-xs flex items-end font-medium text-zinc-800">
-              <span className="font-semibold">{notReadTotal}</span> unread{" "}
-              {notReadTotal <= 1 ? "message" : " messages"}
+            <span className="text-xs flex items-end font-medium gap-x-0.5 text-zinc-800">
+              <span className="font-semibold">{notReadTotal}</span>unread
+              {notReadTotal <= 1 ? " message" : " messages"}
             </span>
           )}
         </h1>
@@ -117,7 +127,7 @@ export function Notification({ currentMemberId }: NotificationProps) {
                       notificationType={member?.notification?.type}
                       key={index}
                       isRead={member?.isRead}
-                      queryKey={queryKey}
+                      refetch={refetch}
                       receipentId={member?.id}
                       createdAt={member?.notification?.createdAt}
                       communicationType={

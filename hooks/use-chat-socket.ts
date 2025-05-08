@@ -1,6 +1,6 @@
 import { useSocket } from "@/components/providers/socket-providers";
 import { member, message, profile } from "@prisma/client";
-import { useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 
 interface ChatSockerProps {
@@ -32,31 +32,32 @@ function useChatSocket({
     }
 
     socket?.on(addKey, (message: MessageWithMember) => {
-      queryClient.setQueryData([queryKey], (oldData: any) => {
-        if (!oldData || !oldData.pages || oldData.pages.length === 0) {
-          return { pages: [{ items: [message] }] };
-        }
+      if (!message) {
+        queryClient.refetchQueries({ queryKey: [triggerKey] });
+      }
+      if (message) {
+        queryClient.setQueryData([queryKey], (oldData: any) => {
+          if (!oldData || !oldData.pages || oldData.pages.length === 0) {
+            return { pages: [{ items: [message] }] };
+          }
+          const newData = [...oldData.pages];
 
-        const newData = [...oldData.pages];
+          newData[0] = {
+            ...newData[0],
+            items: [message, ...newData[0].items],
+          };
 
-        newData[0] = {
-          ...newData[0],
-          items: [message, ...newData[0].items],
-        };
-        if (triggerKey) {
-          queryClient.refetchQueries({ queryKey: [triggerKey] });
-        }
+          // queryClient.refetchQueries();
 
-        // queryClient.refetchQueries();
-
-        audioRef?.current?.play().catch((err) => {
-          console.warn("Playback failed:", err);
+          audioRef?.current?.play().catch((err) => {
+            console.warn("Playback failed:", err);
+          });
+          return {
+            ...oldData,
+            pages: newData,
+          };
         });
-        return {
-          ...oldData,
-          pages: newData,
-        };
-      });
+      }
     });
 
     socket?.on(updateKey as string, (message: MessageWithMember) => {

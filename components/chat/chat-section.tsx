@@ -1,7 +1,7 @@
 "use client";
 import { member, profile } from "@prisma/client";
 import { HashIcon, Loader2, PenLine, ServerCrashIcon } from "lucide-react";
-import React, { Fragment, useRef } from "react";
+import React, { Fragment, useEffect, useRef } from "react";
 import ChatWelcome from "./chat-welcome";
 import useChatQuery from "@/hooks/use-chat-query";
 import UserComment from "../ui/user-comment";
@@ -9,9 +9,12 @@ import UserComment from "../ui/user-comment";
 import useChatSocket from "@/hooks/use-chat-socket";
 import useChatScroll from "@/hooks/use-chat-scroll";
 import { cn } from "@/lib/utils";
+import queryString from "query-string";
+import { Button } from "../ui/button";
 
 interface ChatSectionProps {
   type: "channel" | "conversation" | "threads";
+  isInvitedComplete?: boolean;
   triggerChatId?: string;
   paramKey: string;
   paramValue: string;
@@ -36,6 +39,7 @@ function ChatSection({
   socketQuery,
   currentMember,
   triggerChatId,
+  isInvitedComplete,
 }: ChatSectionProps) {
   const chatRef = React.useRef<HTMLDivElement | null>(null);
   const threadRef = React.useRef<HTMLDivElement | null>(null);
@@ -49,6 +53,22 @@ function ChatSection({
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage, status } =
     useChatQuery({ queryKey, paramKey, paramValue, apiUrl });
 
+  useEffect(() => {
+    if (isInvitedComplete) {
+      (async () => {
+        const url = queryString.stringifyUrl({
+          url: `/api/socket/invite`,
+          query: {
+            memberId: currentMember?.id,
+            serverId: currentMember?.serverId,
+          },
+        });
+        const res = await fetch(url);
+        await res.json();
+      })();
+    }
+  }, [isInvitedComplete]);
+
   useChatScroll({
     chatRef,
     bottomRef,
@@ -57,7 +77,14 @@ function ChatSection({
     count: data?.pages[0]?.items?.length ?? 0,
   });
 
-  useChatSocket({ audioRef, addKey, queryKey, updateKey, type, triggerKey });
+  useChatSocket({
+    audioRef,
+    addKey,
+    queryKey,
+    updateKey,
+    type,
+    triggerKey,
+  });
 
   if (status === "pending") {
     return (
@@ -143,6 +170,7 @@ function ChatSection({
           </Fragment>
         ))}
       </div>
+
       <audio className="" ref={audioRef} src="/notification.mp3" />
 
       <div ref={bottomRef} />

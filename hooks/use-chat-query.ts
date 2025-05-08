@@ -46,25 +46,31 @@ function useChatQuery({
     return res.json();
   };
 
-  const { data, fetchNextPage, isFetchingNextPage, hasNextPage, status } =
-    useInfiniteQuery({
-      queryKey: [queryKey],
-      queryFn: fetchMessages,
+  const {
+    data,
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage,
+    status,
+    refetch,
+  } = useInfiniteQuery({
+    queryKey: [queryKey],
+    queryFn: fetchMessages,
 
-      getNextPageParam: (lastpage: {
-        nextCursor: string | any;
-        items: (message &
-          notificationRecipient & {
-            member: member & { profile: profile };
-            notification: notification & {
-              notificationSent: member & { profile: profile };
-            };
-          })[];
-        notReadTotal?: number;
-      }) => lastpage?.nextCursor,
-      initialPageParam: undefined,
-      refetchInterval: isConnected ? false : 1000,
-    });
+    getNextPageParam: (lastpage: {
+      nextCursor: string | any;
+      items: (message &
+        notificationRecipient & {
+          member: member & { profile: profile };
+          notification: notification & {
+            notificationSent: member & { profile: profile };
+          };
+        })[];
+      notReadTotal?: number;
+    }) => lastpage?.nextCursor,
+    initialPageParam: undefined,
+    refetchInterval: isConnected ? false : 1000,
+  });
 
   return {
     data,
@@ -72,6 +78,7 @@ function useChatQuery({
     isFetchingNextPage,
     hasNextPage,
     status,
+    refetch,
   };
 }
 
