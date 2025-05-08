@@ -8,21 +8,21 @@ import { useState } from "react";
 
 interface MemberNameProps {
   member: member & { profile: profile };
+  currentMember: member;
 }
 
-function MemberName({ member }: MemberNameProps) {
+function MemberName({ member, currentMember }: MemberNameProps) {
   const { onClose } = useModal();
   const router = useRouter();
   const params = useParams();
   const [totalNotification, setTotalNotifications] = useState(0);
 
   useNotificationAlert({
-    notificationId: member.id === params?.memberId ? "" : member.id,
-    // notificationId: member.id,
+    notificationId:
+      member.id === params?.memberId ? "" : member.id + currentMember?.id,
     countNotification: () => setTotalNotifications((prev) => prev + 1),
   });
 
-  console.log("member=", member?.id, " ", totalNotification);
   function routeToMemberPage() {
     router.push(`/servers/${member.serverId}/conversations/${member.id}`);
     onClose();

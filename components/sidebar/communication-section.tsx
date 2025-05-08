@@ -103,7 +103,7 @@ function CommunicationSection({
                 key={index}
                 member={member}
                 // allMembers={allMembers}
-                // currentMember={currentMember}
+                currentMember={currentMember}
               />
             ))}
           </ScrollArea>

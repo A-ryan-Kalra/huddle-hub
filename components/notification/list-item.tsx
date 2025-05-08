@@ -96,7 +96,7 @@ function ListItem({
         <div className="flex justify-between items-center">
           <span className="flex gap-x-1 items-center">
             {notificationTypeIcon[notificationType]}
-            <h1 className="text-[12px] text-zinc-500">
+            <h1 className="text-[11px] text-zinc-600">
               {notificationType === "REPLY" && type === "channels"
                 ? "replied in a channel "
                 : notificationType === "REPLY" && type === "conversations"
@@ -111,7 +111,7 @@ function ListItem({
               {notificationType === "INVITE" && "New member added"}
             </h1>
           </span>
-          <span className="text-xs">{showTime}</span>
+          <span className="text-[11px]">{showTime}</span>
         </div>
         <div className="flex gap-x-3">
           <AvatarIcon
