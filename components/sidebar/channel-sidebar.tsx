@@ -103,12 +103,11 @@ async function ChannelSidebar({ serverId }: ChannelSideBarProps) {
           currentMember={currentMember[0]}
         />
         <ActionToolTip className="ml-auto" label="Reload for updates">
-          {/* <FilePen className="w-5 h-5" /> */}
-          <Refresh>
-            <div className=" hover:bg-zinc-200 duration-300 transition rounded-md cursor-pointer">
-              <RefreshCcw className="w-5 h-5" />
-            </div>
-          </Refresh>
+          <div className=" hover:bg-zinc-200 duration-300 transition rounded-md size-9 cursor-pointer">
+            <Refresh>
+              <RefreshCcw className="bg-blac w-full h-full" />
+            </Refresh>
+          </div>
         </ActionToolTip>
       </div>
 

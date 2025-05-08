@@ -14,7 +14,7 @@ function Refresh({ children }: { children: React.ReactNode }) {
           setIsloading(false);
         }, 1000);
       }}
-      className={`${isLoading && "animate-spin"} `}
+      className={`${isLoading && "animate-spin"} p-2 rounded-full`}
     >
       {children}
     </div>
