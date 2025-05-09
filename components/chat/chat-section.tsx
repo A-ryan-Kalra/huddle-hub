@@ -49,25 +49,29 @@ function ChatSection({
   const addKey = `chat:${chatId}:messages`;
   const updateKey = `chat:${chatId}:messages:update`;
   const audioRef = useRef(null);
+  const hasRunRef = useRef<boolean>(false);
 
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage, status } =
     useChatQuery({ queryKey, paramKey, paramValue, apiUrl });
 
   useEffect(() => {
-    if (isInvitedComplete) {
-      (async () => {
-        const url = queryString.stringifyUrl({
-          url: `/api/socket/invite`,
-          query: {
-            memberId: currentMember?.id,
-            serverId: currentMember?.serverId,
-          },
-        });
-        const res = await fetch(url);
-        await res.json();
-      })();
+    if (hasRunRef.current || !isInvitedComplete) {
+      return;
     }
-  }, [isInvitedComplete]);
+    hasRunRef.current = true;
+
+    (async () => {
+      const url = queryString.stringifyUrl({
+        url: `/api/socket/invite`,
+        query: {
+          memberId: currentMember?.id,
+          serverId: currentMember?.serverId,
+        },
+      });
+      const res = await fetch(url);
+      await res.json();
+    })();
+  }, []);
 
   useChatScroll({
     chatRef,

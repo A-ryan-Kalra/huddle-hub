@@ -38,7 +38,10 @@ export default async function handler(
         serverId: serverId as string,
       },
     });
-
+    console.log(
+      "currentMember?.isInvitedComplete=",
+      currentMember?.isInvitedComplete
+    );
     if (!currentMember?.isInvitedComplete) {
       console.log("wait wut??");
       return res.status(200).json({ success: true });

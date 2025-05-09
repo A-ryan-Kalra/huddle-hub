@@ -6,6 +6,7 @@ import {
   profile,
 } from "@prisma/client";
 import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 interface NotificationSocketProps {
@@ -25,6 +26,7 @@ function useNotificationSocket({
 }: NotificationSocketProps) {
   const { socket, isConnected } = useSocket();
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   useEffect(() => {
     if (!socket) {
@@ -46,6 +48,7 @@ function useNotificationSocket({
           audioRef?.current?.play().catch((err) => {
             console.warn("Playback failed:", err);
           });
+          router.refresh();
         }
 
         // notReadTotal(1);
@@ -62,7 +65,7 @@ function useNotificationSocket({
     return () => {
       socket.off(addKey);
     };
-  }, [addKey, isConnected, queryKey, socket, audioRef]);
+  }, [addKey, isConnected, queryKey, socket, audioRef, router]);
 }
 
 export default useNotificationSocket;
