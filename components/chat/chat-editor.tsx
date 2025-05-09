@@ -18,10 +18,13 @@ import { Form, FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormControl, FormField, FormItem, FormMessage } from "../ui/form";
 import EmojiPicker from "../ui/emoji-picker";
-import { channelVisibility } from "@prisma/client";
+import { channelVisibility, member, message, profile } from "@prisma/client";
 import queryString from "query-string";
 import axios from "axios";
 import { toast } from "sonner";
+import { ModalType, useModal } from "@/hooks/use-modal-store";
+import AvatarIcon from "../ui/avatar-icon";
+import ActionToolTip from "../ui/action-tooltip";
 
 const formSchema = z.object({
   content: z.string().optional(),
@@ -55,6 +58,22 @@ export default function ChatEditor({
   const [isLoading, setIsLoading] = useState(false);
 
   const quillRef = useRef<any>(null);
+  const {
+    data,
+    onClose,
+    type: modalType,
+  } = useModal() as {
+    data: {
+      message?: message & { member: member & { profile: profile } };
+      member?: member & { profile: profile };
+    };
+    onClose: () => void;
+    type: ModalType;
+  };
+  const { message, member } = data;
+  const isOpen = modalType === "replyToMessage";
+
+  console.log(message);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -184,8 +203,12 @@ export default function ChatEditor({
           skipNull: true,
         }
       );
-
-      await axios.post(url, { ...values, content: cleanContent(text) });
+      const replyToMessage = modalType === "replyToMessage";
+      await axios.post(url, {
+        ...values,
+        content: cleanContent(text),
+        ...(replyToMessage && { replyToMessageId: message?.memberId }),
+      });
       form.reset();
       setImageFile(null);
       setText("");
@@ -220,110 +243,160 @@ export default function ChatEditor({
   }, []);
 
   return (
-    <div className="flex  flex-col w-full mt-auto relative rounded-lg overflow-hidden max-h-fit">
-      <FormProvider {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <FormField
-            control={form.control}
-            name="content"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Editor
-                    {...field}
-                    placeholder={
-                      type === "channel"
-                        ? visibility &&
-                          `Message ${channelIconType[visibility]} ${name}`
-                        : type === "conversation"
-                        ? `Message ${name}`
-                        : "Reply..."
-                    }
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && !e.shiftKey) {
-                        e.preventDefault();
-                        onSubmit(form.getValues());
-                        const quill = quillRef.current?.getQuill?.();
-                        if (quill) {
-                          const range = quill.getSelection();
-
-                          if (range) {
-                            quill.deleteText(range.index, 1, "user");
-                            quill.setText("");
-                          }
-                        }
-                      }
-                    }}
-                    ref={quillRef}
-                    className="ql-tooltip relative ql-editing  mx-2 mt-2 mb-1 rounded-lg overflow-hidden border-[1px] border-slate-400"
-                    maxLength={999}
-                    value={text}
-                    onTextChange={(e: EditorTextChangeEvent) => {
-                      if (e.source === "api") {
-                        return null;
-                      }
-
-                      setText(e.htmlValue as string);
-                      field.onChange(e.htmlValue !== null ? e.htmlValue : "");
-                    }}
-                    headerTemplate={header}
-                    style={{
-                      maxHeight: "225px",
-                      minHeight: "100px",
-                      paddingBottom: image && "100px",
-                      fontSize: "16px",
-                      overflowY: "auto",
-                      wordBreak: "break-word",
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <button
-            disabled={(getTextLength(text) === 0 && image === "") || isLoading}
+    <div className="w-full mt-auto relative">
+      {message && isOpen && (
+        <div className="z-10 mt-2 bg-blac group -mb-1 w-full px-2">
+          <div
+            onClick={() => {
+              onClose();
+            }}
             className={cn(
-              "disabled:bg-zinc-300 hover:bg-opacity-70 transition bg-green-700 rounded-md absolute right-10 bottom-4 p-2",
-              text && " bottom-8"
+              "gap-x-1 z-10 absolute right-6 p-1 bg-zinc-300 -top-2 invisible rounded-md  flex",
+              "group-hover:visible"
             )}
           >
-            {isLoading ? (
-              <Loader2Icon className="w-4 h-4 animate-spin" />
-            ) : (
-              <Send
-                className={cn(
-                  "w-3 h-3 text-white",
-                  getTextLength(text) === 0 && image === "" && "text-zinc-400"
-                )}
-              />
-            )}
-          </button>
-        </form>
-      </FormProvider>
-      {image && (
-        <div className="absolute bottom-6 left-7 ">
-          <div className="relative">
-            <img
-              src={image}
-              loading="lazy"
-              alt="file-img"
-              className="w-[80px] h-[80px] rounded-2xl  object-cover"
-            />
-            <div
-              onClick={clearAllImages}
-              className="w-5 h-5 bg-black absolute hover:bg-zinc-400 transition cursor-pointer flex items-center justify-center top-0 right-0 rounded-full"
+            <ActionToolTip
+              label="Reply in thread"
+              className="px-2 py-1 hover:bg-zinc-200 rounded-md"
             >
-              <XCircleIcon size={48} className=" text-white " />
+              <XCircleIcon className="!w-4 !h-4" />
+            </ActionToolTip>
+          </div>
+          <div className="p-1 flex flex-col overflow-hidden rounded-lg gap-x-2 w-full border-[2px] border-teal-400  items-start">
+            <h1 className="text-teal-700 text-sm font-semibold my-1">
+              Replying To :
+            </h1>
+            <div className="relative p-1 flex overflow-hidden rounded-lg gap-x-2 w-full border-[1px] border-slate-400  items-start">
+              <AvatarIcon
+                imageUrl={message?.member?.profile?.imageUrl as string}
+                width={40}
+                height={40}
+                className="!rounded-md aspect-square border-[1px] border-current"
+              />
+              <div className="flex flex-col gap-y-1 justify-start">
+                <h1 className="text-sm capitalize font-semibold hover:underline cursor-pointer transition">
+                  {message?.member?.profile?.id === member?.profile?.id
+                    ? "You"
+                    : message?.member?.profile?.name}
+                </h1>
+                <div
+                  className="w-full break-all line-clamp-3"
+                  dangerouslySetInnerHTML={{
+                    __html: message?.content as string,
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>
       )}
-      {text && (
-        <span className="text-xs text-slate-600 ml-2">
-          Press Shift + Enter to start a new line
-        </span>
-      )}
+      <div className="flex  flex-col w-full mt-auto relative rounded-lg overflow-hidden max-h-fit">
+        <FormProvider {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <FormField
+              control={form.control}
+              name="content"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Editor
+                      {...field}
+                      placeholder={
+                        type === "channel"
+                          ? visibility &&
+                            `Message ${channelIconType[visibility]} ${name}`
+                          : type === "conversation"
+                          ? `Message ${name}`
+                          : "Reply..."
+                      }
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && !e.shiftKey) {
+                          e.preventDefault();
+                          onSubmit(form.getValues());
+                          const quill = quillRef.current?.getQuill?.();
+                          if (quill) {
+                            const range = quill.getSelection();
+
+                            if (range) {
+                              quill.deleteText(range.index, 1, "user");
+                              quill.setText("");
+                            }
+                          }
+                        }
+                      }}
+                      ref={quillRef}
+                      className="ql-tooltip relative ql-editing  mx-2 mt-2 mb-1 rounded-lg overflow-hidden border-[1px] border-slate-400"
+                      maxLength={999}
+                      value={text}
+                      onTextChange={(e: EditorTextChangeEvent) => {
+                        if (e.source === "api") {
+                          return null;
+                        }
+
+                        setText(e.htmlValue as string);
+                        field.onChange(e.htmlValue !== null ? e.htmlValue : "");
+                      }}
+                      headerTemplate={header}
+                      style={{
+                        maxHeight: "225px",
+                        minHeight: "100px",
+                        paddingBottom: image && "100px",
+                        fontSize: "16px",
+                        overflowY: "auto",
+                        wordBreak: "break-word",
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <button
+              disabled={
+                (getTextLength(text) === 0 && image === "") || isLoading
+              }
+              className={cn(
+                "disabled:bg-zinc-300 hover:bg-opacity-70 transition bg-green-700 rounded-md absolute right-10 bottom-4 p-2",
+                text && " bottom-8"
+              )}
+            >
+              {isLoading ? (
+                <Loader2Icon className="w-4 h-4 animate-spin" />
+              ) : (
+                <Send
+                  className={cn(
+                    "w-3 h-3 text-white",
+                    getTextLength(text) === 0 && image === "" && "text-zinc-400"
+                  )}
+                />
+              )}
+            </button>
+          </form>
+        </FormProvider>
+        {image && (
+          <div className="absolute bottom-6 left-7 ">
+            <div className="relative">
+              <img
+                src={image}
+                loading="lazy"
+                alt="file-img"
+                className="w-[80px] h-[80px] rounded-2xl  object-cover"
+              />
+              <div
+                onClick={clearAllImages}
+                className="w-5 h-5 bg-black absolute hover:bg-zinc-400 transition cursor-pointer flex items-center justify-center top-0 right-0 rounded-full"
+              >
+                <XCircleIcon size={48} className=" text-white " />
+              </div>
+            </div>
+          </div>
+        )}
+        {text && (
+          <span className="text-xs text-slate-600 ml-2">
+            Press Shift + Enter to start a new line
+          </span>
+        )}
+      </div>
     </div>
   );
 }

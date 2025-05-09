@@ -1,7 +1,13 @@
 import { member, memberRole, message, profile, threads } from "@prisma/client";
 import React, { useEffect, useRef, useState } from "react";
 import AvatarIcon from "./avatar-icon";
-import { Edit, Loader2Icon, MessageCircleMore, TrashIcon } from "lucide-react";
+import {
+  Edit,
+  Loader2Icon,
+  MessageCircleMore,
+  MessageCircleReply,
+  TrashIcon,
+} from "lucide-react";
 import ActionToolTip from "./action-tooltip";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -143,18 +149,18 @@ function UserComment({
     router.refresh();
   }
 
-  console.log(scrollViewRef.current);
+  // console.log(scrollViewRef.current);
   return (
     <div
-      onClick={() => {
-        scrollViewRef.current[message?.id]?.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        });
-      }}
-      ref={(el) => {
-        scrollViewRef.current[message?.id as string] = el;
-      }}
+      // onClick={() => {
+      //   scrollViewRef.current[message?.id]?.scrollIntoView({
+      //     behavior: "smooth",
+      //     block: "center",
+      //   });
+      // }}
+      // ref={(el) => {
+      //   scrollViewRef.current[message?.id as string] = el;
+      // }}
       className="flex px-4 h-full"
     >
       <div className="relative flex gap-x-2 w-full  items-start">
@@ -162,7 +168,7 @@ function UserComment({
           imageUrl={message?.member?.profile?.imageUrl}
           width={40}
           height={40}
-          className="!rounded-md border-[1px] border-current mt-auto !sticky bottom-0"
+          className="!rounded-md border-[1px] border-current mt-auto aspect-square !sticky bottom-0"
         />
         <div
           className={cn(
@@ -192,6 +198,19 @@ function UserComment({
                   <MessageCircleMore className="!w-4 !h-4" />
                 </ActionToolTip>
               )}
+
+              <ActionToolTip
+                label="Reply"
+                onClick={() => {
+                  onOpen("replyToMessage", {
+                    message: message,
+                    member: currentMember,
+                  });
+                }}
+                className="px-2 py-1 hover:bg-zinc-200 "
+              >
+                <MessageCircleReply className="!w-4 !h-4" />
+              </ActionToolTip>
 
               {!isDeleted && ownerOfMessage && (
                 <ActionToolTip

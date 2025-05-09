@@ -51,7 +51,7 @@ function MainThread({ message }: MainThreadProps) {
             </ActionToolTip>
           </div>
           <div
-            className="w-full break-all"
+            className="w-full break-all line-clamp-4"
             dangerouslySetInnerHTML={{ __html: message?.content as string }}
           />
           {message?.fileUrl && (
