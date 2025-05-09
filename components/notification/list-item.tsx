@@ -120,11 +120,11 @@ function ListItem({
             height={35}
             className="!rounded-md !aspect-square"
           />
-          <div className="flex flex-col gap-y-1">
+          <div className="flex flex-col gap-y-1 overflow-x-hidden">
             <div className="text-xs  line-clamp-2 text-zinc-800 leading-none font-semibold font-sans">
               {notificationType === "REPLY" ? threadMessage : title}
             </div>
-            <p className="line-clamp-2 text-sm leading-snug text-neutral-500">
+            <p className="line-clamp-2 text-sm leading-snug break-words text-neutral-500">
               {children}
             </p>
           </div>
