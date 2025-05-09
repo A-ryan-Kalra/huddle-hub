@@ -35,7 +35,7 @@ function MainThread({ message }: MainThreadProps) {
           imageUrl={message?.member?.profile?.imageUrl}
           width={36}
           height={34}
-          className="!rounded-md ring-2 ring-offset-1 ring-zinc-600"
+          className="!rounded-md aspect-square ring-2 ring-offset-1 ring-zinc-600"
         />
         <div className="flex flex-col gap-y-2 w-full">
           <div className="flex items-center -mt-1 justify-start">
@@ -51,7 +51,7 @@ function MainThread({ message }: MainThreadProps) {
             </ActionToolTip>
           </div>
           <div
-            className="w-full"
+            className="w-full break-all"
             dangerouslySetInnerHTML={{ __html: message?.content as string }}
           />
           {message?.fileUrl && (

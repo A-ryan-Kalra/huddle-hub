@@ -219,7 +219,7 @@ function UserComment({
             </div>
           )}
           <div className="flex items-center justify-start">
-            <h1 className="text-sm font-semibold hover:underline cursor-pointer transition">
+            <h1 className="text-sm capitalize font-semibold hover:underline cursor-pointer transition">
               {message?.member?.profile?.name}
             </h1>
 
@@ -293,12 +293,12 @@ function UserComment({
           ) : (
             <div
               className={cn(
-                "w-full  min-h-[40px]",
+                "w-full my-1 min-h-[40px]",
                 isDeleted && "text-xs text-zinc-600 tracking-wide"
               )}
             >
               <div
-                className="w-full"
+                className="w-full break-all"
                 dangerouslySetInnerHTML={{ __html: message?.content as string }}
               />
               {message?.threads?.length > 0 && (
