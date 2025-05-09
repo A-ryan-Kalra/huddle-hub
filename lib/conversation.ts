@@ -1,4 +1,3 @@
-import { Conversation, Profile } from "@prisma/client";
 import { db } from "./db";
 
 export const getOrCreateConversation = async (

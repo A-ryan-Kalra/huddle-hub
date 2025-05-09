@@ -45,6 +45,7 @@ async function InvitePage({ params }: InvitePageProps) {
       profileId: profile.id,
       serverId: existingserver.id,
       role: "GUEST",
+      isInvitedComplete: true,
     },
   });
 

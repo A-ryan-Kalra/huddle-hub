@@ -157,7 +157,8 @@ export default async function handler(
 
       res?.socket?.server?.io?.emit(notificationQueryKey, member);
     });
-
+    const chatId = `chat:${channelId}:messages`;
+    res?.socket?.server?.io?.emit(chatId);
     return res.status(201).json(threads);
   } catch (error) {
     console.error("[SOCKET>API>THREADS_POST]", error);

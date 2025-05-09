@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import ActionToolTip from "../ui/action-tooltip";
 import {
   channel,
@@ -13,8 +13,9 @@ import {
 import { Hash, Lock, Mic, UserIcon, Video } from "lucide-react";
 import { toast } from "sonner";
 import CustomizeChannelComp from "./customize-channels-comp";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useModal } from "@/hooks/use-modal-store";
+import useNotificationAlert from "@/hooks/use-notification-alert";
 
 interface ChannelNameProps {
   channel: channel & { members: channelOnMember[] };
@@ -42,6 +43,14 @@ function ChannelName({
   role,
 }: ChannelNameProps) {
   const { onClose } = useModal();
+  const params = useParams();
+  const [totalNotification, setTotalNotifications] = useState(0);
+
+  useNotificationAlert({
+    notificationId: channel.id === params?.channelId ? "" : channel.id,
+
+    countNotification: () => setTotalNotifications((prev) => prev + 1),
+  });
 
   const ownerOfChannel = channel.profileId === currentMember.profileId;
   const accessToPrivateChannel =
@@ -50,6 +59,7 @@ function ChannelName({
   const router = useRouter();
 
   const onClick = (channel: channel & { members: channelOnMember[] }) => {
+    setTotalNotifications(0);
     if (!accessToPrivateChannel && channel.visibility === "PRIVATE") {
       toast("Unauthorized Access", {
         description: "Oops! This channel is private",
@@ -74,6 +84,15 @@ function ChannelName({
         onClick={() => onClick(channel)}
         className="p-1  cursor-pointer hover:bg-zinc-200 duration-300 transition text-sm rounded-md w-full"
       >
+        {totalNotification > 0 && (
+          <div className="flex  items-center gap-x-1 size-3  absolute top-1 right-3">
+            <span className=" flex size-3 ">
+              <span className="absolute animate-ping inline-flex h-full w-full  rounded-full bg-red-400 opacity-75"></span>
+              <span className="relative inline-flex size-3 rounded-full bg-red-500"></span>
+            </span>
+            <h1>{totalNotification}</h1>
+          </div>
+        )}
         <div className="flex gap-x-2 items-center">
           <ActionToolTip
             side="top"

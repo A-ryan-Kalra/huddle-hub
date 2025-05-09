@@ -76,6 +76,8 @@ export default async function handler(
         },
       },
     });
+    const chat = `chat:${conversationId}:messages`;
+    res?.socket?.server?.io?.emit(chat, directMessage);
     const reciever =
       currentMember.id === conversation?.conversationInitiaterId
         ? conversation.conversationReceiverId
@@ -120,11 +122,10 @@ export default async function handler(
       },
     });
 
-    const chat = `chat:${conversationId}:messages`;
-
+    const notify = `${currentMember?.id}${reciever}`;
     const notificationQueryKey = `notification:${reciever}:newAlert`;
 
-    res?.socket?.server?.io?.emit(chat, directMessage);
+    res?.socket?.server?.io?.emit(notify);
     res?.socket?.server?.io?.emit(
       notificationQueryKey,
       notification.recipients[0]

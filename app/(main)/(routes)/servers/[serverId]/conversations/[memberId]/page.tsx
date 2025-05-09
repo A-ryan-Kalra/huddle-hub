@@ -54,6 +54,7 @@ async function ConversationPage({ params }: ConversationPageProps) {
       <ChatSection
         type="conversation"
         chatId={conversation?.id}
+        triggerChatId={conversation?.id}
         name={anotherMember?.profile?.name?.split(" ")[0]}
         chatName={anotherMember?.profile?.name?.split(" ")[0]}
         apiUrl="/api/direct-messages"
