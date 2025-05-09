@@ -57,6 +57,7 @@ function UserComment({
   const showTime = format(new Date(message?.createdAt), TIME_FORMAT);
   const showDate = format(new Date(message?.createdAt), DATE_FORMAT);
   const [loading, setIsLoading] = useState(false);
+  const scrollViewRef = useRef<Record<string, HTMLDivElement | null>>({});
   const threadLastReply =
     message?.threads &&
     message?.threads?.length !== 0 &&
@@ -142,8 +143,20 @@ function UserComment({
     router.refresh();
   }
 
+  console.log(scrollViewRef.current);
   return (
-    <div className="flex px-4 h-full">
+    <div
+      onClick={() => {
+        scrollViewRef.current[message?.id]?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }}
+      ref={(el) => {
+        scrollViewRef.current[message?.id as string] = el;
+      }}
+      className="flex px-4 h-full"
+    >
       <div className="relative flex gap-x-2 w-full  items-start">
         <AvatarIcon
           imageUrl={message?.member?.profile?.imageUrl}
