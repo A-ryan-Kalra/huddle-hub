@@ -28,11 +28,14 @@ interface UserCommentProps {
     member: member & { profile: profile };
     directMessageId?: string;
     threads: (threads & { member: member & { profile: profile } })[];
+    replyToMessage: message & { member: member & { profile: profile } };
   };
   createdAt: Date;
   socketQuery: Record<string, any>;
   currentMember: member & { profile: profile };
   type: "channel" | "conversation" | "threads";
+  replyRef: (reply: Record<string, HTMLDivElement>) => void;
+  allReplyRef: Record<string, HTMLDivElement | null>;
 }
 
 const formSchema = z.object({
@@ -47,6 +50,8 @@ function UserComment({
   socketQuery,
   type,
   currentMember,
+  replyRef,
+  allReplyRef,
 }: UserCommentProps) {
   const router = useRouter();
 
@@ -64,6 +69,8 @@ function UserComment({
   const showDate = format(new Date(message?.createdAt), DATE_FORMAT);
   const [loading, setIsLoading] = useState(false);
   const scrollViewRef = useRef<Record<string, HTMLDivElement | null>>({});
+  const params = useParams();
+
   const threadLastReply =
     message?.threads &&
     message?.threads?.length !== 0 &&
@@ -71,7 +78,6 @@ function UserComment({
       message?.threads[message?.threads?.length - 1]?.updatedAt,
       "dd/MMM, hh:mm a"
     );
-  const params = useParams();
   const cleanContent = (html: string) => {
     return html
       .replace(/^(?:\s*<p>(?:<br\s*\/?>|\s|&nbsp;)*<\/p>\s*)+/gi, "")
@@ -148,19 +154,47 @@ function UserComment({
     setIsLoading(false);
     router.refresh();
   }
-
+  // console.log(message);
+  // console.log(
+  //   "lol==>",
+  //   scrollViewRef.current["d8fc3ff9-ab2e-44eb-a0a8-2072f39efa40"],
+  //   message?.replyToMessageId
+  // );
   // console.log(scrollViewRef.current);
+  // console.log(message?.id);
+  // console.log(message?.content?.slice(1, 15));
+
+  // console.log(message?.replyToMessageId);
+  // console.log(message?.replyToMessage?.content?.slice(1, 15));
+
+  // console.log(message?.id === message?.replyToMessageId);
+  console.log(allReplyRef[message?.replyToMessageId as string]);
+  console.log(allReplyRef);
+  console.log(message?.replyToMessageId);
+  console.log("---------------");
+  useEffect(() => {
+    const scrollView = scrollViewRef.current[message?.id];
+    if (scrollView !== null) {
+      replyRef({
+        [message?.id]: scrollView,
+      });
+    }
+  }, [scrollViewRef.current[message?.id]]);
   return (
     <div
-      // onClick={() => {
-      //   scrollViewRef.current[message?.id]?.scrollIntoView({
+      // onClick={(e) => {
+      //   // e.stopPropagation();
+      //   console.log(message?.id === message?.replyToMessageId);
+      //   scrollViewRef.current[
+      //     "aefc3bb8-8a17-4659-956e-23dbb177b5a7"
+      //   ]?.scrollIntoView({
       //     behavior: "smooth",
       //     block: "center",
       //   });
       // }}
-      // ref={(el) => {
-      //   scrollViewRef.current[message?.id as string] = el;
-      // }}
+      ref={(el) => {
+        scrollViewRef.current[message?.id as string] = el;
+      }}
       className="flex px-4 h-full"
     >
       <div className="relative flex gap-x-2 w-full  items-start">
@@ -329,6 +363,57 @@ function UserComment({
                 isDeleted && "text-xs text-zinc-600 tracking-wide"
               )}
             >
+              {message?.replyToMessageId && (
+                <div
+                  onClick={(e) => {
+                    // e.stopPropagation();
+                    console.log(
+                      allReplyRef[message?.replyToMessageId as string]
+                    );
+                    allReplyRef[
+                      message?.replyToMessageId as string
+                    ]?.scrollIntoView({
+                      behavior: "smooth",
+                      block: "center",
+                    });
+                  }}
+                  // ref={(el) => {
+                  //   scrollViewRef.current[message?.id as string] = el;
+                  // }}
+                  className="z-10 mt-2 bg-blac group -mb-1 w-full px-2 cursor-pointer"
+                >
+                  <div className="p-1 flex flex-col overflow-hidden rounded-lg gap-x-2 w-full border-l-[3px] my-1 border-teal-400  items-start">
+                    <h1 className="text-teal-700 text-sm font-semibold my-1">
+                      Replied To :
+                    </h1>
+                    <div className="relative p-1 flex overflow-hidden rounded-lg gap-x-2 w-full border-[1px] border-slate-400  items-start">
+                      <AvatarIcon
+                        imageUrl={
+                          message?.replyToMessage?.member?.profile
+                            ?.imageUrl as string
+                        }
+                        width={40}
+                        height={40}
+                        className="!rounded-md aspect-square border-[1px] border-current"
+                      />
+                      <div className="flex flex-col gap-y-1 justify-start">
+                        <h1 className="text-sm capitalize font-semibold hover:underline cursor-pointer transition">
+                          {message?.replyToMessage?.member?.profile?.id ===
+                          currentMember?.profile?.id
+                            ? "You"
+                            : message?.member?.profile?.name}
+                        </h1>
+                        <div
+                          className="w-full break-all line-clamp-3"
+                          dangerouslySetInnerHTML={{
+                            __html: message?.replyToMessage?.content as string,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
               <div
                 className="w-full break-all"
                 dangerouslySetInnerHTML={{ __html: message?.content as string }}

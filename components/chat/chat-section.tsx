@@ -1,7 +1,7 @@
 "use client";
 import { member, profile } from "@prisma/client";
 import { HashIcon, Loader2, PenLine, ServerCrashIcon } from "lucide-react";
-import React, { Fragment, useEffect, useRef } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import ChatWelcome from "./chat-welcome";
 import useChatQuery from "@/hooks/use-chat-query";
 import UserComment from "../ui/user-comment";
@@ -50,7 +50,10 @@ function ChatSection({
   const updateKey = `chat:${chatId}:messages:update`;
   const audioRef = useRef(null);
   const hasRunRef = useRef<boolean>(false);
-
+  const [allMessageRef, setAllMessageRef] = useState<
+    Record<string, HTMLDivElement | null>
+  >({});
+  console.log(allMessageRef);
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage, status } =
     useChatQuery({ queryKey, paramKey, paramValue, apiUrl });
 
@@ -163,6 +166,10 @@ function ChatSection({
           <Fragment key={index}>
             {group?.items?.map((item: any, index) => (
               <UserComment
+                replyRef={(reply: Record<string, HTMLDivElement>) =>
+                  setAllMessageRef((prev) => ({ ...prev, ...reply }))
+                }
+                allReplyRef={allMessageRef}
                 type={type}
                 key={index}
                 currentMember={currentMember}

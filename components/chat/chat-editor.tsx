@@ -73,7 +73,7 @@ export default function ChatEditor({
   const { message, member } = data;
   const isOpen = modalType === "replyToMessage";
 
-  console.log(message);
+  // console.log(message);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -171,6 +171,9 @@ export default function ChatEditor({
   };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    const replyToMessage = modalType === "replyToMessage";
+    if (replyToMessage) onClose();
+
     if (!cleanContent(text)?.trim() && !image) {
       return null;
     }
@@ -203,11 +206,11 @@ export default function ChatEditor({
           skipNull: true,
         }
       );
-      const replyToMessage = modalType === "replyToMessage";
+
       await axios.post(url, {
         ...values,
         content: cleanContent(text),
-        ...(replyToMessage && { replyToMessageId: message?.memberId }),
+        ...(replyToMessage && { replyToMessageId: message?.id }),
       });
       form.reset();
       setImageFile(null);
