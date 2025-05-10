@@ -403,9 +403,12 @@ function UserComment({
                     <h1 className="text-teal-700 px-1 text-sm font-semibold my-1 flex  items-center w-full">
                       Replied To :
                       {isFindingMessage && (
-                        <span className="ml-auto">
+                        <ActionToolTip
+                          label="Viewing Original Message"
+                          className="px-2 py-1 hover:bg-zinc-200 ml-auto rounded-md"
+                        >
                           <LoaderIcon className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
-                        </span>
+                        </ActionToolTip>
                       )}
                     </h1>
                     <div className="relative p-1 flex overflow-hidden rounded-lg gap-x-2 w-full border-[1px] border-slate-400  items-start">

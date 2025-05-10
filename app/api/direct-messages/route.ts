@@ -35,6 +35,15 @@ export async function GET(req: Request) {
           conversationId: conversationId,
         },
         include: {
+          replyToMessage: {
+            include: {
+              member: {
+                include: {
+                  profile: true,
+                },
+              },
+            },
+          },
           conversation: true,
           member: {
             include: {
@@ -63,6 +72,15 @@ export async function GET(req: Request) {
           conversationId: conversationId,
         },
         include: {
+          replyToMessage: {
+            include: {
+              member: {
+                include: {
+                  profile: true,
+                },
+              },
+            },
+          },
           conversation: true,
           member: {
             include: {
