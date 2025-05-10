@@ -96,10 +96,10 @@ export default async function handler(
     });
 
     const channelKey = `chat:${messageId}:messages`;
-
-    res?.socket?.server?.io?.emit(channelKey, threads);
     const chatId = `chat:${channelId}:messages`;
+
     res?.socket?.server?.io?.emit(chatId);
+    res?.socket?.server?.io?.emit(channelKey, threads);
 
     const allMembers = await db.member.findMany({
       where: {

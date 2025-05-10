@@ -76,10 +76,10 @@ export default async function handler(
     });
 
     const channelKey = `chat:${directMessageId}:messages`;
-    res?.socket?.server?.io?.emit(channelKey, threads);
     const chatId = `chat:${conversationId}:messages`;
 
     res?.socket?.server?.io?.emit(chatId);
+    res?.socket?.server?.io?.emit(channelKey, threads);
 
     const reciever =
       currentMember.id === conversation?.conversationInitiaterId
