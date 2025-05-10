@@ -211,7 +211,6 @@ function UserComment({
     }
     cancelDelay();
   };
-  // console.log(isScrollingToMsg);
 
   return (
     <div
@@ -400,7 +399,7 @@ function UserComment({
                   className="z-10 mt-2 bg-blac group -mb-1 w-full px-2 cursor-pointer"
                 >
                   <div className="p-1 flex flex-col overflow-hidden rounded-lg gap-x-2 w-full border-l-[3px] my-1 border-teal-400  items-start">
-                    <h1 className="text-teal-700 px-1 text-sm font-semibold my-1 flex  items-center w-full">
+                    <h1 className="text-teal-700 px-1 text-sm h-5 font-semibold my-1 flex  items-center w-full">
                       Replied To :
                       {isFindingMessage && (
                         <ActionToolTip
@@ -423,8 +422,8 @@ function UserComment({
                       />
                       <div className="flex flex-col gap-y-1 justify-start">
                         <h1 className="text-sm capitalize font-semibold hover:underline cursor-pointer transition">
-                          {message?.replyToMessage?.member?.profile?.id ===
-                          currentMember?.profile?.id
+                          {message?.replyToMessage?.member?.id ===
+                          currentMember?.id
                             ? "You"
                             : message?.member?.profile?.name}
                         </h1>
