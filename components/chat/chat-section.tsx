@@ -126,7 +126,33 @@ function ChatSection({
       timeoutId = setTimeout(resolve, ms);
     });
   };
+  const navigateToDOM = async (messageId: string) => {
+    // await delay(500);
+    if (selectMessage) {
+      (selectMessage as HTMLDivElement).style.borderRadius = "";
+      (selectMessage as HTMLDivElement).style.border = "";
+    }
 
+    if (!allMessageRef.current[messageId]) {
+      return false;
+    }
+    await delay(500);
+    const message = allMessageRef.current[messageId];
+    const child = message?.children?.[0] as HTMLDivElement;
+
+    if (child && child?.style) {
+      (child.children[1] as HTMLDivElement).style.borderRadius =
+        "10px 10px 10px 3px";
+      (child.children[1] as HTMLDivElement).style.border = "2px solid #479fa2";
+      setSelectMessage(child.children[1] as HTMLDivElement);
+    }
+    allMessageRef.current[messageId]?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
+    return allMessageRef.current[messageId] ? true : false;
+  };
   return (
     <div
       ref={chatRef}
@@ -181,34 +207,7 @@ function ChatSection({
                     ...reply,
                   })
                 }
-                allReplyRef={async (messageId: string) => {
-                  // await delay(500);
-                  if (selectMessage) {
-                    (selectMessage as HTMLDivElement).style.borderRadius = "";
-                    (selectMessage as HTMLDivElement).style.border = "";
-                  }
-
-                  if (!allMessageRef.current[messageId]) {
-                    return false;
-                  }
-                  await delay(500);
-                  const message = allMessageRef.current[messageId];
-                  const child = message?.children?.[0] as HTMLDivElement;
-
-                  if (child && child?.style) {
-                    (child.children[1] as HTMLDivElement).style.borderRadius =
-                      "10px 10px 10px 3px";
-                    (child.children[1] as HTMLDivElement).style.border =
-                      "2px solid #479fa2";
-                    setSelectMessage(child.children[1] as HTMLDivElement);
-                  }
-                  allMessageRef.current[messageId]?.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start",
-                  });
-
-                  return allMessageRef.current[messageId] ? true : false;
-                }}
+                allReplyRef={navigateToDOM}
                 type={type}
                 key={index}
                 currentMember={currentMember}
