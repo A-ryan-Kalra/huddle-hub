@@ -84,6 +84,7 @@ function ChatSection({
     loadMore: fetchNextPage,
     shouldLoadMore: !!hasNextPage && !isFetchingNextPage,
     count: data?.pages[0]?.items?.length ?? 0,
+    selectMessage,
   });
 
   useChatSocket({

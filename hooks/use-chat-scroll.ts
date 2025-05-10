@@ -6,6 +6,7 @@ interface ChatScrollProps {
   loadMore: () => void;
   shouldLoadMore: boolean;
   count: number;
+  selectMessage: HTMLDivElement | null;
 }
 
 function useChatScroll({
@@ -14,6 +15,7 @@ function useChatScroll({
   shouldLoadMore,
   loadMore,
   count,
+  selectMessage,
 }: ChatScrollProps) {
   useEffect(() => {
     const topDiv = chatRef?.current;
@@ -33,6 +35,10 @@ function useChatScroll({
   useEffect(() => {
     const bottomDiv = bottomRef?.current;
     const topDiv = chatRef?.current;
+    if (selectMessage) {
+      (selectMessage as HTMLDivElement).style.borderRadius = "";
+      (selectMessage as HTMLDivElement).style.border = "";
+    }
 
     function checkDistance() {
       if (!topDiv) {
