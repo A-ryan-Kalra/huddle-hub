@@ -243,7 +243,7 @@ export default function ChatEditor({
       }
     }, 100);
     return () => clearInterval(interval);
-  }, []);
+  }, [message]);
 
   return (
     <div className="w-full mt-auto relative">
