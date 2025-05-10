@@ -202,10 +202,11 @@ function UserComment({
     const messageId = message?.replyToMessageId as string;
 
     let attempt = true;
+    let hasNext = true;
 
     while (attempt) {
       const isFound = await allReplyRef(messageId);
-      if (isFound) {
+      if (isFound || !hasNext) {
         cancelDelay();
         setIsScrollingToMsg(false);
         setIsFindingMessage(false);
@@ -214,14 +215,8 @@ function UserComment({
       }
 
       const data = (await fetchNextPage()) as any;
+      hasNext = data?.hasNextPage;
 
-      if (!data?.hasNextPage) {
-        cancelDelay();
-        setIsScrollingToMsg(false);
-        setIsFindingMessage(false);
-        attempt = false;
-        break;
-      }
       await delayInMs(800);
     }
     cancelDelay();
