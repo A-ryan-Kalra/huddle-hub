@@ -94,6 +94,13 @@ export default async function handler(
         },
       },
     });
+
+    const channelKey = `chat:${messageId}:messages`;
+
+    res?.socket?.server?.io?.emit(channelKey, threads);
+    const chatId = `chat:${channelId}:messages`;
+    res?.socket?.server?.io?.emit(chatId);
+
     const allMembers = await db.member.findMany({
       where: {
         profileId: {
@@ -149,16 +156,12 @@ export default async function handler(
       },
     });
 
-    const channelKey = `chat:${messageId}:messages`;
-
-    res?.socket?.server?.io?.emit(channelKey, threads);
     notification?.recipients?.forEach((member) => {
       const notificationQueryKey = `notification:${member.memberId}:newAlert`;
 
       res?.socket?.server?.io?.emit(notificationQueryKey, member);
     });
-    const chatId = `chat:${channelId}:messages`;
-    res?.socket?.server?.io?.emit(chatId);
+
     return res.status(201).json(threads);
   } catch (error) {
     console.error("[SOCKET>API>THREADS_POST]", error);
