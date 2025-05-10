@@ -4,6 +4,7 @@ import AvatarIcon from "./avatar-icon";
 import {
   Edit,
   Loader2Icon,
+  LoaderIcon,
   MessageCircleMore,
   MessageCircleReply,
   TrashIcon,
@@ -35,7 +36,9 @@ interface UserCommentProps {
   currentMember: member & { profile: profile };
   type: "channel" | "conversation" | "threads";
   replyRef: (reply: Record<string, HTMLDivElement>) => void;
-  allReplyRef: Record<string, HTMLDivElement | null>;
+  allReplyRef: (messageId: string) => Promise<boolean>;
+  fetchNextPage: () => void;
+  count: number;
 }
 
 const formSchema = z.object({
@@ -52,6 +55,8 @@ function UserComment({
   currentMember,
   replyRef,
   allReplyRef,
+  fetchNextPage,
+  count,
 }: UserCommentProps) {
   const router = useRouter();
 
@@ -70,6 +75,8 @@ function UserComment({
   const [loading, setIsLoading] = useState(false);
   const scrollViewRef = useRef<Record<string, HTMLDivElement | null>>({});
   const params = useParams();
+  const [isScrollingToMsg, setIsScrollingToMsg] = useState(false);
+  const [isFindingMessage, setIsFindingMessage] = useState(false);
 
   const threadLastReply =
     message?.threads &&
@@ -154,24 +161,7 @@ function UserComment({
     setIsLoading(false);
     router.refresh();
   }
-  // console.log(message);
-  // console.log(
-  //   "lol==>",
-  //   scrollViewRef.current["d8fc3ff9-ab2e-44eb-a0a8-2072f39efa40"],
-  //   message?.replyToMessageId
-  // );
-  // console.log(scrollViewRef.current);
-  // console.log(message?.id);
-  // console.log(message?.content?.slice(1, 15));
 
-  // console.log(message?.replyToMessageId);
-  // console.log(message?.replyToMessage?.content?.slice(1, 15));
-
-  // console.log(message?.id === message?.replyToMessageId);
-  console.log(allReplyRef[message?.replyToMessageId as string]);
-  console.log(allReplyRef);
-  console.log(message?.replyToMessageId);
-  console.log("---------------");
   useEffect(() => {
     const scrollView = scrollViewRef.current[message?.id];
     if (scrollView !== null) {
@@ -179,19 +169,52 @@ function UserComment({
         [message?.id]: scrollView,
       });
     }
-  }, [scrollViewRef.current[message?.id]]);
+  }, [scrollViewRef.current[message?.id], count]);
+
+  let timeoutId: number | null | any = null;
+
+  const delayInMs = (ms: number) => {
+    return new Promise<void>((resolve) => {
+      timeoutId = setTimeout(resolve, ms);
+    });
+  };
+  const cancelDelay = () => {
+    if (timeoutId !== null) {
+      clearTimeout(timeoutId);
+      timeoutId = null;
+    }
+  };
+
+  // console.log(allReplyRef);
+  const directToSpecificMessage = async () => {
+    if (isScrollingToMsg) {
+      return null;
+    }
+    setIsScrollingToMsg(true);
+    const messageId = message?.replyToMessageId as string;
+
+    let attempt = true;
+
+    while (attempt) {
+      const isFound = await allReplyRef(messageId);
+      if (isFound) {
+        cancelDelay();
+        setIsScrollingToMsg(false);
+        setIsFindingMessage(false);
+        attempt = false;
+        break;
+      }
+
+      fetchNextPage();
+
+      await delayInMs(1300);
+    }
+    cancelDelay();
+  };
+  // console.log(isScrollingToMsg);
+
   return (
     <div
-      // onClick={(e) => {
-      //   // e.stopPropagation();
-      //   console.log(message?.id === message?.replyToMessageId);
-      //   scrollViewRef.current[
-      //     "aefc3bb8-8a17-4659-956e-23dbb177b5a7"
-      //   ]?.scrollIntoView({
-      //     behavior: "smooth",
-      //     block: "center",
-      //   });
-      // }}
       ref={(el) => {
         scrollViewRef.current[message?.id as string] = el;
       }}
@@ -219,32 +242,33 @@ function UserComment({
               )}
             >
               {!isDeleted && type !== "threads" && (
-                <ActionToolTip
-                  label="Reply in thread"
-                  onClick={() => {
-                    onOpen("openThread", {
-                      message: message,
-                      member: currentMember,
-                    });
-                  }}
-                  className="px-2 py-1 hover:bg-zinc-200 "
-                >
-                  <MessageCircleMore className="!w-4 !h-4" />
-                </ActionToolTip>
+                <>
+                  <ActionToolTip
+                    label="Reply in thread"
+                    onClick={() => {
+                      onOpen("openThread", {
+                        message: message,
+                        member: currentMember,
+                      });
+                    }}
+                    className="px-2 py-1 hover:bg-zinc-200 "
+                  >
+                    <MessageCircleMore className="!w-4 !h-4" />
+                  </ActionToolTip>
+                  <ActionToolTip
+                    label="Reply"
+                    onClick={() => {
+                      onOpen("replyToMessage", {
+                        message: message,
+                        member: currentMember,
+                      });
+                    }}
+                    className="px-2 py-1 hover:bg-zinc-200 "
+                  >
+                    <MessageCircleReply className="!w-4 !h-4" />
+                  </ActionToolTip>
+                </>
               )}
-
-              <ActionToolTip
-                label="Reply"
-                onClick={() => {
-                  onOpen("replyToMessage", {
-                    message: message,
-                    member: currentMember,
-                  });
-                }}
-                className="px-2 py-1 hover:bg-zinc-200 "
-              >
-                <MessageCircleReply className="!w-4 !h-4" />
-              </ActionToolTip>
 
               {!isDeleted && ownerOfMessage && (
                 <ActionToolTip
@@ -365,26 +389,24 @@ function UserComment({
             >
               {message?.replyToMessageId && (
                 <div
-                  onClick={(e) => {
-                    // e.stopPropagation();
-                    console.log(
-                      allReplyRef[message?.replyToMessageId as string]
-                    );
-                    allReplyRef[
-                      message?.replyToMessageId as string
-                    ]?.scrollIntoView({
-                      behavior: "smooth",
-                      block: "center",
-                    });
+                  onClick={() => {
+                    setIsFindingMessage(true);
+                    directToSpecificMessage();
                   }}
                   // ref={(el) => {
                   //   scrollViewRef.current[message?.id as string] = el;
                   // }}
+
                   className="z-10 mt-2 bg-blac group -mb-1 w-full px-2 cursor-pointer"
                 >
                   <div className="p-1 flex flex-col overflow-hidden rounded-lg gap-x-2 w-full border-l-[3px] my-1 border-teal-400  items-start">
-                    <h1 className="text-teal-700 text-sm font-semibold my-1">
+                    <h1 className="text-teal-700 px-1 text-sm font-semibold my-1 flex  items-center w-full">
                       Replied To :
+                      {isFindingMessage && (
+                        <span className="ml-auto">
+                          <LoaderIcon className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+                        </span>
+                      )}
                     </h1>
                     <div className="relative p-1 flex overflow-hidden rounded-lg gap-x-2 w-full border-[1px] border-slate-400  items-start">
                       <AvatarIcon
