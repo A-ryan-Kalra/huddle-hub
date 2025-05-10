@@ -1,7 +1,14 @@
 import { member, memberRole, message, profile, threads } from "@prisma/client";
 import React, { useEffect, useRef, useState } from "react";
 import AvatarIcon from "./avatar-icon";
-import { Edit, Loader2Icon, MessageCircleMore, TrashIcon } from "lucide-react";
+import {
+  Edit,
+  Loader2Icon,
+  LoaderIcon,
+  MessageCircleMore,
+  MessageCircleReply,
+  TrashIcon,
+} from "lucide-react";
 import ActionToolTip from "./action-tooltip";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -22,11 +29,16 @@ interface UserCommentProps {
     member: member & { profile: profile };
     directMessageId?: string;
     threads: (threads & { member: member & { profile: profile } })[];
+    replyToMessage: message & { member: member & { profile: profile } };
   };
   createdAt: Date;
   socketQuery: Record<string, any>;
   currentMember: member & { profile: profile };
   type: "channel" | "conversation" | "threads";
+  replyRef: (reply: Record<string, HTMLDivElement>) => void;
+  allReplyRef: (messageId: string) => Promise<boolean>;
+  fetchNextPage: () => void;
+  count: number;
 }
 
 const formSchema = z.object({
@@ -41,6 +53,10 @@ function UserComment({
   socketQuery,
   type,
   currentMember,
+  replyRef,
+  allReplyRef,
+  fetchNextPage,
+  count,
 }: UserCommentProps) {
   const router = useRouter();
 
@@ -57,6 +73,11 @@ function UserComment({
   const showTime = format(new Date(message?.createdAt), TIME_FORMAT);
   const showDate = format(new Date(message?.createdAt), DATE_FORMAT);
   const [loading, setIsLoading] = useState(false);
+  const scrollViewRef = useRef<Record<string, HTMLDivElement | null>>({});
+  const params = useParams();
+  const [isScrollingToMsg, setIsScrollingToMsg] = useState(false);
+  const [isFindingMessage, setIsFindingMessage] = useState(false);
+
   const threadLastReply =
     message?.threads &&
     message?.threads?.length !== 0 &&
@@ -64,7 +85,6 @@ function UserComment({
       message?.threads[message?.threads?.length - 1]?.updatedAt,
       "dd/MMM, hh:mm a"
     );
-  const params = useParams();
   const cleanContent = (html: string) => {
     return html
       .replace(/^(?:\s*<p>(?:<br\s*\/?>|\s|&nbsp;)*<\/p>\s*)+/gi, "")
@@ -142,14 +162,69 @@ function UserComment({
     router.refresh();
   }
 
+  useEffect(() => {
+    const scrollView = scrollViewRef.current[message?.id];
+    if (scrollView !== null) {
+      replyRef({
+        [message?.id]: scrollView,
+      });
+    }
+  }, [scrollViewRef.current[message?.id], count]);
+
+  let timeoutId: number | null | any = null;
+
+  const delayInMs = (ms: number) => {
+    return new Promise<void>((resolve) => {
+      timeoutId = setTimeout(resolve, ms);
+    });
+  };
+  const cancelDelay = () => {
+    if (timeoutId !== null) {
+      clearTimeout(timeoutId);
+      timeoutId = null;
+    }
+  };
+
+  // console.log(allReplyRef);
+  const directToSpecificMessage = async () => {
+    if (isScrollingToMsg) {
+      return null;
+    }
+    setIsScrollingToMsg(true);
+    const messageId = message?.replyToMessageId as string;
+
+    let attempt = true;
+
+    while (attempt) {
+      const isFound = await allReplyRef(messageId);
+      if (isFound) {
+        cancelDelay();
+        setIsScrollingToMsg(false);
+        setIsFindingMessage(false);
+        attempt = false;
+        break;
+      }
+
+      fetchNextPage();
+
+      await delayInMs(1300);
+    }
+    cancelDelay();
+  };
+
   return (
-    <div className="flex px-4 h-full">
+    <div
+      ref={(el) => {
+        scrollViewRef.current[message?.id as string] = el;
+      }}
+      className="flex px-4 h-full"
+    >
       <div className="relative flex gap-x-2 w-full  items-start">
         <AvatarIcon
           imageUrl={message?.member?.profile?.imageUrl}
           width={40}
           height={40}
-          className="!rounded-md border-[1px] border-current mt-auto !sticky bottom-0"
+          className="!rounded-md border-[1px] border-current mt-auto aspect-square !sticky bottom-0"
         />
         <div
           className={cn(
@@ -166,18 +241,32 @@ function UserComment({
               )}
             >
               {!isDeleted && type !== "threads" && (
-                <ActionToolTip
-                  label="Reply in thread"
-                  onClick={() => {
-                    onOpen("openThread", {
-                      message: message,
-                      member: currentMember,
-                    });
-                  }}
-                  className="px-2 py-1 hover:bg-zinc-200 "
-                >
-                  <MessageCircleMore className="!w-4 !h-4" />
-                </ActionToolTip>
+                <>
+                  <ActionToolTip
+                    label="Reply in thread"
+                    onClick={() => {
+                      onOpen("openThread", {
+                        message: message,
+                        member: currentMember,
+                      });
+                    }}
+                    className="px-2 py-1 hover:bg-zinc-200 "
+                  >
+                    <MessageCircleMore className="!w-4 !h-4" />
+                  </ActionToolTip>
+                  <ActionToolTip
+                    label="Reply"
+                    onClick={() => {
+                      onOpen("replyToMessage", {
+                        message: message,
+                        member: currentMember,
+                      });
+                    }}
+                    className="px-2 py-1 hover:bg-zinc-200 "
+                  >
+                    <MessageCircleReply className="!w-4 !h-4" />
+                  </ActionToolTip>
+                </>
               )}
 
               {!isDeleted && ownerOfMessage && (
@@ -297,6 +386,58 @@ function UserComment({
                 isDeleted && "text-xs text-zinc-600 tracking-wide"
               )}
             >
+              {message?.replyToMessageId && (
+                <div
+                  onClick={() => {
+                    setIsFindingMessage(true);
+                    directToSpecificMessage();
+                  }}
+                  // ref={(el) => {
+                  //   scrollViewRef.current[message?.id as string] = el;
+                  // }}
+
+                  className="z-10 mt-2 bg-blac group -mb-1 w-full px-2 cursor-pointer"
+                >
+                  <div className="p-1 flex flex-col overflow-hidden rounded-lg gap-x-2 w-full border-l-[3px] my-1 border-teal-400  items-start">
+                    <h1 className="text-teal-700 px-1 text-sm h-5 font-semibold my-1 flex  items-center w-full">
+                      Replied To :
+                      {isFindingMessage && (
+                        <ActionToolTip
+                          label="Viewing Original Message"
+                          className="px-2 py-1 hover:bg-zinc-200 ml-auto rounded-md"
+                        >
+                          <LoaderIcon className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+                        </ActionToolTip>
+                      )}
+                    </h1>
+                    <div className="relative p-1 flex overflow-hidden rounded-lg gap-x-2 w-full border-[1px] border-slate-400  items-start">
+                      <AvatarIcon
+                        imageUrl={
+                          message?.replyToMessage?.member?.profile
+                            ?.imageUrl as string
+                        }
+                        width={40}
+                        height={40}
+                        className="!rounded-md aspect-square border-[1px] border-current"
+                      />
+                      <div className="flex flex-col gap-y-1 justify-start">
+                        <h1 className="text-sm capitalize font-semibold hover:underline cursor-pointer transition">
+                          {message?.replyToMessage?.member?.id ===
+                          currentMember?.id
+                            ? "You"
+                            : message?.member?.profile?.name}
+                        </h1>
+                        <div
+                          className="w-full break-all line-clamp-3"
+                          dangerouslySetInnerHTML={{
+                            __html: message?.replyToMessage?.content as string,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
               <div
                 className="w-full break-all"
                 dangerouslySetInnerHTML={{ __html: message?.content as string }}

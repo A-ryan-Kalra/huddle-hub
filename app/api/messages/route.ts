@@ -34,6 +34,15 @@ export async function GET(req: NextRequest, res: NextResponse) {
           id: cursor as string,
         },
         include: {
+          replyToMessage: {
+            include: {
+              member: {
+                include: {
+                  profile: true,
+                },
+              },
+            },
+          },
           member: {
             include: {
               profile: true,
@@ -64,6 +73,15 @@ export async function GET(req: NextRequest, res: NextResponse) {
           createdAt: "desc",
         },
         include: {
+          replyToMessage: {
+            include: {
+              member: {
+                include: {
+                  profile: true,
+                },
+              },
+            },
+          },
           member: {
             include: {
               profile: true,

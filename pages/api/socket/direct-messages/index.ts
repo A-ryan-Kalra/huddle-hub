@@ -12,7 +12,8 @@ export default async function handler(
     const profile = await currentProfilePages(req);
     const { serverId, conversationId } = req.query;
 
-    const { content, fileUrl } = req.body;
+    const { content, fileUrl, replyToMessageId } = req.body;
+    console.log("replyToMessageId=", replyToMessageId);
 
     if (!profile) {
       return res.status(401).json({ error: "Unauthorized" });
@@ -57,8 +58,18 @@ export default async function handler(
         content: content as string,
         memberId: currentMember?.id,
         ...(fileUrl && { fileUrl }),
+        ...(replyToMessageId && { replyToMessageId: replyToMessageId }),
       },
       include: {
+        replyToMessage: {
+          include: {
+            member: {
+              include: {
+                profile: true,
+              },
+            },
+          },
+        },
         member: {
           include: {
             profile: true,

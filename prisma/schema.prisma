@@ -86,11 +86,16 @@ model message {
   channel   channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
   member    member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
   threads              threads[]
+  replyToMessageId     String? 
+  replyToMessage       message? @relation("MessageReplies",fields: [replyToMessageId],references: [id])
+  repliedMessages      message[] @relation("MessageReplies")
 
   @@index([channelId])
   @@index([memberId])
+  @@index([replyToMessageId])
 }
 
+ 
 model conversation {
   id                      String          @id @default(uuid())
   conversationInitiaterId String
@@ -111,6 +116,9 @@ model directMessage {
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
   deleted        Boolean      @default(false)
+  replyToMessageId     String? 
+  replyToMessage       directMessage? @relation("MessageReplies",fields: [replyToMessageId],references: [id])
+  repliedMessages      directMessage[] @relation("MessageReplies")
 
   conversationId String
   conversation   conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)

@@ -75,6 +75,12 @@ export default async function handler(
       },
     });
 
+    const channelKey = `chat:${directMessageId}:messages`;
+    res?.socket?.server?.io?.emit(channelKey, threads);
+    const chatId = `chat:${conversationId}:messages`;
+
+    res?.socket?.server?.io?.emit(chatId);
+
     const reciever =
       currentMember.id === conversation?.conversationInitiaterId
         ? conversation.conversationReceiverId
@@ -123,17 +129,12 @@ export default async function handler(
       },
     });
 
-    const channelKey = `chat:${directMessageId}:messages`;
     const notificationQueryKey = `notification:${reciever}:newAlert`;
 
     res?.socket?.server?.io?.emit(
       notificationQueryKey,
       notification.recipients[0]
     );
-
-    res?.socket?.server?.io?.emit(channelKey, threads);
-    const chatId = `chat:${conversationId}:messages`;
-    res?.socket?.server?.io?.emit(chatId);
 
     return res.status(201).json(threads);
   } catch (error) {

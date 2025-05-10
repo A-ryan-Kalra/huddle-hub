@@ -1,7 +1,7 @@
 import queryString from "query-string";
 import { useSocket } from "@/components/providers/socket-providers";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import axios from "axios";
+
 import {
   member,
   message,
@@ -61,6 +61,9 @@ function useChatQuery({
       nextCursor: string | any;
       items: (message &
         notificationRecipient & {
+          replyToMessage: message & {
+            member: member & { profile: profile };
+          };
           member: member & { profile: profile };
           notification: notification & {
             notificationSent: member & { profile: profile };

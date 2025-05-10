@@ -1,7 +1,7 @@
 "use client";
 import { member, profile } from "@prisma/client";
 import { HashIcon, Loader2, PenLine, ServerCrashIcon } from "lucide-react";
-import React, { Fragment, useEffect, useRef } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import ChatWelcome from "./chat-welcome";
 import useChatQuery from "@/hooks/use-chat-query";
 import UserComment from "../ui/user-comment";
@@ -50,6 +50,11 @@ function ChatSection({
   const updateKey = `chat:${chatId}:messages:update`;
   const audioRef = useRef(null);
   const hasRunRef = useRef<boolean>(false);
+  const [selectMessage, setSelectMessage] = useState<HTMLDivElement | null>(
+    null
+  );
+
+  const allMessageRef = useRef<Record<string, HTMLDivElement | null>>({});
 
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage, status } =
     useChatQuery({ queryKey, paramKey, paramValue, apiUrl });
@@ -114,7 +119,40 @@ function ChatSection({
       </div>
     );
   }
+  let timeoutId: number | null | any = null;
 
+  const delay = (ms: number) => {
+    return new Promise<void>((resolve) => {
+      timeoutId = setTimeout(resolve, ms);
+    });
+  };
+  const navigateToDOM = async (messageId: string) => {
+    // await delay(500);
+    if (selectMessage) {
+      (selectMessage as HTMLDivElement).style.borderRadius = "";
+      (selectMessage as HTMLDivElement).style.border = "";
+    }
+
+    if (!allMessageRef.current[messageId]) {
+      return false;
+    }
+    await delay(500);
+    const message = allMessageRef.current[messageId];
+    const child = message?.children?.[0] as HTMLDivElement;
+
+    if (child && child?.style) {
+      (child.children[1] as HTMLDivElement).style.borderRadius =
+        "10px 10px 10px 3px";
+      (child.children[1] as HTMLDivElement).style.border = "2px solid #479fa2";
+      setSelectMessage(child.children[1] as HTMLDivElement);
+    }
+    allMessageRef.current[messageId]?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
+    return allMessageRef.current[messageId] ? true : false;
+  };
   return (
     <div
       ref={chatRef}
@@ -163,12 +201,21 @@ function ChatSection({
           <Fragment key={index}>
             {group?.items?.map((item: any, index) => (
               <UserComment
+                replyRef={(reply: Record<string, HTMLDivElement>) =>
+                  (allMessageRef.current = {
+                    ...allMessageRef?.current,
+                    ...reply,
+                  })
+                }
+                allReplyRef={navigateToDOM}
                 type={type}
                 key={index}
                 currentMember={currentMember}
                 createdAt={item?.createdAt}
                 message={item}
                 socketQuery={socketQuery}
+                fetchNextPage={fetchNextPage}
+                count={data?.pages[0]?.items?.length ?? 0}
               />
             ))}
           </Fragment>
