@@ -50,7 +50,11 @@ async function ConversationPage({ params }: ConversationPageProps) {
 
   return (
     <div className="flex flex-col flex-1 h-full">
-      <ChatHeader type="message" member={anotherMember} />
+      <ChatHeader
+        type="message"
+        member={anotherMember}
+        currentMemberId={currentMember?.id}
+      />
       <ChatSection
         type="conversation"
         chatId={conversation?.id}

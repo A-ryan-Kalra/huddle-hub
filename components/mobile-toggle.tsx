@@ -5,16 +5,21 @@ import NavigationSidebar from "./sidebar/navigation-sidebar";
 interface MobileToggleProps {
   children: React.ReactNode;
   serverId: string;
+  currentMemberId: string;
 }
 
-export function MobileToggle({ children, serverId }: MobileToggleProps) {
+export function MobileToggle({
+  children,
+  serverId,
+  currentMemberId,
+}: MobileToggleProps) {
   return (
-    <Sheet>
+    <Sheet modal={false}>
       <SheetTrigger asChild>{children}</SheetTrigger>
       <SheetContent className="" side="left">
         <div className="flex h-full">
           <div className="w-16 border-r-[1px] border-gray-200">
-            <NavigationSidebar />
+            <NavigationSidebar currentMemberId={currentMemberId} />
           </div>
           <ChannelSidebar serverId={serverId} />
         </div>

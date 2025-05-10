@@ -13,7 +13,6 @@ export default async function handler(
     const { serverId, conversationId } = req.query;
 
     const { content, fileUrl, replyToMessageId } = req.body;
-    console.log("replyToMessageId=", replyToMessageId);
 
     if (!profile) {
       return res.status(401).json({ error: "Unauthorized" });

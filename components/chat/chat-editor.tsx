@@ -73,8 +73,6 @@ export default function ChatEditor({
   const { message, member } = data;
   const isOpen = modalType === "replyToMessage";
 
-  // console.log(message);
-
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {

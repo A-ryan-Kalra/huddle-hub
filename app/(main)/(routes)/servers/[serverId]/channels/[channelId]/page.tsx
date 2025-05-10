@@ -49,7 +49,12 @@ async function ChannelPage({ params }: ChannelPageProps) {
 
   return (
     <div className="flex flex-col flex-1 h-full">
-      <ChatHeader type="channel" channel={channel} />
+      <ChatHeader
+        type="channel"
+        channel={channel}
+        member={member}
+        currentMemberId={member?.id}
+      />
       <ChatSection
         type="channel"
         isInvitedComplete={member?.isInvitedComplete ?? false}

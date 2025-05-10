@@ -70,7 +70,6 @@ export function Notification({ currentMemberId }: NotificationProps) {
     fetchNextPage,
     data?.pages[0]?.notReadTotal,
   ]);
-  // console.log(data);
 
   return (
     <div className="relative group">
