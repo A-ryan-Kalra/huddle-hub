@@ -106,7 +106,7 @@ export async function GET(req: Request) {
 
     let nextCursor = undefined;
     if (directMessages?.length === MESSAGES_BATCH) {
-      nextCursor = directMessages[MESSAGES_BATCH - 1];
+      nextCursor = directMessages[MESSAGES_BATCH - 1]?.id;
     }
 
     return NextResponse.json({ items: directMessages, nextCursor });

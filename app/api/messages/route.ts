@@ -30,6 +30,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
           channelId,
         },
         take: MESSAGE_BATCH,
+        skip: 1,
         cursor: {
           id: cursor as string,
         },

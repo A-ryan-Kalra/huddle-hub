@@ -87,7 +87,7 @@ model message {
   member    member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
   threads              threads[]
   replyToMessageId     String? 
-  replyToMessage       message? @relation("MessageReplies",fields: [replyToMessageId],references: [id])
+  replyToMessage       message? @relation("MessageReplies",fields: [replyToMessageId],references: [id],onDelete: Cascade)
   repliedMessages      message[] @relation("MessageReplies")
 
   @@index([channelId])

@@ -68,10 +68,18 @@ function UserComment({
   const isUpdated = message.createdAt !== message.updatedAt;
   const isAdmin = currentMember.role === memberRole.ADMIN;
   const isModerator = isAdmin || currentMember.role === memberRole.MODERATOR;
-  const ownerOfMessage = message.memberId === currentMember.id;
-  const isDeleted = message.deleted;
+  const ownerOfMessage = message?.memberId === currentMember?.id;
+  const isDeleted = message?.deleted;
   const showTime = format(new Date(message?.createdAt), TIME_FORMAT);
   const showDate = format(new Date(message?.createdAt), DATE_FORMAT);
+  const showTimeToReply =
+    message?.replyToMessage &&
+    message?.replyToMessage &&
+    format(new Date(message?.replyToMessage?.createdAt), TIME_FORMAT);
+  const showDateToReply =
+    message?.replyToMessage &&
+    message?.replyToMessage &&
+    format(new Date(message?.replyToMessage?.createdAt), DATE_FORMAT);
   const [loading, setIsLoading] = useState(false);
   const scrollViewRef = useRef<Record<string, HTMLDivElement | null>>({});
   const params = useParams();
@@ -85,6 +93,7 @@ function UserComment({
       message?.threads[message?.threads?.length - 1]?.updatedAt,
       "dd/MMM, hh:mm a"
     );
+
   const cleanContent = (html: string) => {
     return html
       .replace(/^(?:\s*<p>(?:<br\s*\/?>|\s|&nbsp;)*<\/p>\s*)+/gi, "")
@@ -185,7 +194,6 @@ function UserComment({
     }
   };
 
-  // console.log(allReplyRef);
   const directToSpecificMessage = async () => {
     if (isScrollingToMsg) {
       return null;
@@ -205,9 +213,16 @@ function UserComment({
         break;
       }
 
-      fetchNextPage();
+      const data = (await fetchNextPage()) as any;
 
-      await delayInMs(1300);
+      if (!data?.hasNextPage) {
+        cancelDelay();
+        setIsScrollingToMsg(false);
+        setIsFindingMessage(false);
+        attempt = false;
+        break;
+      }
+      await delayInMs(800);
     }
     cancelDelay();
   };
@@ -421,14 +436,27 @@ function UserComment({
                         className="!rounded-md aspect-square border-[1px] border-current"
                       />
                       <div className="flex flex-col gap-y-1 justify-start">
-                        <h1 className="text-sm capitalize font-semibold hover:underline cursor-pointer transition">
-                          {message?.replyToMessage?.member?.id ===
-                          currentMember?.id
-                            ? "You"
-                            : message?.member?.profile?.name}
-                        </h1>
+                        <div className="w-full flex items-center gap-y-1">
+                          <h1 className="text-sm capitalize font-semibold hover:underline cursor-pointer transition">
+                            {message?.replyToMessage?.member?.id ===
+                            currentMember?.id
+                              ? "You"
+                              : message?.member?.profile?.name}
+                          </h1>
+                          <ActionToolTip
+                            label={showDateToReply}
+                            className="text-xs ml-3 text-zinc-500 hover:underline"
+                          >
+                            {showTimeToReply}
+                          </ActionToolTip>
+                        </div>
                         <div
-                          className="w-full break-all line-clamp-3"
+                          className={cn(
+                            "w-full break-all line-clamp-3",
+                            message?.replyToMessage?.content?.includes(
+                              "deleted"
+                            ) && "text-xs text-zinc-600 tracking-wide"
+                          )}
                           dangerouslySetInnerHTML={{
                             __html: message?.replyToMessage?.content as string,
                           }}
