@@ -106,11 +106,11 @@ export default function ChatEditor({
               <span className="ql-formats">
                 <button className="ql-list" value="ordered"></button>
                 <button className="ql-list" value="bullet"></button>
-                <button className="ql-indent" value="-1"></button>
-                <button className="ql-indent" value="+1"></button>
+                {/* <button className="ql-indent" value="-1"></button>
+                <button className="ql-indent" value="+1"></button> */}
               </span>
               <span className="ql-formats">
-                <button className="ql-link"></button>
+                {/* <button className="ql-link"></button> */}
                 <input
                   ref={imageReference}
                   accept="image/*"

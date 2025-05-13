@@ -37,6 +37,18 @@ export default async function handler(
         profileId: profile?.id,
         serverId: serverId as string,
       },
+      include: {
+        channels: {
+          where: {
+            channel: {
+              name: "general",
+            },
+          },
+          include: {
+            channel: true,
+          },
+        },
+      },
     });
 
     if (!currentMember?.isInvitedComplete) {
@@ -93,6 +105,51 @@ export default async function handler(
 
       res?.socket?.server?.io?.emit(notificationQueryKey, member);
     });
+
+    const greetNotification = await db.notification.create({
+      data: {
+        message: `Hi ${profile.name?.split(" ")[0]}, welcome aboard! 🎊`,
+        type: notificationType.INVITE,
+        typeId: memberId as string,
+        content: `Let the fun begin!`,
+        communicationType: "CHANNEL",
+        channel_direct_messageId: currentMember?.channels[0].channel
+          ?.id as string,
+        senderId: memberId as string,
+        recipients: {
+          create: {
+            memberId: memberId as string,
+          },
+        },
+      },
+      include: {
+        recipients: {
+          include: {
+            member: {
+              include: {
+                profile: true,
+              },
+            },
+            notification: {
+              include: {
+                notificationSent: {
+                  include: {
+                    profile: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const notificationQueryKey = `notification:${currentMember.id}:newAlert`;
+
+    res?.socket?.server?.io?.emit(
+      notificationQueryKey,
+      greetNotification.recipients[0]
+    );
 
     return res.status(200).json({ success: true });
   } catch (error) {
