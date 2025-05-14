@@ -42,6 +42,9 @@ function useChatSocket({
           }
           const newData = [...oldData.pages];
 
+          audioRef?.current?.play().catch((err) => {
+            console.warn("Playback failed:", err);
+          });
           newData[0] = {
             ...newData[0],
             items: [message, ...newData[0].items],
@@ -49,9 +52,6 @@ function useChatSocket({
 
           // queryClient.refetchQueries();
 
-          audioRef?.current?.play().catch((err) => {
-            console.warn("Playback failed:", err);
-          });
           return {
             ...oldData,
             pages: newData,
