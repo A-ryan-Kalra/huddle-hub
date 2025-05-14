@@ -222,6 +222,21 @@ function UserComment({
     cancelDelay();
   };
 
+  function removeLastSpan(content: string) {
+    const newDiv = document.createElement("div");
+    newDiv.innerHTML = content;
+    const ol = newDiv.querySelector("ol");
+    if (ol) {
+      const listItems = newDiv.querySelectorAll("li");
+      const lastLi = listItems[listItems?.length - 1];
+
+      lastLi?.remove();
+
+      return newDiv.innerHTML;
+    }
+    return newDiv.innerHTML;
+  }
+
   return (
     <div
       ref={(el) => {
@@ -453,7 +468,9 @@ function UserComment({
                             ) && "text-xs text-zinc-600 tracking-wide"
                           )}
                           dangerouslySetInnerHTML={{
-                            __html: message?.replyToMessage?.content as string,
+                            __html: removeLastSpan(
+                              message?.replyToMessage?.content as string
+                            ),
                           }}
                         />
                       </div>
@@ -463,7 +480,9 @@ function UserComment({
               )}
               <div
                 className="w-full break-all"
-                dangerouslySetInnerHTML={{ __html: message?.content as string }}
+                dangerouslySetInnerHTML={{
+                  __html: removeLastSpan(message?.content as string),
+                }}
               />
               {message?.threads?.length > 0 && (
                 <button

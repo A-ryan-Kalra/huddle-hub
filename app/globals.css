@@ -20,14 +20,18 @@ svg.lucide-x {
   left: 0 !important;
   top: 0 !important;
 }
-li[data-list="ordered"],
-li[data-list="ordered"]::marker {
+li[data-list="ordered"] {
   list-style-type: decimal;
   margin-left: 1rem;
 }
 li[data-list="bullet"] {
   list-style-type: disc;
   margin-left: 1rem;
+  /* &::marker {
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 11px;
+  } */
 }
 @layer base {
   :root {
