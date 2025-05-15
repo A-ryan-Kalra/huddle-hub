@@ -1,6 +1,7 @@
 import ChatEditor from "@/components/chat/chat-editor";
 import ChatHeader from "@/components/chat/chat-header";
 import ChatSection from "@/components/chat/chat-section";
+import PwaHome from "@/app/(setup)/pwa-home";
 import { currentProfile } from "@/lib/currentProfile";
 import { db } from "@/lib/db";
 
@@ -49,6 +50,7 @@ async function ChannelPage({ params }: ChannelPageProps) {
 
   return (
     <div className="flex flex-col flex-1 h-full">
+      <PwaHome />
       <ChatHeader
         type="channel"
         channel={channel}

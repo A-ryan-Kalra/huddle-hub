@@ -28,6 +28,7 @@
     "@radix-ui/react-tooltip": "^1.1.8",
     "@tailwindcss/postcss": "^4.0.15",
     "@tanstack/react-query": "^5.74.4",
+    "@types/web-push": "^3.6.4",
     "@uploadthing/react": "^7.3.0",
     "autoprefixer": "^10.4.21",
     "axios": "^1.8.4",
@@ -55,6 +56,7 @@
     "tw-animate-css": "^1.2.4",
     "uploadthing": "^7.6.0",
     "uuid": "^11.1.0",
+    "web-push": "^3.6.7",
     "zod": "^3.24.2",
     "zustand": "^5.0.3"
   },

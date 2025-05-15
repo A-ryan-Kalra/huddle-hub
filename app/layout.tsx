@@ -21,6 +21,19 @@ const righteous = Noto_Sans_Indic_Siyaq_Numbers({
 export const metadata: Metadata = {
   title: "Huddle Hub",
   description: "The only platform to connect employes within the organization.",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Huddle Hub PWA",
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+  },
 };
 
 export default function RootLayout({
