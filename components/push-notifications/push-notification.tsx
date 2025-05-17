@@ -17,6 +17,7 @@ import {
 import { Switch } from "../ui/switch";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { cn } from "@/lib/utils";
 
 function urlBase64ToUint8Array(base64String: string) {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
@@ -178,6 +179,7 @@ function PushNotification() {
   }
 
   async function unsubscribeFromPush() {
+    setIsOpen(false);
     try {
       if (subscription) {
         toast("Alert", {
@@ -241,11 +243,11 @@ function PushNotification() {
   }
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center flex-row-reverse">
       {subscription && isOpen ? (
         <ActionToolTip
           onClick={unsubscribeFromPush}
-          className="ml-auto flex items-center "
+          className="ml-auto flex items-center  z-10"
           label="Unsubscribe to notifications"
         >
           <div className=" hover:bg-zinc-200 duration-300 p-2 transition rounded-md cursor-pointer">
@@ -253,67 +255,82 @@ function PushNotification() {
           </div>
         </ActionToolTip>
       ) : (
-        <DropdownMenu
-          modal={false}
-          onOpenChange={(e) => {
-            setIsOpen(e === false);
-
-            if (e) {
-              subscribeToPush();
-              // setIsOpen(true)
-            } else if (!e) {
-              setIsTestMode(false);
-            }
+        <ActionToolTip
+          onClick={() => {
+            subscribeToPush();
+            setIsOpen(true);
           }}
+          className="ml-auto flex items-center z-10"
+          label="Subscribe to notifications"
         >
-          <DropdownMenuTrigger>
-            <ActionToolTip
-              className="ml-auto flex items-center"
-              label="Subscribe to notifications"
-            >
-              <div className=" hover:bg-zinc-500 bg-black duration-300 p-2 transition rounded-md cursor-pointer">
-                <BellRing className=" h-5 w-5 text-white" />
-              </div>
-            </ActionToolTip>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="sm:w-[300px] w-[240px]" align="end">
-            <DropdownMenuLabel className="cursor-default flex justify-start items-center gap-x-2">
-              <Switch
-                // checked={true}
-                onCheckedChange={(e) => {
-                  setIsTestMode(e);
-                }}
-              />
-              <span>Test Mode</span>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuLabel className="text-blue-500 font-semibold break-words">
-              In Test Mode, you can check whether the current browser receive
-              push notifications.
-            </DropdownMenuLabel>
-            {isTestMode && (
-              <>
-                <DropdownMenuSeparator />
-                <form
-                  onSubmit={sendTestNotification}
-                  className="flex items-center space-x-2"
-                >
-                  <Input
-                    type="text"
-                    placeholder="Check Push Notification"
-                    value={message}
-                    className="focus-visible:ring-0 max-sm:placeholder:text-[13px] focus-visible:border-zinc-400 outline-none"
-                    onChange={(e) => setMessage(e.target.value)}
-                  />
-                  <Button type="submit" size="icon">
-                    <Send className="h-4 w-4" />
-                  </Button>
-                </form>
-              </>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
+          <div className=" hover:bg-zinc-500 bg-black duration-300 p-2 transition rounded-md cursor-pointer">
+            <BellRing className=" h-5 w-5 text-white" />
+          </div>
+        </ActionToolTip>
       )}
+
+      <DropdownMenu
+        modal={false}
+        onOpenChange={(e) => {
+          if (!e) {
+            setIsTestMode(false);
+          }
+        }}
+      >
+        <DropdownMenuTrigger>
+          <ActionToolTip
+            className="  flex items-center mr-2 p-1 "
+            label="Test Push Notification"
+            side="left"
+          >
+            <span
+              className={cn(
+                "relative flex size-3  transition duration-300 translate-x-10",
+                isOpen && "-translate-x-2"
+              )}
+            >
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-teal-400 opacity-75"></span>
+              <span className="relative inline-flex size-3 rounded-full bg-teal-500"></span>
+            </span>
+          </ActionToolTip>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="sm:w-[300px] w-[240px]" align="center">
+          <DropdownMenuLabel className="cursor-default flex justify-start items-center gap-x-2">
+            <Switch
+              // checked={true}
+              onCheckedChange={(e) => {
+                setIsTestMode(e);
+              }}
+            />
+            <span>Test Mode</span>
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuLabel className="text-blue-500 font-semibold break-words">
+            In Test Mode, you can check whether the current browser receive push
+            notifications.
+          </DropdownMenuLabel>
+          {isTestMode && (
+            <>
+              <DropdownMenuSeparator />
+              <form
+                onSubmit={sendTestNotification}
+                className="flex items-center space-x-2"
+              >
+                <Input
+                  type="text"
+                  placeholder="Check Push Notification"
+                  value={message}
+                  className="focus-visible:ring-0 max-sm:placeholder:text-[13px] focus-visible:border-zinc-400 outline-none"
+                  onChange={(e) => setMessage(e.target.value)}
+                />
+                <Button type="submit" size="icon">
+                  <Send className="h-4 w-4" />
+                </Button>
+              </form>
+            </>
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }
