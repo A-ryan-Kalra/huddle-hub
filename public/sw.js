@@ -22,7 +22,7 @@ self.addEventListener("push", (event) => {
   try {
     // Parse the notification data
     const data = event.data.json();
-    console.log(data);
+
     // Show the notification
     const options = {
       body: data.body || "New notification",

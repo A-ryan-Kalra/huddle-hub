@@ -213,8 +213,19 @@ function PushNotification() {
 
     try {
       setStatus("Sending notification...");
+      toast("Alert", {
+        description: "Sending notification...",
+        style: { backgroundColor: "white", color: "black" },
+        richColors: true,
+      });
       await sendNotification(message);
-      setStatus("Notification sent successfully!");
+
+      toast("Success", {
+        description: "Notification sent successfully!",
+        style: { backgroundColor: "white", color: "black" },
+        richColors: true,
+      });
+
       setMessage("");
     } catch (error) {
       setStatus(`Failed to send notification: ${error}`);
