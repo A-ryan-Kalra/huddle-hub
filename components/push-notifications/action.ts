@@ -27,7 +27,11 @@ export async function unsubscribeUser() {
   return { success: true };
 }
 
-export async function sendNotification(message: string) {
+export async function sendNotification(message: {
+  title?: string;
+  description: string;
+  notificationId?: string;
+}) {
   if (!subscription) {
     throw new Error("Invalid subscription object");
   }
@@ -36,8 +40,8 @@ export async function sendNotification(message: string) {
     await webpush.sendNotification(
       subscription,
       JSON.stringify({
-        title: "Hello",
-        body: message,
+        title: message?.title ?? "Notification Received",
+        body: message?.description,
         icon: "/icons/icon-512x512.png",
         badge: "/icons/icon-512x512.png",
         data: {

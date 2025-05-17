@@ -11,6 +11,7 @@ import useChatQuery from "@/hooks/use-chat-query";
 import ListItem from "../notification/list-item";
 import useNotificationSocket from "@/hooks/use-notification-socket";
 import useChatSocket from "@/hooks/use-chat-socket";
+import usePushNotificationAlert from "@/hooks/use-push-notification-alert";
 
 interface NotificationProps {
   currentMemberId: string;
@@ -23,6 +24,7 @@ export function Notification({ currentMemberId }: NotificationProps) {
   const addKey = `notification:${notificationQuery}:newAlert`;
   const chatRef = React.useRef<HTMLDivElement | null>(null);
   const audioRef = React.useRef(null);
+  const pushNotificationAlert = `push:${currentMemberId}`;
 
   const {
     data,
@@ -70,6 +72,8 @@ export function Notification({ currentMemberId }: NotificationProps) {
     fetchNextPage,
     data?.pages[0]?.notReadTotal,
   ]);
+
+  usePushNotificationAlert({ notificationId: pushNotificationAlert });
 
   return (
     <div className="relative group">

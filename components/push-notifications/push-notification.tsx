@@ -218,7 +218,7 @@ function PushNotification() {
         style: { backgroundColor: "white", color: "black" },
         richColors: true,
       });
-      await sendNotification(message);
+      await sendNotification({ description: message });
 
       toast("Success", {
         description: "Notification sent successfully!",
@@ -239,7 +239,6 @@ function PushNotification() {
       console.error("Failed to send notification:", error);
     }
   }
-  console.log(isOpen);
 
   return (
     <div className="flex items-center">
