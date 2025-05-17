@@ -277,18 +277,18 @@ function PushNotification() {
           }
         }}
       >
-        <DropdownMenuTrigger>
+        <DropdownMenuTrigger
+          className={cn(
+            " flex items-center mr-2   transition duration-300 translate-x-10",
+            isOpen && "-translate-x-2"
+          )}
+        >
           <ActionToolTip
-            className="  flex items-center mr-2 p-1 "
+            className={cn(" flex items-center  p-1  ")}
             label="Test Push Notification"
             side="left"
           >
-            <span
-              className={cn(
-                "relative flex size-3  transition duration-300 translate-x-10",
-                isOpen && "-translate-x-2"
-              )}
-            >
+            <span className={cn("relative flex size-3  ")}>
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-teal-400 opacity-75"></span>
               <span className="relative inline-flex size-3 rounded-full bg-teal-500"></span>
             </span>
