@@ -22,7 +22,7 @@ self.addEventListener("push", (event) => {
   try {
     // Parse the notification data
     const data = event.data.json();
-
+    console.log(data);
     // Show the notification
     const options = {
       body: data.body || "New notification",
@@ -31,15 +31,15 @@ self.addEventListener("push", (event) => {
       vibrate: [100, 50, 100],
       data: data.data || {},
       actions: data.actions || [],
-      tag: data.tag || "default",
-      renotify: data.renotify || false,
-      requireInteraction: data.requireInteraction || false,
-      silent: data.silent || false,
+      data: {
+        dateOfArrival: Date.now(),
+        primaryKey: "2",
+      },
     };
 
-    // event.waitUntil(
-    self.registration.showNotification(data.title || "Notification", options);
-    // );
+    event.waitUntil(
+      self.registration.showNotification(data.title || "Notification", options)
+    );
   } catch (error) {
     console.error("Error showing notification:", error);
   }

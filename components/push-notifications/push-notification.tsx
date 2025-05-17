@@ -2,7 +2,7 @@
 
 import ActionToolTip from "@/components/ui/action-tooltip";
 import { BellOff, BellRing, Send } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import { sendNotification, subscribeUser, unsubscribeUser } from "./action";
 import { toast } from "sonner";
 import {
@@ -75,6 +75,7 @@ function PushNotification() {
 
       if (existingSubscription) {
         setStatus("Already subscribed to push notifications");
+        setIsOpen(true);
 
         toast("Alert", {
           description: "Already subscribed to push notifications",
@@ -85,7 +86,7 @@ function PushNotification() {
       }
     } catch (error) {
       toast("Error", {
-        description: `Service worker registration failed`,
+        description: `Service worker registration failed: check console for more details`,
         style: { backgroundColor: "white", color: "black" },
         richColors: true,
       });
@@ -161,8 +162,17 @@ function PushNotification() {
         JSON.stringify(pushSubscription)
       );
       await subscribeUser(serializedSubscription);
-    } catch (error) {
+    } catch (error: Error | any) {
       setStatus(`Failed to subscribe: ${error}`);
+
+      toast("Error", {
+        description: error?.message?.includes("push service error")
+          ? "Failed to subscribe: please enable google services for push messaging in your browser settings."
+          : "Failed to subscribe to push: check console for more details",
+        style: { backgroundColor: "white", color: "black" },
+        richColors: true,
+        duration: 5000,
+      });
       console.error("Failed to subscribe to push:", error);
     }
   }
@@ -194,7 +204,8 @@ function PushNotification() {
       });
     }
   }
-  async function sendTestNotification() {
+  async function sendTestNotification(e: FormEvent) {
+    e.preventDefault();
     if (!message.trim()) {
       setStatus("Please enter a message");
       return;
@@ -207,16 +218,18 @@ function PushNotification() {
       setMessage("");
     } catch (error) {
       setStatus(`Failed to send notification: ${error}`);
+      toast("Error", {
+        description:
+          "Failed to send notification or reset pressing bell button: check console for more details",
+        style: { backgroundColor: "white", color: "black" },
+        richColors: true,
+        duration: 4000,
+      });
       console.error("Failed to send notification:", error);
     }
   }
   console.log(isOpen);
 
-  // useEffect(() => {
-  //   if (subscription) {
-  //     setIsOpen(true);
-  //   }
-  // }, []);
   return (
     <div className="flex items-center">
       {subscription && isOpen ? (
@@ -264,14 +277,17 @@ function PushNotification() {
               <span>Test Mode</span>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuLabel className="   break-words  ">
-              In Test Mode, you can check whether the current browser supports
+            <DropdownMenuLabel className="text-blue-500 font-semibold break-words">
+              In Test Mode, you can check whether the current browser receive
               push notifications.
             </DropdownMenuLabel>
             {isTestMode && (
               <>
                 <DropdownMenuSeparator />
-                <div className="flex items-center space-x-2">
+                <form
+                  onSubmit={sendTestNotification}
+                  className="flex items-center space-x-2"
+                >
                   <Input
                     type="text"
                     placeholder="Check Push Notification"
@@ -279,10 +295,10 @@ function PushNotification() {
                     className="focus-visible:ring-0 max-sm:placeholder:text-[13px] focus-visible:border-zinc-400 outline-none"
                     onChange={(e) => setMessage(e.target.value)}
                   />
-                  <Button onClick={sendTestNotification} size="icon">
+                  <Button type="submit" size="icon">
                     <Send className="h-4 w-4" />
                   </Button>
-                </div>
+                </form>
               </>
             )}
           </DropdownMenuContent>
