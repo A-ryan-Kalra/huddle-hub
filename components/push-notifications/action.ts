@@ -1,10 +1,10 @@
 "use server";
 
-import webpush from "web-push";
+import webpush, { PushSubscription } from "web-push";
 
 // Configure web-push with your VAPID keys
 webpush.setVapidDetails(
-  "mailto:your-email@example.com", // Change this to your email
+  "mailto:aryan.smart832@gmail.com", // Change this to your email
   process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
   process.env.VAPID_PRIVATE_KEY!
 );
@@ -34,12 +34,12 @@ export async function sendNotification(message: string) {
 
   try {
     await webpush.sendNotification(
-      subscription as any,
+      subscription,
       JSON.stringify({
-        title: "Push Notification",
+        title: "Hello",
         body: message,
-        icon: "/favicon.ico",
-        badge: "/favicon.ico",
+        icon: "/icons/icon-512x512.png",
+        badge: "/icons/icon-512x512.png",
         data: {
           url: "/",
           timestamp: new Date().toISOString(),
@@ -47,8 +47,11 @@ export async function sendNotification(message: string) {
       })
     );
     return { success: true };
-  } catch (error) {
+  } catch (error: Error | any) {
     console.error("Error sending push notification:", error);
+    if (error.statusCode === 410) {
+      unsubscribeUser();
+    }
     return { success: false, error: "Failed to send notification" };
   }
 }

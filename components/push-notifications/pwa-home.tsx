@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { subscribeUser, unsubscribeUser, sendNotification } from "../action";
+import { subscribeUser, unsubscribeUser, sendNotification } from "./action";
 import { Bell, BellOff, Send } from "lucide-react";
 
 // Helper function to convert base64 to Uint8Array (required for applicationServerKey)
@@ -76,6 +76,7 @@ export default function Home() {
       setStatus("Subscribing to push notifications...");
       const registration = await navigator.serviceWorker.ready;
       let subscription = await registration.pushManager.getSubscription();
+
       if (!subscription) {
         subscription = await registration.pushManager.subscribe({
           userVisibleOnly: true,

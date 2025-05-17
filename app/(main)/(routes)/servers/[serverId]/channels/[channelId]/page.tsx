@@ -1,7 +1,7 @@
 import ChatEditor from "@/components/chat/chat-editor";
 import ChatHeader from "@/components/chat/chat-header";
 import ChatSection from "@/components/chat/chat-section";
-import PwaHome from "@/app/(setup)/pwa-home";
+import PwaHome from "@/components/push-notifications/pwa-home";
 import { currentProfile } from "@/lib/currentProfile";
 import { db } from "@/lib/db";
 
