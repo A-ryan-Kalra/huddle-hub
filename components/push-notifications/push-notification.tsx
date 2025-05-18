@@ -2,7 +2,7 @@
 
 import ActionToolTip from "@/components/ui/action-tooltip";
 import { BellOff, BellRing, Send } from "lucide-react";
-import React, { FormEvent, useEffect, useState } from "react";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
 import { sendNotification, subscribeUser, unsubscribeUser } from "./action";
 import { toast } from "sonner";
 import {
@@ -39,7 +39,8 @@ function PushNotification({ currentMemberId }: { currentMemberId: string }) {
     null
   );
   const [message, setMessage] = useState("");
-  const [status, setStatus] = useState("");
+  const [openMenu, setOpenMenu] = useState(false);
+
   const [isOpen, setIsOpen] = useState(false);
   const params = useParams();
 
@@ -48,7 +49,6 @@ function PushNotification({ currentMemberId }: { currentMemberId: string }) {
     if ("serviceWorker" in navigator && "PushManager" in window) {
       registerServiceWorker();
     } else {
-      // setStatus("Push notifications are not supported in this browser.");
       toast("Error", {
         description: "Push notifications are not supported in this browser.",
         style: { backgroundColor: "white", color: "black" },
@@ -72,9 +72,8 @@ function PushNotification({ currentMemberId }: { currentMemberId: string }) {
       // Check if already subscribed
       const existingSubscription =
         await registration.pushManager.getSubscription();
-      console.log("existingSubscription", existingSubscription);
+
       if (existingSubscription) {
-        setStatus("Already subscribed to push notifications");
         setIsOpen(true);
 
         toast("Alert", {
@@ -112,7 +111,7 @@ function PushNotification({ currentMemberId }: { currentMemberId: string }) {
           ),
         });
       }
-      // console.log("React Subscription ", subscription);
+
       return subscription;
     } else {
       console.error("Service Worker is not supported in this browser");
@@ -127,13 +126,11 @@ function PushNotification({ currentMemberId }: { currentMemberId: string }) {
 
   async function subscribeToPush() {
     try {
-      setStatus("Requesting permission...");
-
       // Request permission
       const permission = await Notification.requestPermission();
 
       if (permission !== "granted") {
-        setStatus("Permission denied for notifications");
+        //Permission denied for notifications
         toast("Error", {
           description: "Permission denied for notifications",
           style: { backgroundColor: "white", color: "black" },
@@ -155,7 +152,7 @@ function PushNotification({ currentMemberId }: { currentMemberId: string }) {
       const serializedSubscription = JSON.parse(
         JSON.stringify(pushSubscription)
       );
-
+      setIsOpen(true);
       const res = await subscribeUser(
         serializedSubscription,
         currentMemberId,
@@ -165,10 +162,9 @@ function PushNotification({ currentMemberId }: { currentMemberId: string }) {
       if (!res.success) {
         throw new Error(res.error);
       }
-      setIsOpen(true);
-    } catch (error: Error | any) {
-      setStatus(`Failed to subscribe: ${error}`);
 
+      setOpenMenu(true);
+    } catch (error: Error | any) {
       toast("Error", {
         description: error?.message?.includes("push service error")
           ? "Failed to subscribe: please enable google services for push messaging in your browser settings."
@@ -221,12 +217,15 @@ function PushNotification({ currentMemberId }: { currentMemberId: string }) {
   async function sendTestNotification(e: FormEvent) {
     e.preventDefault();
     if (!message.trim()) {
-      setStatus("Please enter a message");
+      toast("Alert", {
+        description: "Please enter a message",
+        style: { backgroundColor: "white", color: "black" },
+        richColors: true,
+      });
       return;
     }
 
     try {
-      setStatus("Sending notification...");
       toast("Alert", {
         description: "Sending notification...",
         style: { backgroundColor: "white", color: "black" },
@@ -237,7 +236,7 @@ function PushNotification({ currentMemberId }: { currentMemberId: string }) {
         description: message,
         subscription: serializedSubscription,
       });
-      console.log(res);
+
       if (!res.success) {
         console.error(res.error);
       }
@@ -250,7 +249,6 @@ function PushNotification({ currentMemberId }: { currentMemberId: string }) {
 
       setMessage("");
     } catch (error) {
-      setStatus(`Failed to send notification: ${error}`);
       toast("Error", {
         description:
           "Failed to send notification or reset pressing bell button: check console for more details",
@@ -276,9 +274,7 @@ function PushNotification({ currentMemberId }: { currentMemberId: string }) {
         </ActionToolTip>
       ) : (
         <ActionToolTip
-          onClick={() => {
-            subscribeToPush();
-          }}
+          onClick={subscribeToPush}
           className="ml-auto flex items-center z-10"
           label="Subscribe to notifications"
         >
@@ -288,7 +284,7 @@ function PushNotification({ currentMemberId }: { currentMemberId: string }) {
         </ActionToolTip>
       )}
 
-      <DropdownMenu modal={false}>
+      <DropdownMenu open={openMenu} onOpenChange={setOpenMenu} modal={false}>
         <DropdownMenuTrigger
           className={cn(
             " flex items-center mr-2   transition duration-300 translate-x-10",
