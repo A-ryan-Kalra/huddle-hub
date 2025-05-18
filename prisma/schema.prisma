@@ -61,6 +61,7 @@ model member {
   isInvitedComplete     Boolean?        @default(false)
   conversationInitiated conversation[] @relation("conversationInitiater")
   concersationReceived  conversation[] @relation("conversationReceiver")
+  subscription          Json?
 
   profile               profile        @relation(fields: [profileId], references: [id], onDelete: Cascade)
   server                server         @relation(fields: [serverId], references: [id], onDelete: Cascade)

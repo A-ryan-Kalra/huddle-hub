@@ -18,6 +18,7 @@ import { Switch } from "../ui/switch";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
+import { useParams } from "next/navigation";
 
 function urlBase64ToUint8Array(base64String: string) {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
@@ -33,20 +34,18 @@ function urlBase64ToUint8Array(base64String: string) {
   return outputArray;
 }
 
-function PushNotification() {
-  const [isSupported, setIsSupported] = useState(false);
+function PushNotification({ currentMemberId }: { currentMemberId: string }) {
   const [subscription, setSubscription] = useState<PushSubscription | null>(
     null
   );
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const [isTestMode, setIsTestMode] = useState(false);
+  const params = useParams();
 
   useEffect(() => {
     // Check if service worker and push are supported
     if ("serviceWorker" in navigator && "PushManager" in window) {
-      setIsSupported(true);
       registerServiceWorker();
     } else {
       // setStatus("Push notifications are not supported in this browser.");
@@ -73,7 +72,7 @@ function PushNotification() {
       // Check if already subscribed
       const existingSubscription =
         await registration.pushManager.getSubscription();
-
+      console.log("existingSubscription", existingSubscription);
       if (existingSubscription) {
         setStatus("Already subscribed to push notifications");
         setIsOpen(true);
@@ -143,13 +142,7 @@ function PushNotification() {
         return;
       }
 
-      // Get service worker registration
-      console.log(navigator);
-
-      // Subscribe to push
-
       const pushSubscription = await getSubscription();
-      console.log("push Subsription", pushSubscription);
 
       toast("Success", {
         description: "Successfully subscribed to push notifications",
@@ -162,7 +155,17 @@ function PushNotification() {
       const serializedSubscription = JSON.parse(
         JSON.stringify(pushSubscription)
       );
-      await subscribeUser(serializedSubscription);
+
+      const res = await subscribeUser(
+        serializedSubscription,
+        currentMemberId,
+        params?.serverId as string
+      );
+
+      if (!res.success) {
+        throw new Error(res.error);
+      }
+      setIsOpen(true);
     } catch (error: Error | any) {
       setStatus(`Failed to subscribe: ${error}`);
 
@@ -179,7 +182,6 @@ function PushNotification() {
   }
 
   async function unsubscribeFromPush() {
-    setIsOpen(false);
     try {
       if (subscription) {
         toast("Alert", {
@@ -187,9 +189,19 @@ function PushNotification() {
           style: { backgroundColor: "white", color: "black" },
           richColors: true,
         });
+
         await subscription.unsubscribe();
         setSubscription(null);
-        await unsubscribeUser();
+
+        const res = await unsubscribeUser(
+          currentMemberId,
+          params?.serverId as string
+        );
+
+        if (!res.success) {
+          throw new Error(res.error);
+        }
+        setIsOpen(false);
 
         toast("Success", {
           description: "Unsubscribed from push notifications",
@@ -220,7 +232,15 @@ function PushNotification() {
         style: { backgroundColor: "white", color: "black" },
         richColors: true,
       });
-      await sendNotification({ description: message });
+      const serializedSubscription = JSON.parse(JSON.stringify(subscription));
+      const res = await sendNotification({
+        description: message,
+        subscription: serializedSubscription,
+      });
+      console.log(res);
+      if (!res.success) {
+        console.error(res.error);
+      }
 
       toast("Success", {
         description: "Notification sent successfully!",
@@ -258,7 +278,6 @@ function PushNotification() {
         <ActionToolTip
           onClick={() => {
             subscribeToPush();
-            setIsOpen(true);
           }}
           className="ml-auto flex items-center z-10"
           label="Subscribe to notifications"
@@ -269,14 +288,7 @@ function PushNotification() {
         </ActionToolTip>
       )}
 
-      <DropdownMenu
-        modal={false}
-        onOpenChange={(e) => {
-          if (!e) {
-            setIsTestMode(false);
-          }
-        }}
-      >
+      <DropdownMenu modal={false}>
         <DropdownMenuTrigger
           className={cn(
             " flex items-center mr-2   transition duration-300 translate-x-10",
@@ -296,39 +308,32 @@ function PushNotification() {
         </DropdownMenuTrigger>
         <DropdownMenuContent className="sm:w-[300px] w-[240px]" align="center">
           <DropdownMenuLabel className="cursor-default flex justify-start items-center gap-x-2">
-            <Switch
-              // checked={true}
-              onCheckedChange={(e) => {
-                setIsTestMode(e);
-              }}
-            />
-            <span>Test Mode</span>
+            <span className="font-semibold tracking-wide text-red-500">
+              Test Mode
+            </span>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuLabel className="text-blue-500 font-semibold break-words">
+          <DropdownMenuLabel className="text-zinc-600 font-semibold  break-words">
             In Test Mode, you can check whether the current browser receive push
             notifications.
           </DropdownMenuLabel>
-          {isTestMode && (
-            <>
-              <DropdownMenuSeparator />
-              <form
-                onSubmit={sendTestNotification}
-                className="flex items-center space-x-2"
-              >
-                <Input
-                  type="text"
-                  placeholder="Check Push Notification"
-                  value={message}
-                  className="focus-visible:ring-0 max-sm:placeholder:text-[13px] focus-visible:border-zinc-400 outline-none"
-                  onChange={(e) => setMessage(e.target.value)}
-                />
-                <Button type="submit" size="icon">
-                  <Send className="h-4 w-4" />
-                </Button>
-              </form>
-            </>
-          )}
+
+          <DropdownMenuSeparator />
+          <form
+            onSubmit={sendTestNotification}
+            className="flex items-center space-x-2"
+          >
+            <Input
+              type="text"
+              placeholder="Check Push Notification"
+              value={message}
+              className="focus-visible:ring-0 max-sm:placeholder:text-[13px] focus-visible:border-zinc-400 outline-none"
+              onChange={(e) => setMessage(e.target.value)}
+            />
+            <Button type="submit" size="icon">
+              <Send className="h-4 w-4" />
+            </Button>
+          </form>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

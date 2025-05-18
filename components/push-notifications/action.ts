@@ -1,44 +1,87 @@
 "use server";
 
+import { db } from "@/lib/db";
+import { Prisma } from "@prisma/client";
 import webpush, { PushSubscription } from "web-push";
 
-// Configure web-push with your VAPID keys
 webpush.setVapidDetails(
-  "mailto:aryan.smart832@gmail.com", // Change this to your email
+  `mailto:${process.env.VAPID_USER_EMAIL!}`,
   process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
   process.env.VAPID_PRIVATE_KEY!
 );
 
-// In a real application, you would store subscriptions in a database
-// This is just for demonstration purposes
-let subscription: PushSubscription | null = null;
+export async function subscribeUser(
+  sub: PushSubscription,
+  memberId: string,
+  serverId: string
+) {
+  try {
+    if (!memberId) {
+      throw new Error("Member Id Missing");
+    }
+    if (!serverId) {
+      throw new Error("Server Id Missing");
+    }
+    await db.member.update({
+      where: {
+        id: memberId,
+        serverId,
+      },
+      data: {
+        subscription: sub as any,
+      },
+      include: {
+        profile: true,
+      },
+    });
 
-export async function subscribeUser(sub: PushSubscription) {
-  subscription = sub;
-  // In a production environment, you would store the subscription in a database
-  // For example: await db.subscriptions.create({ data: sub })
-  return { success: true };
+    return { success: true };
+  } catch (error) {
+    console.error("Error occured at: ", error);
+    return { success: false, error: "Error occured at: " + error };
+  }
 }
 
-export async function unsubscribeUser() {
-  subscription = null;
-  // In a production environment, you would remove the subscription from the database
-  // For example: await db.subscriptions.delete({ where: { ... } })
-  return { success: true };
+export async function unsubscribeUser(memberId: string, serverId?: string) {
+  try {
+    if (!memberId) {
+      throw new Error("Member Id Missing");
+    }
+    if (!serverId) {
+      throw new Error("Server Id Missing");
+    }
+    await db.member.update({
+      where: {
+        id: memberId,
+        ...(serverId && { serverId }),
+      },
+      data: {
+        subscription: Prisma.JsonNull,
+      },
+      include: {
+        profile: true,
+      },
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error occured at: ", error);
+    return { success: false, error: "Error occured at: " + error };
+  }
 }
 
 export async function sendNotification(message: {
   title?: string;
   description: string;
   notificationId?: string;
+  subscription: PushSubscription | any;
 }) {
-  if (!subscription) {
-    throw new Error("Invalid subscription object");
-  }
-
   try {
+    if (!message?.subscription) {
+      throw new Error("Subscription Expired");
+    }
     await webpush.sendNotification(
-      subscription,
+      message?.subscription,
       JSON.stringify({
         title: message?.title ?? "Notification Received",
         body: message?.description,
@@ -54,8 +97,8 @@ export async function sendNotification(message: {
   } catch (error: Error | any) {
     console.error("Error sending push notification:", error);
     if (error.statusCode === 410) {
-      unsubscribeUser();
+      unsubscribeUser(message?.notificationId as string);
     }
-    return { success: false, error: "Failed to send notification" };
+    return { success: false, error: "Failed to send notification " + error };
   }
 }

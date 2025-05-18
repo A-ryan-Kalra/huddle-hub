@@ -5,6 +5,12 @@ import { useEffect } from "react";
 interface PushNotificationAlertProps {
   notificationId: string;
 }
+interface PushNotificationProps {
+  title?: string;
+  description: string;
+  subscription: PushSubscription | any;
+}
+
 function usePushNotificationAlert({
   notificationId,
 }: PushNotificationAlertProps) {
@@ -13,9 +19,10 @@ function usePushNotificationAlert({
     if (!socket) {
       return;
     }
-    console.log("notificationId", notificationId);
-    socket?.on(notificationId, async (message) => {
-      await sendNotification({ ...message, notificationId });
+
+    socket?.on(notificationId, async (message: PushNotificationProps) => {
+      if (message?.subscription)
+        await sendNotification({ ...message, notificationId });
     });
 
     return () => {

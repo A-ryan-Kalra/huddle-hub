@@ -13,13 +13,13 @@ export async function GET(req: NextRequest) {
     const cursor = searchParams.get("cursor");
 
     if (!profile) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 500 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     if (!directMessageId) {
       return NextResponse.json(
         { error: "Message Id is missing" },
-        { status: 500 }
+        { status: 400 }
       );
     }
 

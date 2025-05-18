@@ -24,7 +24,7 @@ export function Notification({ currentMemberId }: NotificationProps) {
   const addKey = `notification:${notificationQuery}:newAlert`;
   const chatRef = React.useRef<HTMLDivElement | null>(null);
   const audioRef = React.useRef(null);
-  const pushNotificationAlert = `push:${currentMemberId}`;
+  const pushNotificationAlertId = `push:${currentMemberId}`;
 
   const {
     data,
@@ -73,7 +73,7 @@ export function Notification({ currentMemberId }: NotificationProps) {
     data?.pages[0]?.notReadTotal,
   ]);
 
-  usePushNotificationAlert({ notificationId: pushNotificationAlert });
+  usePushNotificationAlert({ notificationId: pushNotificationAlertId });
 
   return (
     <div className="relative group">

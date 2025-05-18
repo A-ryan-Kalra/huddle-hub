@@ -103,11 +103,7 @@ async function ChannelSidebar({ serverId }: ChannelSideBarProps) {
           role={role}
           currentMember={currentMember[0]}
         />
-        <PushNotification />
-        {/* <div className=" hover:bg-zinc-200 duration-300 transition rounded-md size-9 cursor-pointer">
-          </div> */}
-        {/* <ActionToolTip className="ml-auto" label="Reload for updates">
-        </ActionToolTip> */}
+        <PushNotification currentMemberId={currentMember[0]?.id} />
       </div>
 
       <CommunicationSection

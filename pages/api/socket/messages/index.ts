@@ -168,6 +168,7 @@ export default async function handler(
       res?.socket?.server?.io?.emit(pushNotificationAlert, {
         title: `${profile.name} sent a message`,
         description: `You have a new message in ${channel?.name} channel`,
+        subscription: member?.member?.subscription,
       });
       res?.socket?.server?.io?.emit(notificationQueryKey, member);
     });
