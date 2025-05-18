@@ -43,8 +43,6 @@ function PushNotification({ currentMemberId }: { currentMemberId: string }) {
 
   const [isOpen, setIsOpen] = useState(false);
   const params = useParams();
-  console.log(subscription);
-  console.log(isOpen);
 
   useEffect(() => {
     // Check if service worker and push are supported
