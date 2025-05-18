@@ -76,7 +76,7 @@ function PushNotification({ currentMemberId }: { currentMemberId: string }) {
       if (existingSubscription) {
         console.log("Already subscribed to push notifications");
         // setSubscription(existingSubscription);
-        await subscribeToPush();
+        await subscribeToPush(false);
         setIsOpen(true);
       }
     } catch (error) {
@@ -88,14 +88,8 @@ function PushNotification({ currentMemberId }: { currentMemberId: string }) {
       console.error("Service worker registration failed:", error);
     }
   }
-  const getSubscription = async () => {
+  const getSubscription = async (show: boolean = true) => {
     if ("serviceWorker" in navigator) {
-      toast("Alert", {
-        description: "Subscribing to push notifications...",
-        style: { backgroundColor: "white", color: "black" },
-        richColors: true,
-      });
-
       const registration = await navigator.serviceWorker.ready;
       let subscription = await registration.pushManager.getSubscription();
 
@@ -120,7 +114,7 @@ function PushNotification({ currentMemberId }: { currentMemberId: string }) {
     }
   };
 
-  async function subscribeToPush() {
+  async function subscribeToPush(show: boolean = true) {
     try {
       // Request permission
       const permission = await Notification.requestPermission();
@@ -141,13 +135,24 @@ function PushNotification({ currentMemberId }: { currentMemberId: string }) {
         return;
       }
 
+      if (show) {
+        toast("Alert", {
+          description: "Subscribing to push notifications...",
+          style: { backgroundColor: "white", color: "black" },
+          richColors: true,
+        });
+      }
+
       const pushSubscription = await getSubscription();
 
-      toast("Success", {
-        description: "Successfully subscribed to push notifications",
-        style: { backgroundColor: "white", color: "black" },
-        richColors: true,
-      });
+      if (show) {
+        toast("Success", {
+          description: "Successfully subscribed to push notifications",
+          style: { backgroundColor: "white", color: "black" },
+          richColors: true,
+        });
+      }
+
       setSubscription(pushSubscription);
 
       // Send subscription to server
@@ -165,7 +170,7 @@ function PushNotification({ currentMemberId }: { currentMemberId: string }) {
         throw new Error(res.error);
       }
 
-      setOpenMenu(true);
+      if (show) setOpenMenu(true);
     } catch (error: Error | any) {
       toast("Error", {
         description: error?.message?.includes("push service error")

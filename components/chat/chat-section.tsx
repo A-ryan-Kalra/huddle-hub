@@ -11,6 +11,7 @@ import useChatScroll from "@/hooks/use-chat-scroll";
 import { cn } from "@/lib/utils";
 import queryString from "query-string";
 import { Button } from "../ui/button";
+import usePushNotificationAlert from "@/hooks/use-push-notification-alert";
 
 interface ChatSectionProps {
   type: "channel" | "conversation" | "threads";
@@ -58,6 +59,9 @@ function ChatSection({
 
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage, status } =
     useChatQuery({ queryKey, paramKey, paramValue, apiUrl });
+
+  const pushNotificationAlertId = `push:${currentMember?.id}`;
+  usePushNotificationAlert({ notificationId: pushNotificationAlertId });
 
   useEffect(() => {
     if (hasRunRef.current || !isInvitedComplete) {
