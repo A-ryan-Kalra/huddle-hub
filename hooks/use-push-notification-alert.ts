@@ -1,6 +1,7 @@
 import { useSocket } from "@/components/providers/socket-providers";
 import { sendNotification } from "@/components/push-notifications/action";
 import { useEffect } from "react";
+import { toast } from "sonner";
 
 interface PushNotificationAlertProps {
   notificationId: string;
@@ -21,8 +22,23 @@ function usePushNotificationAlert({
     }
 
     socket?.on(notificationId, async (message: PushNotificationProps) => {
-      if (message?.subscription)
-        await sendNotification({ ...message, notificationId });
+      let res;
+      if (message?.subscription) {
+        try {
+          res = await sendNotification({ ...message, notificationId });
+
+          if (!res.success) {
+            throw new Error(res.error);
+          }
+        } catch (error) {
+          console.error("Failed to send notification " + error);
+          toast("Error", {
+            description: `Error Occured at: ` + error,
+            style: { backgroundColor: "white", color: "black" },
+            richColors: true,
+          });
+        }
+      }
     });
 
     return () => {

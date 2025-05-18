@@ -43,6 +43,8 @@ function PushNotification({ currentMemberId }: { currentMemberId: string }) {
 
   const [isOpen, setIsOpen] = useState(false);
   const params = useParams();
+  console.log(subscription);
+  console.log(isOpen);
 
   useEffect(() => {
     // Check if service worker and push are supported
@@ -74,14 +76,10 @@ function PushNotification({ currentMemberId }: { currentMemberId: string }) {
         await registration.pushManager.getSubscription();
 
       if (existingSubscription) {
+        console.log("Already subscribed to push notifications");
+        // setSubscription(existingSubscription);
+        await subscribeToPush();
         setIsOpen(true);
-
-        toast("Alert", {
-          description: "Already subscribed to push notifications",
-          style: { backgroundColor: "white", color: "black" },
-          richColors: true,
-        });
-        setSubscription(existingSubscription);
       }
     } catch (error) {
       toast("Error", {
@@ -131,11 +129,17 @@ function PushNotification({ currentMemberId }: { currentMemberId: string }) {
 
       if (permission !== "granted") {
         //Permission denied for notifications
+        console.error(
+          "Permission denied for notifications. Please enable them in your browser settings or reopen the website"
+        );
         toast("Error", {
-          description: "Permission denied for notifications",
+          description:
+            "Permission denied for notifications. Please enable them in your browser settings or reopen the website",
           style: { backgroundColor: "white", color: "black" },
           richColors: true,
+          duration: 5000,
         });
+        unsubscribeFromPush(false);
         return;
       }
 
@@ -177,34 +181,36 @@ function PushNotification({ currentMemberId }: { currentMemberId: string }) {
     }
   }
 
-  async function unsubscribeFromPush() {
+  async function unsubscribeFromPush(show: boolean = true) {
     try {
-      if (subscription) {
+      if (show)
         toast("Alert", {
           description: "Unsubscribing...",
           style: { backgroundColor: "white", color: "black" },
           richColors: true,
         });
 
-        await subscription.unsubscribe();
-        setSubscription(null);
+      await subscription?.unsubscribe();
+      setSubscription(null);
 
-        const res = await unsubscribeUser(
-          currentMemberId,
-          params?.serverId as string
-        );
+      const res = await unsubscribeUser(
+        currentMemberId,
+        params?.serverId as string
+      );
 
-        if (!res.success) {
-          throw new Error(res.error);
-        }
-        setIsOpen(false);
+      if (!res.success) {
+        throw new Error(res.error);
+      }
+      setIsOpen(false);
 
+      if (show) {
         toast("Success", {
           description: "Unsubscribed from push notifications",
           style: { backgroundColor: "white", color: "black" },
           richColors: true,
         });
       }
+      setOpenMenu(false);
     } catch (error) {
       console.error("Failed to unsubscribe from push:", error);
       toast("Error", {
@@ -235,6 +241,7 @@ function PushNotification({ currentMemberId }: { currentMemberId: string }) {
       const res = await sendNotification({
         description: message,
         subscription: serializedSubscription,
+        notificationId: currentMemberId,
       });
 
       if (!res.success) {
