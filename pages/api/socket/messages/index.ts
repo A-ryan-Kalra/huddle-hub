@@ -162,7 +162,14 @@ export default async function handler(
     res?.socket?.server?.io?.emit(notify);
     notification?.recipients?.forEach((member) => {
       const notificationQueryKey = `notification:${member.memberId}:newAlert`;
+      //push notificationotification alert
+      const pushNotificationAlert = `push:${member.memberId}`;
 
+      res?.socket?.server?.io?.emit(pushNotificationAlert, {
+        title: `${profile.name} sent a message`,
+        description: `You have a new message in ${channel?.name} channel`,
+        subscription: member?.member?.subscription,
+      });
       res?.socket?.server?.io?.emit(notificationQueryKey, member);
     });
 

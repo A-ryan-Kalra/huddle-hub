@@ -134,12 +134,19 @@ export default async function handler(
 
     const notify = `${currentMember?.id}${reciever}`;
     const notificationQueryKey = `notification:${reciever}:newAlert`;
+    const pushNotificationAlert = `push:${reciever}`;
 
     res?.socket?.server?.io?.emit(notify);
     res?.socket?.server?.io?.emit(
       notificationQueryKey,
       notification.recipients[0]
     );
+
+    res?.socket?.server?.io?.emit(pushNotificationAlert, {
+      title: `You have a new message from ${profile.name}`,
+      description: `Tap to view`,
+      subscription: notification.recipients[0]?.member?.subscription,
+    });
 
     return res.json({ directMessage });
   } catch (error) {

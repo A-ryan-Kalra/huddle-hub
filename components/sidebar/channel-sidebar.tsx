@@ -7,6 +7,7 @@ import CommunicationSection from "./communication-section";
 import { memberRole } from "@prisma/client";
 import { currentProfile } from "@/lib/currentProfile";
 import Refresh from "../ui/refresh";
+import PushNotification from "@/components/push-notifications/push-notification";
 
 interface ChannelSideBarProps {
   serverId: string;
@@ -94,7 +95,7 @@ async function ChannelSidebar({ serverId }: ChannelSideBarProps) {
   });
 
   return (
-    <div className="truncate max-lg:w-full p-2 flex flex-col gap-y-2  h-full overflow-hidden">
+    <div className="truncate max-lg:w-full p-2 flex flex-col gap-y-2 w-full  h-full overflow-hidden">
       <div className="flex relative justify-between items-center">
         <ServerDropDown
           server={server}
@@ -102,13 +103,7 @@ async function ChannelSidebar({ serverId }: ChannelSideBarProps) {
           role={role}
           currentMember={currentMember[0]}
         />
-        <ActionToolTip className="ml-auto" label="Reload for updates">
-          <div className=" hover:bg-zinc-200 duration-300 transition rounded-md size-9 cursor-pointer">
-            <Refresh>
-              <RefreshCcw className="bg-blac w-full h-full" />
-            </Refresh>
-          </div>
-        </ActionToolTip>
+        <PushNotification currentMemberId={currentMember[0]?.id} />
       </div>
 
       <CommunicationSection

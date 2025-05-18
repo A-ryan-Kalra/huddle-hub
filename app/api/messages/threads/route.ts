@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 const MESSAGE_BATCH = 10;
 
-export async function GET(req: NextRequest, res: NextResponse) {
+export async function GET(req: NextRequest) {
   try {
     const profile = await currentProfile();
     const { searchParams } = new URL(req.url);
