@@ -45,4 +45,14 @@ const nextConfig = {
   },
 };
 
+if (process.env.NODE_ENV === "development") {
+  nextConfig.experimental = {
+    serverActions: {
+      allowedOrigins: ["localhost:3000"],
+      // allowedForwardedHosts: ["localhost:3000"],
+      // ^ You might have to use this property depending on your exact version.
+    },
+  };
+}
+
 export default nextConfig;

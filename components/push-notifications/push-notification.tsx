@@ -85,7 +85,7 @@ function PushNotification({ currentMemberId }: { currentMemberId: string }) {
       }
     } catch (error) {
       toast("Error", {
-        description: `Service worker registration failed: check console for more details`,
+        description: `Service worker registration failed: ` + error,
         style: { backgroundColor: "white", color: "black" },
         richColors: true,
       });
@@ -168,7 +168,7 @@ function PushNotification({ currentMemberId }: { currentMemberId: string }) {
       toast("Error", {
         description: error?.message?.includes("push service error")
           ? "Failed to subscribe: please enable google services for push messaging in your browser settings."
-          : "Failed to subscribe to push: check console for more details",
+          : "Failed to subscribe to push: " + error,
         style: { backgroundColor: "white", color: "black" },
         richColors: true,
         duration: 5000,
@@ -208,7 +208,7 @@ function PushNotification({ currentMemberId }: { currentMemberId: string }) {
     } catch (error) {
       console.error("Failed to unsubscribe from push:", error);
       toast("Error", {
-        description: "Failed to unsubscribe",
+        description: "Failed to unsubscribe" + error,
         style: { backgroundColor: "white", color: "black" },
         richColors: true,
       });
@@ -251,7 +251,7 @@ function PushNotification({ currentMemberId }: { currentMemberId: string }) {
     } catch (error) {
       toast("Error", {
         description:
-          "Failed to send notification or reset pressing bell button: check console for more details",
+          "Failed to send notification or reset pressing bell button: " + error,
         style: { backgroundColor: "white", color: "black" },
         richColors: true,
         duration: 4000,
