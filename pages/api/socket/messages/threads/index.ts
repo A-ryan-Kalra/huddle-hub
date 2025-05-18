@@ -158,7 +158,13 @@ export default async function handler(
 
     notification?.recipients?.forEach((member) => {
       const notificationQueryKey = `notification:${member.memberId}:newAlert`;
+      const pushNotificationAlert = `push:${member.memberId}`;
 
+      res?.socket?.server?.io?.emit(pushNotificationAlert, {
+        title: `${profile.name} replied in a thread`,
+        description: `You have a new thread in ${channel?.name} channel`,
+        subscription: member?.member?.subscription,
+      });
       res?.socket?.server?.io?.emit(notificationQueryKey, member);
     });
 
