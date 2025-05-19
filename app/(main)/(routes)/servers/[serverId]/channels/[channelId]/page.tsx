@@ -1,7 +1,6 @@
 import ChatEditor from "@/components/chat/chat-editor";
 import ChatHeader from "@/components/chat/chat-header";
 import ChatSection from "@/components/chat/chat-section";
-import Loading from "@/components/ui/loading";
 import { currentProfile } from "@/lib/currentProfile";
 import { db } from "@/lib/db";
 
@@ -55,8 +54,7 @@ async function ChannelPage({ params }: ChannelPageProps) {
 
   return (
     <div className="flex flex-col flex-1 h-full">
-      <Loading />
-      {/* <ChatHeader
+      <ChatHeader
         type="channel"
         channel={channel}
         member={member}
@@ -82,7 +80,7 @@ async function ChannelPage({ params }: ChannelPageProps) {
           serverId: paramsResolved.serverId,
         }}
         currentMember={member}
-      /> */}
+      />
       <ChatEditor
         type="channel"
         apiUrl="/api/socket/messages"
