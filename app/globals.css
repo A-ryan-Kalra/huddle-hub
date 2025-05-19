@@ -108,7 +108,7 @@ li[data-list="bullet"] {
 }
 
 .scale-img {
-  animation: autoscale 3s ease-in-out infinite;
+  animation: autoscale 1.5s ease-in-out infinite;
 }
 
 @keyframes autoscale {
@@ -129,7 +129,7 @@ li[data-list="bullet"] {
 
 .dot {
   opacity: 0.2;
-  animation: pulse 1.5s ease-in-out infinite;
+  animation: pulse 1s ease-in-out infinite;
 }
 
 /* Delay each dot to stagger the animation */
