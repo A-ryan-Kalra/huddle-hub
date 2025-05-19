@@ -16,6 +16,7 @@ import CustomizeChannelComp from "./customize-channels-comp";
 import { useParams, useRouter } from "next/navigation";
 import { useModal } from "@/hooks/use-modal-store";
 import useNotificationAlert from "@/hooks/use-notification-alert";
+import { cn } from "@/lib/utils";
 
 interface ChannelNameProps {
   channel: channel & { members: channelOnMember[] };
@@ -82,7 +83,10 @@ function ChannelName({
     >
       <div
         onClick={() => onClick(channel)}
-        className="p-1  cursor-pointer hover:bg-zinc-200 duration-300 transition text-sm rounded-md w-full"
+        className={cn(
+          "p-1  cursor-pointer hover:bg-zinc-200 duration-300 transition text-sm rounded-md w-full",
+          params?.channelId === channel?.id && "bg-zinc-300 hover:bg-zinc-300"
+        )}
       >
         {totalNotification > 0 && (
           <div className="flex  items-center gap-x-1 size-3  absolute top-2 right-3">
