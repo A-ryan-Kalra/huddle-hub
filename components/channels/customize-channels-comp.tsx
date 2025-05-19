@@ -33,7 +33,7 @@ function CustomizeChannelComp({
   const { onOpen } = useModal();
 
   return (
-    <ContextMenu>
+    <ContextMenu modal={false}>
       <ContextMenuTrigger className=" ">{children}</ContextMenuTrigger>
       {(ownerOfChannel || role.admin) && channel.name !== "general" && (
         <ContextMenuContent className="">

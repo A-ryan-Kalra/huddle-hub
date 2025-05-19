@@ -8,15 +8,11 @@ import {
   DialogTitle,
 } from "../ui/dialog";
 
-import qs from "query-string";
-import { useRouter } from "next/navigation";
-import axios from "axios";
 import {
   Check,
   EllipsisVertical,
   Gavel,
   Loader2,
-  SettingsIcon,
   ShieldAlert,
   ShieldCheck,
   ShieldQuestionIcon,
@@ -38,6 +34,10 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { useRouter } from "next/navigation";
+import queryString from "query-string";
+import axios from "axios";
+import { channel } from "diagnostics_channel";
 
 const memberRoleIcon = {
   [memberRole.ADMIN]: <ShieldAlert className="w-4 h-4 text-red-500" />,
@@ -45,27 +45,35 @@ const memberRoleIcon = {
   [memberRole.GUEST]: null,
 };
 
-function ManageMemberModal() {
+function ShowChannelMemberModal() {
   const { type, onClose, data, onOpen } = useModal();
-  const openModal = type === "customizeMember";
+  const openModal = type === "showChannelMembers";
   const [loadingId, setLoadingId] = useState("");
-  const { server } = data as {
-    server: server & { members: (member & { profile: profile })[] };
+  const { member, server, channelId } = data as {
+    member: (member & { profile: profile })[];
+    server: server;
+    channelId: string;
   };
   const router = useRouter();
 
-  const handleRole = async (id: string, role: "MODERATOR" | "GUEST") => {
+  const addMember = async (id: string) => {
     try {
       setLoadingId(id);
-      const url = qs.stringifyUrl({
-        url: `/api/servers/${server?.id}/members`,
-        query: { memberId: id },
+      const url = queryString.stringifyUrl({
+        url: `/api/channels/${channelId}/kick`,
+        query: {
+          memberId: id,
+          serverId: server.id,
+        },
       });
 
-      const res = await axios.patch(url, { role });
+      const res = await axios.put(url);
       const data = res.data;
+      console.log(data);
+      onOpen("showChannelMembers", { member: data?.member });
+
       setLoadingId("");
-      onOpen("customizeMember", { server: data });
+
       router.refresh();
     } catch (error) {
       console.error(error);
@@ -81,16 +89,18 @@ function ManageMemberModal() {
   const onKick = async (id: string) => {
     try {
       setLoadingId(id);
-      const url = qs.stringifyUrl({
-        url: `/api/servers/${server?.id}/members`,
+      const url = queryString.stringifyUrl({
+        url: `/api/channels/${channelId}/kick`,
         query: {
           memberId: id,
+          serverId: server.id,
         },
       });
 
-      const res = await axios.delete(url);
+      const res = await axios.put(url);
       const data = res.data;
-      onOpen("customizeMember", { server: data });
+      console.log(data);
+      onOpen("showChannelMembers", { member: data?.member });
 
       setLoadingId("");
 
@@ -100,19 +110,18 @@ function ManageMemberModal() {
       setLoadingId("");
     }
   };
-
+  console.log(member);
   return (
     <Dialog open={openModal} onOpenChange={handleCancel}>
       <DialogContent className=" overflow-hidden">
         <DialogTitle className="text-2xl text-center">
-          Manage Members
+          Total Members
         </DialogTitle>
         <DialogDescription className="text-center text-zinc-500 text-sm">
-          {server?.members?.length +
-            (server?.members?.length > 0 ? " Members" : " Member")}
+          {member?.length + (member?.length > 0 ? " Members" : " Member")}
         </DialogDescription>
         <div className="w-full relative overflow-y-auto flex flex-col gap-y-3 h-full max-h-[200px]">
-          {server?.members?.map((member, index) => (
+          {member?.map((member, index) => (
             <div key={index} className="flex gap-x-2 items-center">
               <AvatarIcon
                 imageUrl={member?.profile?.imageUrl}
@@ -122,16 +131,18 @@ function ManageMemberModal() {
               <div className="flex flex-col">
                 <div className="flex gap-x-3 items-center">
                   <h1 className="text-xs font-semibold">
-                    {member.profile.name}
+                    {member?.profile?.name}
                   </h1>
                   <ActionToolTip label={member.role}>
                     {memberRoleIcon[member.role]}
                   </ActionToolTip>
                 </div>
-                <p className="text-sm text-zinc-500">{member.profile.email}</p>
+                <p className="text-sm text-zinc-500">
+                  {member?.profile?.email}
+                </p>
               </div>
               <div className="ml-auto p-2 ">
-                {server.profileId !== member.profileId &&
+                {server?.profileId !== member?.profileId &&
                   member.id !== loadingId && (
                     <DropdownMenu>
                       <DropdownMenuTrigger className="rounded-md p-1 hover:bg-zinc-100 transition">
@@ -143,43 +154,11 @@ function ManageMemberModal() {
                         className=""
                       >
                         <DropdownMenuGroup>
-                          <DropdownMenuSub>
-                            <DropdownMenuSubTrigger className="hover:bg-zinc-200">
-                              <ShieldQuestionIcon className="w-4 h-4 mr-2" />
-                              Role
-                            </DropdownMenuSubTrigger>
-                            <DropdownMenuPortal forceMount>
-                              <DropdownMenuSubContent>
-                                <DropdownMenuItem
-                                  className="hover:bg-zinc-200"
-                                  onClick={() => handleRole(member.id, "GUEST")}
-                                >
-                                  Guest{" "}
-                                  {member.role === "GUEST" && (
-                                    <Check className="w-4 h-4" />
-                                  )}
-                                </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem
-                                  className="hover:bg-zinc-200"
-                                  onClick={() =>
-                                    handleRole(member.id, "MODERATOR")
-                                  }
-                                >
-                                  Moderator{" "}
-                                  {member.role === "MODERATOR" && (
-                                    <Check className="w-4 h-4" />
-                                  )}
-                                </DropdownMenuItem>
-                              </DropdownMenuSubContent>
-                            </DropdownMenuPortal>
-                          </DropdownMenuSub>
-                          <DropdownMenuSeparator />
                           <DropdownMenuItem
                             className="hover:bg-zinc-200"
                             onClick={() => onKick(member.id)}
                           >
-                            <Gavel className="w-4 h-4" />
+                            <Gavel className="w-4 h-4 " />
                             Kick
                           </DropdownMenuItem>
                         </DropdownMenuGroup>
@@ -198,4 +177,4 @@ function ManageMemberModal() {
   );
 }
 
-export default ManageMemberModal;
+export default ShowChannelMemberModal;

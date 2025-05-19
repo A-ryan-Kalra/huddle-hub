@@ -167,6 +167,12 @@ export async function DELETE(req: NextRequest) {
       );
     }
 
+    await db.channelOnMember.deleteMany({
+      where: {
+        channelId,
+      },
+    });
+
     const deleteChannel = await db.server.update({
       where: {
         id: serverId,

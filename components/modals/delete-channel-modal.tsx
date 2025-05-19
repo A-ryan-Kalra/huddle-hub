@@ -15,10 +15,12 @@ import axios from "axios";
 
 import { useModal } from "@/hooks/use-modal-store";
 import { channel, channelOnMember } from "@prisma/client";
+import { LoaderCircle } from "lucide-react";
 
 function DeleteChannelModal() {
   const { type, onClose, data, onOpen } = useModal();
   const openModal = type === "deleteChannel";
+  const [isLoading, setIsLoading] = useState(false);
   const params = useParams();
   const { channel } = data as {
     channel: channel & { members: channelOnMember[] };
@@ -27,6 +29,7 @@ function DeleteChannelModal() {
   const router = useRouter();
 
   const onSubmit = async () => {
+    setIsLoading(true);
     const url = qs.stringifyUrl({
       url: `/api/channels/${channel.id}`,
       query: {
@@ -35,7 +38,7 @@ function DeleteChannelModal() {
     });
 
     await axios.delete(url);
-
+    setIsLoading(false);
     handleCancel();
     router.refresh();
   };
@@ -60,7 +63,13 @@ function DeleteChannelModal() {
             Cancel
           </Button>
           <Button className="" variant={"primary"} onClick={onSubmit}>
-            Confirm
+            {!isLoading ? (
+              "Confirm"
+            ) : (
+              <div>
+                <LoaderCircle className="w-4 h-4 animate-spin" />
+              </div>
+            )}
           </Button>
         </div>
       </DialogContent>
