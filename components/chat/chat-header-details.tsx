@@ -31,7 +31,7 @@ function ChatHeaderDetails({ type, channel, member }: ChatHeaderDetailsProps) {
           <h1
             onClick={() =>
               onOpen("showChannelMembers", {
-                member: channel?.members?.map((member) => member.member),
+                member: channel?.members?.map((member) => member?.member),
                 server: channel?.server,
                 channelId: channel?.members[0].channelId,
               })

@@ -37,7 +37,6 @@ import {
 import { useRouter } from "next/navigation";
 import queryString from "query-string";
 import axios from "axios";
-import { channel } from "diagnostics_channel";
 
 const memberRoleIcon = {
   [memberRole.ADMIN]: <ShieldAlert className="w-4 h-4 text-red-500" />,
@@ -47,13 +46,17 @@ const memberRoleIcon = {
 
 function ShowChannelMemberModal() {
   const { type, onClose, data, onOpen } = useModal();
-  const openModal = type === "showChannelMembers";
-  const [loadingId, setLoadingId] = useState("");
-  const { member, server, channelId } = data as {
+  const {
+    member: members,
+    server,
+    channelId,
+  } = data as {
     member: (member & { profile: profile })[];
     server: server;
     channelId: string;
   };
+  const openModal = type === "showChannelMembers";
+  const [loadingId, setLoadingId] = useState("");
   const router = useRouter();
 
   const handleCancel = () => {
@@ -93,30 +96,32 @@ function ShowChannelMemberModal() {
           Total Members
         </DialogTitle>
         <DialogDescription className="text-center text-zinc-500 text-sm">
-          {member?.length + (member?.length > 0 ? " Members" : " Member")}
+          {members?.length + (members?.length > 0 ? " Members" : " Member")}
         </DialogDescription>
         <div className="w-full relative overflow-y-auto flex flex-col gap-y-3 h-full max-h-[200px]">
-          {member?.map((member, index) => (
-            <div key={index} className="flex gap-x-2 items-center">
-              <AvatarIcon
-                imageUrl={member?.profile?.imageUrl}
-                height={40}
-                width={40}
-              />
-              <div className="flex flex-col">
-                <div className="flex gap-x-3 items-center">
-                  <h1 className="text-xs font-semibold">
-                    {member?.profile?.name}
-                  </h1>
-                  <ActionToolTip label={member.role}>
-                    {memberRoleIcon[member.role]}
-                  </ActionToolTip>
+          {members &&
+            members?.length > 0 &&
+            members?.map((member, index) => (
+              <div key={index} className="flex gap-x-2 items-center">
+                <AvatarIcon
+                  imageUrl={member?.profile?.imageUrl}
+                  height={40}
+                  width={40}
+                />
+                <div className="flex flex-col">
+                  <div className="flex gap-x-3 items-center">
+                    <h1 className="text-xs font-semibold">
+                      {member?.profile?.name}
+                    </h1>
+                    <ActionToolTip label={member.role}>
+                      {memberRoleIcon[member.role]}
+                    </ActionToolTip>
+                  </div>
+                  <p className="text-sm text-zinc-500">
+                    {member?.profile?.email}
+                  </p>
                 </div>
-                <p className="text-sm text-zinc-500">
-                  {member?.profile?.email}
-                </p>
-              </div>
-              {/* <div className="ml-auto p-2 ">
+                {/* <div className="ml-auto p-2 ">
                 {server?.profileId !== member?.profileId &&
                   member.id !== loadingId && (
                     <DropdownMenu>
@@ -144,8 +149,8 @@ function ShowChannelMemberModal() {
                   <Loader2 className="w-4 h-4 ml-auto animate-spin" />
                 )}
               </div> */}
-            </div>
-          ))}
+              </div>
+            ))}
         </div>
       </DialogContent>
     </Dialog>
