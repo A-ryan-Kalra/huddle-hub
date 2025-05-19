@@ -1,6 +1,6 @@
 "use client";
 import { ServerSchema } from "@/type";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ShieldAlert, ShieldCheck } from "lucide-react";
 import React, { Fragment, useEffect } from "react";
 import {
   DropdownMenu,
@@ -27,12 +27,18 @@ import { useModal } from "@/hooks/use-modal-store";
 import { member, memberRole } from "@prisma/client";
 import { toast } from "sonner";
 import Link from "next/link";
+import ActionToolTip from "../ui/action-tooltip";
 interface ServerDropDownProps {
   server: ServerSchema;
   role: memberRole;
   allServers: ServerSchema[];
   currentMember: member;
 }
+const memberRoleIcon = {
+  [memberRole.ADMIN]: <ShieldAlert className="w-5 h-5 text-red-500" />,
+  [memberRole.MODERATOR]: <ShieldCheck className="w-5 h-5 text-blue-500" />,
+  [memberRole.GUEST]: null,
+};
 
 function ServerDropDown({
   server,
@@ -94,6 +100,9 @@ function ServerDropDown({
               {server?.members?.length}{" "}
               {server?.members?.length !== 1 ? "Members" : "Member"}
             </h3>
+          </div>
+          <div className="ml-auto">
+            <ActionToolTip label={role}>{memberRoleIcon[role]}</ActionToolTip>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
