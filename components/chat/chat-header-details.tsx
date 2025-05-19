@@ -24,7 +24,6 @@ function ChatHeaderDetails({ type, channel, member }: ChatHeaderDetailsProps) {
   const { isConnected } = useSocket();
   const { onOpen } = useModal();
 
-  console.log(channel);
   return (
     <>
       {type === "channel" && (

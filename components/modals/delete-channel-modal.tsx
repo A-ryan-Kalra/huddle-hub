@@ -40,7 +40,9 @@ function DeleteChannelModal() {
     await axios.delete(url);
     setIsLoading(false);
     handleCancel();
-    router.refresh();
+
+    // router.refresh();
+    window.location.reload();
   };
 
   const handleCancel = () => {

@@ -56,31 +56,6 @@ function ShowChannelMemberModal() {
   };
   const router = useRouter();
 
-  const addMember = async (id: string) => {
-    try {
-      setLoadingId(id);
-      const url = queryString.stringifyUrl({
-        url: `/api/channels/${channelId}/kick`,
-        query: {
-          memberId: id,
-          serverId: server.id,
-        },
-      });
-
-      const res = await axios.put(url);
-      const data = res.data;
-      console.log(data);
-      onOpen("showChannelMembers", { member: data?.member });
-
-      setLoadingId("");
-
-      router.refresh();
-    } catch (error) {
-      console.error(error);
-      setLoadingId("");
-    }
-  };
-
   const handleCancel = () => {
     onClose();
     setLoadingId("");
@@ -110,7 +85,7 @@ function ShowChannelMemberModal() {
       setLoadingId("");
     }
   };
-  console.log(member);
+
   return (
     <Dialog open={openModal} onOpenChange={handleCancel}>
       <DialogContent className=" overflow-hidden">
@@ -141,7 +116,7 @@ function ShowChannelMemberModal() {
                   {member?.profile?.email}
                 </p>
               </div>
-              <div className="ml-auto p-2 ">
+              {/* <div className="ml-auto p-2 ">
                 {server?.profileId !== member?.profileId &&
                   member.id !== loadingId && (
                     <DropdownMenu>
@@ -168,7 +143,7 @@ function ShowChannelMemberModal() {
                 {loadingId === member.id && (
                   <Loader2 className="w-4 h-4 ml-auto animate-spin" />
                 )}
-              </div>
+              </div> */}
             </div>
           ))}
         </div>

@@ -167,6 +167,36 @@ export async function DELETE(req: NextRequest) {
       );
     }
 
+    const adminMember = await db.member.findFirst({
+      where: {
+        profileId: profile.id,
+        serverId,
+        role: {
+          in: [memberRole.ADMIN, memberRole.MODERATOR],
+        },
+      },
+    });
+
+    let channelOwner;
+    if (!adminMember) {
+      channelOwner = await db.channel.findUnique({
+        where: {
+          id: channelId,
+          profileId: profile.id,
+        },
+      });
+    }
+
+    if (!channelOwner && !adminMember) {
+      return NextResponse.json(
+        {
+          error: "Channel not found or you don't have permission to update it.",
+          success: false,
+        },
+        { status: 403 }
+      );
+    }
+
     await db.channelOnMember.deleteMany({
       where: {
         channelId,
@@ -176,14 +206,27 @@ export async function DELETE(req: NextRequest) {
     const deleteChannel = await db.server.update({
       where: {
         id: serverId,
-        members: {
-          some: {
-            profileId: profile.id,
-            role: {
-              in: [memberRole.ADMIN, memberRole.MODERATOR],
+        OR: [
+          {
+            members: {
+              some: {
+                profileId: profile.id,
+
+                role: {
+                  in: [memberRole.ADMIN, memberRole.MODERATOR],
+                },
+              },
             },
           },
-        },
+          {
+            channels: {
+              some: {
+                profileId: channelOwner?.profileId,
+                id: channelId,
+              },
+            },
+          },
+        ],
       },
       data: {
         channels: {
