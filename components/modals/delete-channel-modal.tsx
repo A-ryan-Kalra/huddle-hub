@@ -41,8 +41,8 @@ function DeleteChannelModal() {
     setIsLoading(false);
     handleCancel();
 
-    // router.refresh();
-    window.location.reload();
+    router.refresh();
+    // window.location.reload();
   };
 
   const handleCancel = () => {
@@ -64,7 +64,12 @@ function DeleteChannelModal() {
           <Button className="" onClick={handleCancel} variant={"default"}>
             Cancel
           </Button>
-          <Button className="" variant={"primary"} onClick={onSubmit}>
+          <Button
+            className="disabled:opacity-45"
+            variant={"primary"}
+            disabled={isLoading}
+            onClick={onSubmit}
+          >
             {!isLoading ? (
               "Confirm"
             ) : (
