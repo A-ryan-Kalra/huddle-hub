@@ -132,7 +132,7 @@ function CustomizeChannelModal() {
     setSelectedMembers([]);
   };
   const channelOwnerMemberId = channel?.members?.find(
-    (member) => member.member.profileId === channel.profileId
+    (member) => member?.member?.profileId === channel.profileId
   );
 
   useEffect(() => {

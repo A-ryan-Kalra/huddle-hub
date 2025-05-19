@@ -109,7 +109,7 @@ function CommunicationSection({
           </ScrollArea>
         )}
       </>
-      {type === "channels" && moderator && (
+      {type === "channels" && (
         <button
           onClick={() => onOpen("createChannel", { member: allMembers })}
           className="group p-1 text-sm gap-x-2 hover:bg-zinc-200 transition  flex items-center justify-start rounded-md"

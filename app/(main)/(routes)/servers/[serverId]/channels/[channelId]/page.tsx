@@ -28,7 +28,12 @@ async function ChannelPage({ params }: ChannelPageProps) {
       serverId: paramsResolved.serverId,
     },
     include: {
-      members: true,
+      members: {
+        include: {
+          member: { include: { profile: true } },
+        },
+      },
+      server: true,
       profile: true,
     },
   });

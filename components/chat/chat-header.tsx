@@ -1,4 +1,10 @@
-import { channel, channelOnMember, member, profile } from "@prisma/client";
+import {
+  channel,
+  channelOnMember,
+  member,
+  profile,
+  server,
+} from "@prisma/client";
 import { Menu } from "lucide-react";
 import React from "react";
 
@@ -8,7 +14,10 @@ import ChatHeaderDetails from "./chat-header-details";
 
 interface ChatHeaderProps {
   type: "channel" | "message";
-  channel?: channel & { members: channelOnMember[] };
+  channel?: channel & {
+    members: (channelOnMember & { member: member & { profile: profile } })[];
+    server: server;
+  };
   member?: member & { profile: profile };
   currentMemberId: string;
 }

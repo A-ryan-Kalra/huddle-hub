@@ -153,11 +153,11 @@ model threads {
 
 model channelOnMember{
   memberId String
-  member                member        @relation(fields: [memberId],references: [id],onDelete: Cascade)
+  member                member        @relation(fields: [memberId],references: [id])
   channelId             String
-  channel               channel       @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  channel               channel       @relation(fields: [channelId], references: [id] )
   serverId              String
-  server                server        @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  server                server        @relation(fields: [serverId], references: [id] )
   createdAt      DateTime     @default(now())
  
   @@id([memberId,channelId,serverId])

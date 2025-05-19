@@ -11,6 +11,7 @@ import CustomizeChannelModal from "../modals/customize-channel-modal";
 import DeleteServerModal from "../modals/delete-server-modal";
 import DeleteChannelModal from "../modals/delete-channel-modal";
 import DeleteMessageModal from "../modals/delete-message-modal";
+import ShowChannelMemberModal from "../modals/show-member-modal";
 
 function ModalProviders() {
   const [open, setOpen] = useState(false);
@@ -34,6 +35,7 @@ function ModalProviders() {
       <DeleteServerModal />
       <DeleteChannelModal />
       <DeleteMessageModal />
+      <ShowChannelMemberModal />
     </>
   );
 }

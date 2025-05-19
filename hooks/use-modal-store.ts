@@ -13,7 +13,8 @@ export type ModalType =
   | "deleteServer"
   | "deleteMessage"
   | "openThread"
-  | "replyToMessage";
+  | "replyToMessage"
+  | "showChannelMembers";
 
 interface ModalData {
   server?: server;
@@ -21,6 +22,7 @@ interface ModalData {
   member?: member | (member & { profile: profile })[];
   channelType?: string;
   message?: message & { member: member & { profile: profile } };
+  [key: string]: any;
 }
 
 interface ModalStore {
