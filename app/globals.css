@@ -106,3 +106,52 @@ li[data-list="bullet"] {
     @apply bg-background text-foreground;
   }
 }
+
+.scale-img {
+  animation: autoscale 3s ease-in-out infinite;
+}
+
+@keyframes autoscale {
+  0%,
+  100% {
+    transform: scale(0.3);
+  }
+  50% {
+    transform: scale(1);
+  }
+}
+
+.dots {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 2rem;
+}
+
+.dot {
+  opacity: 0.2;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Delay each dot to stagger the animation */
+.dot1 {
+  animation-delay: 0.3s;
+}
+.dot2 {
+  animation-delay: 0.6s;
+}
+.dot3 {
+  animation-delay: 0.9s;
+}
+
+/* Pulse animation */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: scale(1) translate(0%, 0%);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.5) translate(-10%, -10%);
+  }
+}
