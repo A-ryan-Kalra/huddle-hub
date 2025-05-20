@@ -4,7 +4,7 @@ import React from "react";
 
 function Loading() {
   return (
-    <div className="flex flex-col h-screen items-center justify-center bg-gray-100">
+    <div className="flex flex-col h-[100dvh] items-center justify-center bg-gray-100">
       <div className="scale-img relative animate-pulse w-[350px] h-[300px] ">
         <Image
           alt="img"
