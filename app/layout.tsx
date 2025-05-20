@@ -6,6 +6,8 @@ import ModalProviders from "@/components/providers/modal-providers";
 import { Toaster } from "@/components/ui/sonner";
 import SocketProviders from "@/components/providers/socket-providers";
 import QueryProvider from "@/components/providers/query-provider";
+import { Suspense } from "react";
+import Loading from "@/components/ui/loading";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,11 +47,13 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={`${righteous.className}  antialiased`}>
-          <SocketProviders>
-            <ModalProviders />
-            <Toaster />
-            <QueryProvider>{children}</QueryProvider>
-          </SocketProviders>
+          <Suspense fallback={<Loading />}>
+            <SocketProviders>
+              <ModalProviders />
+              <Toaster />
+              <QueryProvider>{children}</QueryProvider>
+            </SocketProviders>
+          </Suspense>
         </body>
       </html>
     </ClerkProvider>
