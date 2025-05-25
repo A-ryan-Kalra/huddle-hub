@@ -22,7 +22,9 @@ export const MediaRoom = ({ audio, chatId, video }: MediaRoomProps) => {
   useEffect(() => {
     if (!user?.firstName || !user?.lastName) return;
 
-    const name = `${user.firstName} ${user.lastName}`;
+    const name = `${user.firstName} ${
+      user.lastName
+    } ${new Date().getMilliseconds()}`;
 
     (async () => {
       try {
