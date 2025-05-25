@@ -42,6 +42,7 @@ function DeleteChannelModal() {
     handleCancel();
 
     router.refresh();
+    await fetch("/api/socket/reload"); // reload pages
     // window.location.reload();
   };
 

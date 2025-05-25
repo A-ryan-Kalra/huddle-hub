@@ -102,6 +102,7 @@ function CreateChannelModal() {
       close();
 
       router.refresh();
+      await fetch("/api/socket/reload"); // reload pages
     } catch (error: Error | any) {
       toast("Error", {
         description:

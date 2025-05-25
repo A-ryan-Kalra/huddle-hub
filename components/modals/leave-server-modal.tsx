@@ -12,9 +12,12 @@ import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
 
 import { useModal } from "@/hooks/use-modal-store";
+import { useState } from "react";
+import { Loader2Icon } from "lucide-react";
 
 function LeaveServerModal() {
   const { type, onClose, data, onOpen } = useModal();
+  const [isLoading, setIsLoading] = useState(false);
 
   const openModal = type === "leaveServer";
   const params = useParams();
@@ -24,18 +27,20 @@ function LeaveServerModal() {
   const router = useRouter();
 
   const onSubmit = async () => {
+    setIsLoading(true);
     const url = qs.stringifyUrl({
       url: `/api/servers/${params?.serverId}/leave`,
     });
 
     await axios.delete(url);
-
+    await fetch("/api/socket/reload"); // reload pages
     router.refresh();
     handleCancel();
   };
 
   const handleCancel = () => {
     onClose();
+    setIsLoading(false);
   };
 
   return (
@@ -51,8 +56,17 @@ function LeaveServerModal() {
           <Button className="" onClick={handleCancel} variant={"default"}>
             Cancel
           </Button>
-          <Button className="" variant={"primary"} onClick={onSubmit}>
-            Confirm
+          <Button
+            className=""
+            variant={"primary"}
+            disabled={isLoading}
+            onClick={onSubmit}
+          >
+            {isLoading ? (
+              <Loader2Icon className="w-5 h-5 animate-spin disabled:bg-slate-200" />
+            ) : (
+              "Confirm"
+            )}
           </Button>
         </div>
       </DialogContent>

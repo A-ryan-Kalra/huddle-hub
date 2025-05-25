@@ -53,6 +53,7 @@ function ServerSettingsModal() {
     await axios.patch(url, values);
 
     router.refresh();
+    await fetch("/api/socket/reload"); // reload pages
     onClose();
   };
 

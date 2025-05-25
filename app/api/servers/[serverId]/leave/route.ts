@@ -14,6 +14,14 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: "Server Id missing" }, { status: 400 });
     }
 
+    await db.channelOnMember.deleteMany({
+      where: {
+        serverId,
+        member: {
+          profileId: profile.id,
+        },
+      },
+    });
     const deleteMember = await db.server.update({
       where: {
         id: serverId,
@@ -35,7 +43,7 @@ export async function DELETE(req: NextRequest) {
   } catch (error) {
     console.error("[SERVERS]>[SERVER_ID_DELETE]", error);
     return NextResponse.json(
-      { error: "Internal Server Errpr" },
+      { error: "Internal Server Error" },
       { status: 500 }
     );
   }

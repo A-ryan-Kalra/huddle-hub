@@ -29,7 +29,7 @@ function DeleteServerModal() {
     });
 
     await axios.delete(url);
-
+    await fetch("/api/socket/reload"); // reload pages
     router.refresh();
     handleCancel();
   };

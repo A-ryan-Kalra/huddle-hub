@@ -12,6 +12,8 @@ import {
 import { useSocket } from "../providers/socket-providers";
 import ActionToolTip from "../ui/action-tooltip";
 import { Badge } from "../ui/badge";
+import useReload from "@/hooks/use-reload";
+import { useRouter } from "next/navigation";
 
 interface ChatHeaderNameProps {
   type: "channel" | "message";
@@ -22,6 +24,9 @@ interface ChatHeaderNameProps {
 }
 function ChatHeaderName({ type, channel, member }: ChatHeaderNameProps) {
   const { isConnected } = useSocket();
+  const router = useRouter();
+  useReload({ memberId: member?.id as string, reloadPage: router.refresh });
+
   return (
     <>
       {type === "channel" ? (
@@ -41,25 +46,6 @@ function ChatHeaderName({ type, channel, member }: ChatHeaderNameProps) {
               {member?.profile.name}
             </h1>
           </div>
-          {isConnected ? (
-            <ActionToolTip side="left" label="Real Time Connection" align="end">
-              <Badge
-                variant={"outline"}
-                className="!bg-emerald-600 rounded-full animate-pulse p-1.5 text-white font-semibold"
-              ></Badge>
-            </ActionToolTip>
-          ) : (
-            <ActionToolTip
-              side="left"
-              label="Fallback : Polling every 1s"
-              align="end"
-            >
-              <Badge
-                variant={"outline"}
-                className="!bg-yellow-600 rounded-full animate-pulse p-1.5 text-white font-semibold"
-              ></Badge>
-            </ActionToolTip>
-          )}
         </div>
       )}
     </>

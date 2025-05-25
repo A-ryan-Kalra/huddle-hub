@@ -122,7 +122,8 @@ function ChannelName({
             <ActionToolTip
               className=" self-end"
               label={channel.type}
-              side="right"
+              side="top"
+              align="center"
             >
               {channelTypeIcon[channel.type]}
             </ActionToolTip>

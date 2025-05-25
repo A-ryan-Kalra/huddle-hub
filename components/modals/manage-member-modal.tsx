@@ -67,6 +67,7 @@ function ManageMemberModal() {
       setLoadingId("");
       onOpen("customizeMember", { server: data });
       router.refresh();
+      await fetch("/api/socket/reload"); // reload pages
     } catch (error) {
       console.error(error);
       setLoadingId("");

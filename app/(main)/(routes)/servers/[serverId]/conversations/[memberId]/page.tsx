@@ -1,6 +1,7 @@
 import ChatEditor from "@/components/chat/chat-editor";
 import ChatHeader from "@/components/chat/chat-header";
 import ChatSection from "@/components/chat/chat-section";
+import { MediaRoom } from "@/components/ui/media-room";
 import { getOrCreateConversation } from "@/lib/conversation";
 import { currentProfile } from "@/lib/currentProfile";
 import { db } from "@/lib/db";
@@ -12,9 +13,18 @@ interface ConversationPageProps {
     serverId: string;
     memberId: string;
   }>;
+  searchParams: Promise<{
+    video?: boolean;
+  }>;
 }
-async function ConversationPage({ params }: ConversationPageProps) {
+async function ConversationPage({
+  params,
+  searchParams,
+}: ConversationPageProps) {
   const paramsResolved = await params;
+  const searchParamsResolved = await searchParams;
+
+  console.log(searchParamsResolved);
   const profile = await currentProfile();
 
   if (!profile) {
@@ -55,30 +65,37 @@ async function ConversationPage({ params }: ConversationPageProps) {
         member={anotherMember}
         currentMemberId={currentMember?.id}
       />
-      <ChatSection
-        type="conversation"
-        chatId={conversation?.id}
-        triggerChatId={conversation?.id}
-        name={anotherMember?.profile?.name?.split(" ")[0]}
-        chatName={anotherMember?.profile?.name?.split(" ")[0]}
-        apiUrl="/api/direct-messages"
-        paramKey={"conversationId"}
-        paramValue={conversation?.id}
-        socketQuery={{
-          conversationId: conversation?.id,
-          serverId: paramsResolved.serverId,
-        }}
-        currentMember={currentMember}
-      />
-      <ChatEditor
-        type="conversation"
-        apiUrl="/api/socket/direct-messages"
-        query={{
-          serverId: paramsResolved?.serverId,
-          conversationId: conversation?.id,
-        }}
-        name={anotherMember?.profile?.name as string}
-      />
+      {!searchParamsResolved?.video && (
+        <>
+          <ChatSection
+            type="conversation"
+            chatId={conversation?.id}
+            triggerChatId={conversation?.id}
+            name={anotherMember?.profile?.name?.split(" ")[0]}
+            chatName={anotherMember?.profile?.name?.split(" ")[0]}
+            apiUrl="/api/direct-messages"
+            paramKey={"conversationId"}
+            paramValue={conversation?.id}
+            socketQuery={{
+              conversationId: conversation?.id,
+              serverId: paramsResolved.serverId,
+            }}
+            currentMember={currentMember}
+          />
+          <ChatEditor
+            type="conversation"
+            apiUrl="/api/socket/direct-messages"
+            query={{
+              serverId: paramsResolved?.serverId,
+              conversationId: conversation?.id,
+            }}
+            name={anotherMember?.profile?.name as string}
+          />
+        </>
+      )}
+      {searchParamsResolved?.video && (
+        <MediaRoom chatId={conversation.id} video={true} audio={true} />
+      )}
     </div>
   );
 }
