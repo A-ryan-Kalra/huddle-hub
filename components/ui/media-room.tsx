@@ -56,6 +56,7 @@ export const MediaRoom = ({ audio, chatId, video }: MediaRoomProps) => {
       token={token}
       video={video}
       audio={audio}
+      className="h-dvh overflow-y-auto"
       connect={true}
       onDisconnected={(e) => {
         if (params?.memberId) {
