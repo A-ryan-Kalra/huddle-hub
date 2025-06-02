@@ -12,11 +12,11 @@ huddle-hub - A **real-time** communication platform primarly designated for **wo
 
 <br/>
 
-# 🎭 Roles:
+# 🛡️🗡️Roles:
 
 > [!NOTE]
 >
-> ### Roles have been assigned in the workspace to help everyone cooperate effectively.
+> ### Roles have been assigned in the workspace to help everyone cooperate effectively. 😄
 
 <br/>
 
@@ -51,12 +51,13 @@ huddle-hub - A **real-time** communication platform primarly designated for **wo
 - 🔐 `User Management`
   - Now Members can invite new users via **authorized link**.
   - leave channel or workspace anytime for now.
+  - Create, edit, or delete their own channels (**public** or **private**).
 
 <br/>
 
 - 💬 `Messaging`
   - Send and receive direct messages (DMs).
-  - Participate in an assigned **public** or **private** channels.
+  - Participate in an assigned (**public** or **private**) channels.
   - Use emojis: 😄😎🥂.
 
 <br/>
@@ -73,4 +74,11 @@ huddle-hub - A **real-time** communication platform primarly designated for **wo
 <br>
 
 > [!IMPORTANT]
-> Moderators have almost the same privileges as admin, but their authority is limited within defined boundaries.
+> 🛡️ Moderators have almost the same privileges as admin, but their authority is limited within defined boundaries.
+
+<br />
+<br />
+
+# What Sets This Project Apart?
+
+Okay, we all are familiar with the common features - but what makes it special? What are the standout features compared to other projects? Let's dive in and uncover the highlights
