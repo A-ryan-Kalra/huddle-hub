@@ -50,6 +50,7 @@ huddle-hub - A **real-time** communication platform primarly designated for **wo
 
 - 🔐 `User Management`
   - Now Members can invite new users via **authorized link**.
+  - **Communicate** with members on **real-time video** or **audio chat**.
   - leave channel or workspace anytime for now.
   - Create, edit, or delete their own channels (**public** or **private**).
 
@@ -81,4 +82,14 @@ huddle-hub - A **real-time** communication platform primarly designated for **wo
 
 # What Sets This Project Apart?
 
-Okay, we all are familiar with the common features - but what makes it special? What are the standout features compared to other projects? Let's dive in and uncover the highlights
+Okay, we all are familiar with the common features - but what makes it special? What are the standout features compared to other projects? Let's dive in and uncover the highlights :-
+
+- Introducing **Web Push Notification**, enables **subsribed users** to receive **real-time alerts** or **messages** even if they are not active on the website.
+
+<br/>
+
+- One of the **most important feature** is the ability to reply to someone else's message and `automatically redirect the user back to that original message on clicking`.
+
+<br/>
+
+- Users can create private and public channel and engage in real-time communication via **video or audio chat**. Integrated **WebSockets** for seamless **real-time messaging**, ensuring **instant delivery** and **update** across the platform.
