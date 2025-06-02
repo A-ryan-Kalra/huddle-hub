@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+### Website is live and hosted at [huddle-hub](https://huddle-hub-uqmv.onrender.com/)
 
-## Getting Started
+<div align="center">
 
-First, run the development server:
+# huddle-hub
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Free and Real-Time communication platform
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+huddle-hub - A **real-time** communication platform primarly designated for **workplace communication** and **collaboration**,allowing users to send messages, share files and `connect` with coworkers and clients.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+</div>
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+<br/>
 
-## Learn More
+# 🎭 Roles:
 
-To learn more about Next.js, take a look at the following resources:
+> [!NOTE]
+>
+> ### Roles have been assigned in the workspace to help everyone cooperate effectively.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+<br/>
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 👑 Admin Features:-
 
-## Deploy on Vercel
+**Admins have elevated privileges and control over the workspace.**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- 🔐 `User Management`
+  - Invite new users via **authorized link**.
+  - Promote or demote users (e.g., **Member** → **Moderator**).
+  - Remove or Kick users from workspace.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+<br/>
+
+- 🏢 `Workspace Management`
+  - Create, edit, or delete channels (**Public** & **Private**).
+  - Manage Channel Permission (e.g., Public → Private).
+  - Delete inappropriate messages 🔞.
+
+<br/>
+
+- ⚙️ `Settings & Configuration`
+  - Customize workspace branding (e.g.,**name** & **logo**).
+  - Customize channel name (e.g.,**name** & **logo**).
+
+<br/>
+
+## 🙋‍♂️ Member Features:-
+
+**Member have limited access to workspace features.**
+
+- 🔐 `User Management`
+  - Now Members can invite new users via **authorized link**.
+  - leave channel or workspace anytime for now.
+
+<br/>
+
+- 💬 `Messaging`
+  - Send and receive direct messages (DMs).
+  - Participate in an assigned **public** or **private** channels.
+  - Use emojis: 😄😎🥂.
+
+<br/>
+
+- 📁 `File Sharing`
+  - Upload and download attachments in channels or DMS.
+
+<br/>
+
+- 🔔 `Notifications` 🆕✨
+  - Receive real-time messages and alerts.
+  - Subscribe to web push notification on your browser to receive new messages or alerts, even if you are not active on the website.
+
+<br>
+
+> [!IMPORTANT]
+> Moderators have almost the same privileges as admin, but their authority is limited within defined boundaries.
