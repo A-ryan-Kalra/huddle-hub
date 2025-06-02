@@ -18,7 +18,12 @@ import {
   ShieldQuestionIcon,
 } from "lucide-react";
 import { useModal } from "@/hooks/use-modal-store";
-import { member, memberRole, profile, server } from "@prisma/client";
+import {
+  member as memberType,
+  memberRole,
+  profile,
+  server,
+} from "@prisma/client";
 
 import AvatarIcon from "../ui/avatar-icon";
 import ActionToolTip from "../ui/action-tooltip";
@@ -50,10 +55,12 @@ function ShowChannelMemberModal() {
     member: members,
     server,
     channelId,
+    currentMember,
   } = data as {
-    member: (member & { profile: profile })[];
+    member: (memberType & { profile: profile })[];
     server: server;
     channelId: string;
+    currentMember: memberType & { profile: profile };
   };
   const openModal = type === "showChannelMembers";
   const [loadingId, setLoadingId] = useState("");
@@ -64,7 +71,7 @@ function ShowChannelMemberModal() {
     setLoadingId("");
   };
 
-  const onKick = async (id: string) => {
+  const onLeaveChannel = async (id: string) => {
     try {
       setLoadingId(id);
       const url = queryString.stringifyUrl({
@@ -75,19 +82,25 @@ function ShowChannelMemberModal() {
         },
       });
 
-      const res = await axios.put(url);
-      const data = res.data;
-      console.log(data);
+      await axios.put(url);
+
       onOpen("showChannelMembers", { member: data?.member });
 
       setLoadingId("");
 
+      await fetch("/api/socket/reload"); // reload pages
+      // router.push("/");
       router.refresh();
+      handleCancel();
     } catch (error) {
       console.error(error);
       setLoadingId("");
     }
   };
+
+  const canRemove =
+    currentMember?.role === memberRole.ADMIN ||
+    currentMember?.role === memberRole.MODERATOR;
 
   return (
     <Dialog open={openModal} onOpenChange={handleCancel}>
@@ -101,56 +114,93 @@ function ShowChannelMemberModal() {
         <div className="w-full relative overflow-y-auto flex flex-col gap-y-3 h-full max-h-[200px]">
           {members &&
             members?.length > 0 &&
-            members?.map((member, index) => (
-              <div key={index} className="flex gap-x-2 items-center">
-                <AvatarIcon
-                  imageUrl={member?.profile?.imageUrl}
-                  height={40}
-                  width={40}
-                />
-                <div className="flex flex-col">
-                  <div className="flex gap-x-3 items-center">
-                    <h1 className="text-xs font-semibold">
-                      {member?.profile?.name}
-                    </h1>
-                    <ActionToolTip label={member.role}>
-                      {memberRoleIcon[member.role]}
-                    </ActionToolTip>
+            members?.map((member: memberType & { profile: profile }, index) => {
+              const isHigherRole =
+                member.role === memberRole.ADMIN ||
+                member.role === memberRole.MODERATOR;
+
+              return (
+                <div key={index} className="flex gap-x-2 items-center">
+                  <AvatarIcon
+                    imageUrl={member?.profile?.imageUrl}
+                    height={40}
+                    width={40}
+                  />
+                  <div className="flex flex-col">
+                    <div className="flex gap-x-3 items-center">
+                      <h1 className="text-xs font-semibold">
+                        {member?.profile?.name}
+                      </h1>
+                      <ActionToolTip label={member.role}>
+                        {memberRoleIcon[member.role]}
+                      </ActionToolTip>
+                    </div>
+                    <p className="text-sm text-zinc-500">
+                      {member?.profile?.email}
+                    </p>
                   </div>
-                  <p className="text-sm text-zinc-500">
-                    {member?.profile?.email}
-                  </p>
+                  <div className="ml-auto p-2 ">
+                    {canRemove && (
+                      <>
+                        {!isHigherRole && member.id !== loadingId && (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger className="rounded-md p-1 hover:bg-zinc-100 transition">
+                              <EllipsisVertical className="w-3 h-3" />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                              side="right"
+                              align="start"
+                              className=""
+                            >
+                              <DropdownMenuGroup>
+                                <DropdownMenuItem
+                                  className="hover:bg-zinc-200"
+                                  onClick={() => onLeaveChannel(member.id)}
+                                >
+                                  <Gavel className="w-4 h-4 " />
+                                  Kick
+                                </DropdownMenuItem>
+                              </DropdownMenuGroup>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        )}
+                      </>
+                    )}
+
+                    {!canRemove && (
+                      <>
+                        {!isHigherRole &&
+                          currentMember?.id === member?.id &&
+                          member.id !== loadingId && (
+                            <DropdownMenu>
+                              <DropdownMenuTrigger className="rounded-md p-1 hover:bg-zinc-100 transition">
+                                <EllipsisVertical className="w-3 h-3" />
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent
+                                side="right"
+                                align="start"
+                                className=""
+                              >
+                                <DropdownMenuGroup>
+                                  <DropdownMenuItem
+                                    className="hover:bg-zinc-200"
+                                    onClick={() => onLeaveChannel(member.id)}
+                                  >
+                                    Leave Channel
+                                  </DropdownMenuItem>
+                                </DropdownMenuGroup>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          )}
+                      </>
+                    )}
+                    {loadingId === member.id && (
+                      <Loader2 className="w-4 h-4 ml-auto animate-spin" />
+                    )}
+                  </div>
                 </div>
-                {/* <div className="ml-auto p-2 ">
-                {server?.profileId !== member?.profileId &&
-                  member.id !== loadingId && (
-                    <DropdownMenu>
-                      <DropdownMenuTrigger className="rounded-md p-1 hover:bg-zinc-100 transition">
-                        <EllipsisVertical className="w-3 h-3" />
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent
-                        side="right"
-                        align="start"
-                        className=""
-                      >
-                        <DropdownMenuGroup>
-                          <DropdownMenuItem
-                            className="hover:bg-zinc-200"
-                            onClick={() => onKick(member.id)}
-                          >
-                            <Gavel className="w-4 h-4 " />
-                            Kick
-                          </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  )}
-                {loadingId === member.id && (
-                  <Loader2 className="w-4 h-4 ml-auto animate-spin" />
-                )}
-              </div> */}
-              </div>
-            ))}
+              );
+            })}
         </div>
       </DialogContent>
     </Dialog>

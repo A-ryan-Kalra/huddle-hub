@@ -50,7 +50,11 @@ async function ChannelPage({ params }: ChannelPageProps) {
     },
   });
 
-  if (!channel || !member) {
+  const isMemberOfThisChannel = channel?.members.find(
+    (channelMember) => channelMember?.memberId === member?.id
+  );
+
+  if (!channel || !member || !isMemberOfThisChannel) {
     return redirect("/");
   }
 

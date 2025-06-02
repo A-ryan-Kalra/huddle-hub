@@ -54,9 +54,9 @@ function ChannelName({
   });
 
   const ownerOfChannel = channel.profileId === currentMember.profileId;
-  const accessToPrivateChannel =
-    channel.visibility === "PRIVATE" &&
-    channel.members.some((member) => member.memberId === currentMember?.id);
+  const accessToPrivateChannel = channel.members.some(
+    (member) => member.memberId === currentMember?.id
+  );
   const router = useRouter();
 
   const onClick = (channel: channel & { members: channelOnMember[] }) => {
@@ -64,6 +64,14 @@ function ChannelName({
     if (!accessToPrivateChannel && channel.visibility === "PRIVATE") {
       toast("Unauthorized Access", {
         description: "Oops! This channel is private",
+        style: { backgroundColor: "white", color: "black" },
+        richColors: true,
+      });
+
+      return null;
+    } else if (channel.visibility === "PUBLIC" && !accessToPrivateChannel) {
+      toast("Unauthorized Access", {
+        description: "Oops! You are not a member of this channel anymore.",
         style: { backgroundColor: "white", color: "black" },
         richColors: true,
       });

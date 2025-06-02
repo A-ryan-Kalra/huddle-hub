@@ -82,6 +82,13 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: "Member id missing" }, { status: 400 });
     }
 
+    await db.channelOnMember.deleteMany({
+      where: {
+        serverId,
+        memberId,
+      },
+    });
+
     const server = await db.server.update({
       where: {
         id: serverId,

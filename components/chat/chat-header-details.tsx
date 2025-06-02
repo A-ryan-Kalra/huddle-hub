@@ -35,6 +35,7 @@ function ChatHeaderDetails({ type, channel, member }: ChatHeaderDetailsProps) {
                 member: channel?.members?.map((member) => member?.member),
                 server: channel?.server,
                 channelId: channel?.members[0].channelId,
+                currentMember: member,
               })
             }
             className="hover:bg-zinc-100 flex gap-x-1 transition cursor-pointer p-0.5 rounded-md"
