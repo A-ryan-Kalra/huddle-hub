@@ -78,7 +78,6 @@ huddle-hub - A **real-time** communication platform primarly designated for **wo
 > 🛡️ Moderators have almost the same privileges as admin, but their authority is limited within defined boundaries.
 
 <br />
-<br />
 
 # What Sets This Project Apart?
 
@@ -86,10 +85,6 @@ Okay, we all are familiar with the common features - but what makes it special? 
 
 - Introducing **Web Push Notification**, enables **subsribed users** to receive **real-time alerts** or **messages** even if they are not active on the website.
 
-<br/>
-
 - One of the **most important feature** is the ability to reply to someone else's message and `automatically redirect the user back to that original message on clicking`.
-
-<br/>
 
 - Users can create private and public channel and engage in real-time communication via **video or audio chat**. Integrated **WebSockets** for seamless **real-time messaging**, ensuring **instant delivery** and **update** across the platform.
