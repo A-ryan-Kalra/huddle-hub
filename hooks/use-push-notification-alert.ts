@@ -23,7 +23,11 @@ function usePushNotificationAlert({
 
     socket?.on(notificationId, async (message: PushNotificationProps) => {
       let res;
-      if (message?.subscription) {
+      const registration = await navigator.serviceWorker.ready;
+      let currentBrowserSession =
+        await registration.pushManager.getSubscription();
+
+      if (message?.subscription && currentBrowserSession) {
         try {
           res = await sendNotification({ ...message, notificationId });
 
