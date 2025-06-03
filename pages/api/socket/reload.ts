@@ -12,7 +12,7 @@ export default async function handler(
     if (!profile) {
       return res.status(401).json({ error: "Unauthorized" });
     }
-    console.log("triggered");
+
     res?.socket?.server?.io?.emit("refresh");
     res.json({ success: true });
   } catch (error) {

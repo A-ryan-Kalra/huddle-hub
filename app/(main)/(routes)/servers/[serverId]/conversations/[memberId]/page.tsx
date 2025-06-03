@@ -24,7 +24,6 @@ async function ConversationPage({
   const paramsResolved = await params;
   const searchParamsResolved = await searchParams;
 
-  console.log(searchParamsResolved);
   const profile = await currentProfile();
 
   if (!profile) {
