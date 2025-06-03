@@ -12,6 +12,15 @@ huddle-hub🌍 - A **real-time** communication platform primarly designated for 
 
 <br/>
 
+# Contents
+
+- [🛡️🗡️Roles:](#%EF%B8%8F%EF%B8%8Froles)
+  - [👑 Admin Features](#-admin-features-)
+  - [🙋‍♂️ Member Features](#%EF%B8%8F-member-features-)
+- [🤔🌌 What Sets This Project Apart?](#-what-sets-this-project-apart)
+- [🧑‍💻🎧Tech Stacks)](#tech-stacks-)
+- [⚙️🔧Installation](#%EF%B8%8Finstallation-)
+
 # 🛡️🗡️Roles:
 
 > [!NOTE]
@@ -91,7 +100,7 @@ Okay, we all are familiar with the common features - but what makes it special? 
 
 <br/>
 
-# 🧑‍💻🎧Tech Stacks
+# 🧑‍💻🎧Tech Stacks:-
 
 <ul>
 <li>Next.js</li>
@@ -126,7 +135,7 @@ Okay, we all are familiar with the common features - but what makes it special? 
 
 ---
 
-# ⚙️🔧Installation
+# ⚙️🔧Installation:-
 
 First, run the development server:
 
