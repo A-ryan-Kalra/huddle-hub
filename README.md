@@ -15,11 +15,11 @@ huddle-hub🌍 - A **real-time** communication platform primarly designated for 
 # Contents
 
 - [🛡️🗡️Roles:](#%EF%B8%8F%EF%B8%8Froles)
-  - [👑 Admin Features](#-admin-features-)
-  - [🙋‍♂️ Member Features](#%EF%B8%8F-member-features-)
+  - [👑 Admin Features](#-admin-features)
+  - [🙋‍♂️ Member Features](#%EF%B8%8F-member-features)
 - [🤔🌌 What Sets This Project Apart?](#-what-sets-this-project-apart)
-- [🧑‍💻🎧Tech Stacks)](#tech-stacks-)
-- [⚙️🔧Installation](#%EF%B8%8Finstallation-)
+- [🧑‍💻🎧Tech Stacks](#tech-stacks)
+- [⚙️🔧Installation](#%EF%B8%8Finstallation)
 
 # 🛡️🗡️Roles:
 
@@ -29,7 +29,7 @@ huddle-hub🌍 - A **real-time** communication platform primarly designated for 
 
 <br/>
 
-## 👑 Admin Features:-
+## 👑 Admin Features:
 
 **Admins have elevated privileges and control over the workspace.**
 
@@ -53,7 +53,7 @@ huddle-hub🌍 - A **real-time** communication platform primarly designated for 
 
 <br/>
 
-## 🙋‍♂️ Member Features:-
+## 🙋‍♂️ Member Features:
 
 **Member have limited access to workspace features.**
 
@@ -92,15 +92,15 @@ huddle-hub🌍 - A **real-time** communication platform primarly designated for 
 
 Okay, we all are familiar with the common features - but what makes it special? What are the standout features compared to other projects? Let's dive in and uncover the highlights :-
 
-- Introducing **Web Push Notification** 🗣📢🔔, enables **subscribed users** to receive **real-time alerts** or **messages** even if they are not active on the website.
+- Introducing **Web Push Notification** 🗣📢🔔, enables **subscribed users** to receive **real-time alerts** or **messages** even if they are not active on the website. [Read more](https://github.com/A-ryan-Kalra/huddle-hub/releases/tag/v2.1.0)
 
-- Also Introducing **Jump to Message** — `allowing users to reply and instantly redirect ⤴️ to the original message with a single click.`
+- Also Introducing **Jump to Message** — `allowing users to reply and instantly redirect ⤴️ to the original message with a single click.` [Read more](https://github.com/A-ryan-Kalra/huddle-hub/releases/tag/v1.2.0)
 
-- Users can create **private** or **public channel** and engage in real-time communication via **video or audio chat**. Integrated **WebSockets** for seamless **real-time messaging**, ensuring **instant delivery** and **update** across the platform.
+- Users can create **private** or **public channel** and engage in real-time communication via **video or audio chat**. Integrated **WebSockets** for seamless **real-time messaging**, ensuring **instant delivery** and **update** across the platform. Additionally, user can also create threads🧶, keep side conversations organised and maintain the decorum of a main chat. [Read more](https://github.com/A-ryan-Kalra/huddle-hub/releases/tag/v1.5.6)
 
 <br/>
 
-# 🧑‍💻🎧Tech Stacks:-
+# 🧑‍💻🎧Tech Stacks:
 
 <ul>
 <li>Next.js</li>
@@ -122,20 +122,8 @@ Okay, we all are familiar with the common features - but what makes it special? 
 <li>Clerk</li>
 </ul>
 
----
 
-<details>
-  <summary>You know what's absolutely free?</summary>
-
-- Leaving a ⭐ star
-- 🍴Forking the repository
-- No hidden fees, no subscriptions — just pure open-source love!
-
-</details>
-
----
-
-# ⚙️🔧Installation:-
+# ⚙️🔧Installation:
 
 First, run the development server:
 
@@ -151,6 +139,19 @@ npm i
 
 npm run dev
 ```
+
+---
+
+<details>
+  <summary>You know what's absolutely free?</summary>
+
+- Leaving a ⭐ star
+- 🍴Forking the repository
+- No hidden fees, no subscriptions — just pure open-source love🥰!
+
+</details>
+
+---
 
 <div align="center">
 Open <a href='http://localhost:3000'>http://localhost:3000</a> in your browser to see the result.
