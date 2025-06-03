@@ -1,6 +1,6 @@
-### Website is live and hosted at [huddle-hub](https://huddle-hub-uqmv.onrender.com/)
-
 <div align="center">
+
+### Website is live and hosted at [huddle-hub](https://huddle-hub-uqmv.onrender.com/)
 
 # huddle-hub
 
@@ -79,12 +79,75 @@ huddle-hub - A **real-time** communication platform primarly designated for **wo
 
 <br />
 
-# What Sets This Project Apart?
+# 🤔🌌 What Sets This Project Apart?
 
 Okay, we all are familiar with the common features - but what makes it special? What are the standout features compared to other projects? Let's dive in and uncover the highlights :-
 
-- Introducing **Web Push Notification**, enables **subsribed users** to receive **real-time alerts** or **messages** even if they are not active on the website.
+- Introducing **Web Push Notification** 🗣📢🔔, enables **subscribed users** to receive **real-time alerts** or **messages** even if they are not active on the website.
 
-- One of the **most important feature** is the ability to reply to someone else's message and `automatically redirect the user back to that original message on clicking`.
+- Also Introducing **Jump to Message** — `allowing users to reply and instantly redirect ⤴️ to the original message with a single click.`
 
-- Users can create private and public channel and engage in real-time communication via **video or audio chat**. Integrated **WebSockets** for seamless **real-time messaging**, ensuring **instant delivery** and **update** across the platform.
+- Users can create **private** or **public channel** and engage in real-time communication via **video or audio chat**. Integrated **WebSockets** for seamless **real-time messaging**, ensuring **instant delivery** and **update** across the platform.
+
+<br/>
+
+# 🧑‍💻🎧Tech Stacks
+
+<ul>
+<li>Next.js</li>
+<li>Tanstack</li>
+<li>Typescript</li>
+<li>Web Socket</li>
+<li>Web Push</li>
+<li>Socket.IO</li>
+<li>Shadcn/ui</li>
+<li>PWA</li>
+<li>Prisma</li>
+<li>Postgres DB</li>
+<li>Tailwind CSS</li>
+<li>Zustand</li>
+<li>React Quill</li>
+<li>Zod</li>
+<li>UploadThing</li>
+<li>LiveKit</li>
+<li>Clerk</li>
+</ul>
+
+---
+
+<details>
+  <summary>You know what's absolutely free?</summary>
+
+- Leaving a ⭐ star
+- 🍴Forking the repository
+- No hidden fees, no subscriptions — just pure open-source love!
+
+</details>
+
+---
+
+# ⚙️🔧Installation
+
+First, run the development server:
+
+```bash
+# Clone the repository
+git clone https://github.com/A-ryan-Kalra/huddle-hub.git
+
+# Change Directory
+cd huddle-hub
+
+# Run the given commands and enjoy
+npm i
+
+npm run dev
+```
+
+<div align="center">
+Open <a href='http://localhost:3000'>http://localhost:3000</a> in your browser to see the result.
+<br>
+<br>
+Pleasure contributing 🕶️ <br>
+Aryan Kalra
+
+</div>
