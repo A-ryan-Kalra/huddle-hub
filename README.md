@@ -2,11 +2,11 @@
 
 ### Website is live and hosted at [huddle-hub](https://huddle-hub-uqmv.onrender.com/)
 
-# huddle-hub
+# huddle-hub🌍
 
-### Free and Real-Time communication platform
+### Free and Real-Time communication platform 💬
 
-huddle-hub - A **real-time** communication platform primarly designated for **workplace communication** and **collaboration**,allowing users to send messages, share files and `connect` with coworkers and clients.
+huddle-hub🌍 - A **real-time** communication platform primarly designated for **workplace communication** and **collaboration**,allowing users to send messages, share files and `connect` with coworkers and clients.
 
 </div>
 
