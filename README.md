@@ -61,7 +61,17 @@ huddle-hub🌍 - A **real-time** communication platform primarly designated for 
   - Now Members can invite new users via **authorized link**.
   - **Communicate** with members on **real-time video** or **audio chat**.
   - leave channel or workspace anytime for now.
-  - Create, edit, or delete their own channels (**public** or **private**).
+  - Create, edit, or delete their own channels (**public** or **private**) by simply righ-clicking on their channel name.
+
+<div align=""> 
+  <img 
+    src="https://github.com/user-attachments/assets/75606f1f-292c-4af8-8088-ce9c82527dfa"
+    width="500" height="300" />
+</div>
+
+<br/>
+
+
 
 <br/>
 
