@@ -29,9 +29,9 @@ self.addEventListener("push", (event) => {
       icon: data.icon || "/icons/icon-192x192.png",
       badge: data.badge || "/icons/icon-192x192.png",
       vibrate: [100, 50, 100],
-      data: data.data || {},
       actions: data.actions || [],
       data: {
+        ...data.data,
         dateOfArrival: Date.now(),
         primaryKey: "2",
       },
