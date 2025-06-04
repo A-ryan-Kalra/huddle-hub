@@ -16,7 +16,7 @@ export function MobileToggle({
   return (
     <Sheet modal={false}>
       <SheetTrigger asChild>{children}</SheetTrigger>
-      <SheetContent className="" side="left">
+      <SheetContent className="w-fit" side="left">
         <div className="flex h-full">
           <div className="w-16 border-r-[1px] border-gray-200">
             <NavigationSidebar currentMemberId={currentMemberId} />

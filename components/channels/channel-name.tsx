@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ActionToolTip from "../ui/action-tooltip";
 import {
   channel,
@@ -92,7 +92,7 @@ function ChannelName({
       <div
         onClick={() => onClick(channel)}
         className={cn(
-          "p-1  cursor-pointer hover:bg-zinc-200 duration-300 transition text-sm rounded-md w-full",
+          "p-1 overflow-hidden cursor-pointer hover:bg-zinc-200 duration-300 transition text-sm rounded-md w-full",
           params?.channelId === channel?.id && "bg-zinc-300 hover:bg-zinc-300"
         )}
       >
@@ -128,7 +128,7 @@ function ChannelName({
             </ActionToolTip>
           </div>
           {totalNotification > 0 && (
-            <div className="flex  items-center gap-x-1 size-3  absolute top-2 right-3">
+            <div className="flex  items-center gap-x-1 size-3  absolute top-1 right-3">
               <span className=" flex size-3 ">
                 <span className="absolute animate-ping inline-flex h-full w-full  rounded-full bg-red-400 opacity-75"></span>
                 <span className="relative inline-flex size-3 rounded-full bg-red-500"></span>

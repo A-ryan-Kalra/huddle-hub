@@ -17,7 +17,7 @@ function EmojiPicker({ setText }: EmojiPickerProps) {
       <PopoverContent
         side="top"
         sideOffset={-50}
-        className="bg-transparent border-none shadow-none drop-shadow-none mb-16"
+        className="bg-transparent w-fit border-none shadow-none drop-shadow-none mb-16"
       >
         <Picker
           data={data}
