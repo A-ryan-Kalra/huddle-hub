@@ -96,16 +96,7 @@ function ChannelName({
           params?.channelId === channel?.id && "bg-zinc-300 hover:bg-zinc-300"
         )}
       >
-        {totalNotification > 0 && (
-          <div className="flex  items-center gap-x-1 size-3  absolute top-2 right-3">
-            <span className=" flex size-3 ">
-              <span className="absolute animate-ping inline-flex h-full w-full  rounded-full bg-red-400 opacity-75"></span>
-              <span className="relative inline-flex size-3 rounded-full bg-red-500"></span>
-            </span>
-            <h1>{totalNotification}</h1>
-          </div>
-        )}
-        <div className="flex gap-x-2 items-center">
+        <div className="flex gap-x-2 items-center relative">
           <ActionToolTip
             side="top"
             align="end"
@@ -136,6 +127,15 @@ function ChannelName({
               {channelTypeIcon[channel.type]}
             </ActionToolTip>
           </div>
+          {totalNotification > 0 && (
+            <div className="flex  items-center gap-x-1 size-3  absolute top-2 right-3">
+              <span className=" flex size-3 ">
+                <span className="absolute animate-ping inline-flex h-full w-full  rounded-full bg-red-400 opacity-75"></span>
+                <span className="relative inline-flex size-3 rounded-full bg-red-500"></span>
+              </span>
+              <h1>{totalNotification}</h1>
+            </div>
+          )}
         </div>
       </div>
     </CustomizeChannelComp>
