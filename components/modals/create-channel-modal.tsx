@@ -124,8 +124,8 @@ function CreateChannelModal() {
   useEffect(() => {
     if (Array.isArray(member) && member.length > 0) {
       setAllMembers(
-        member.map((person) => ({
-          label: person.profile.name,
+        member.map((person, index) => ({
+          label: index + 1 + ". " + person.profile.name,
           value: person.id,
           icon: () => (
             <div className="relative w-6 h-6 rounded-full overflow-hidden">

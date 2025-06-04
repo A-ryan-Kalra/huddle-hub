@@ -30,11 +30,12 @@ export async function POST(req: Request) {
         where: {
           profileId: profile.id,
           serverId,
-          role: {
-            in: [memberRole.ADMIN, memberRole.MODERATOR],
-          },
+          // role: {
+          //   in: [memberRole.ADMIN, memberRole.MODERATOR],
+          // },
         },
       });
+
       members.push(channelOwnerMember?.id);
 
       const channel = await db.channel.create({
