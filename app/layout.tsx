@@ -23,6 +23,20 @@ const righteous = Noto_Sans_Indic_Siyaq_Numbers({
 export const metadata: Metadata = {
   title: "Huddle Hub",
   description: "The only platform to connect employes within the organization.",
+  keywords: [
+    "internal chat",
+    "organization",
+    "team communication",
+    "huddle",
+    "group-chat",
+  ],
+  openGraph: {
+    title: "Huddle Hub",
+    description: "Chat with your team. All in one place.",
+    url: process.env.NEXT_PUBLIC_SITE_URL!,
+    siteName: "Huddle Hub",
+    type: "website",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
