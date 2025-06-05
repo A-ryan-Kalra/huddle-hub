@@ -62,7 +62,7 @@ huddle-hub🌍 - A **real-time** communication platform primarly designated for 
 
 - 🔐 `User Management`
   - Now Members can invite new users via **authorized link**.
-  - ` Communicate with members on real-time video 🎦 or audio chat 🎚️🔈.`
+  - `Communicate with members on real-time video🎦 or audio chat🎚️🔈.`
   - leave channel or workspace anytime for now.
   - Create, edit, or delete their own channels (**public** or **private**) by simply righ-clicking on their channel name.
 
