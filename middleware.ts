@@ -4,12 +4,12 @@ const isPublicRoute = createRouteMatcher([
   "/sign-in(.*)",
   "/sign-up(.*)",
   "/api/uploadthing",
+  "/",
 ]);
 
 export default clerkMiddleware(async (auth, request) => {
   if (!isPublicRoute(request)) {
     const verification = await auth.protect();
-
     if (request.nextUrl.pathname.includes("invite")) {
       new Response(null, {
         status: 302,
