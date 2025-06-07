@@ -1,10 +1,9 @@
-import InitialModal from "@/components/modals/initial-modal";
 import { db } from "@/lib/db";
-import { RedirectToSignIn } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
-import { initialProfile } from "@/lib/initialProfile";
-import NavbarPage from "@/components/landing-page/navbar";
 import { currentProfile } from "@/lib/currentProfile";
+import Image from "next/image";
+import Header from "@/components/landing-page/header";
+import HeroPage from "@/components/landing-page/hero";
 
 export default async function Home() {
   const profile = await currentProfile();
@@ -29,10 +28,11 @@ export default async function Home() {
   }
 
   return (
-    <main>
-      <nav>
-        <NavbarPage />
-      </nav>
+    <main className="bg-[#F2FCF8]  w-full h-[110vh] relative">
+      <Header />
+      <section className="">
+        <HeroPage />
+      </section>
     </main>
   );
 }
