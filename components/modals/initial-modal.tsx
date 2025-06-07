@@ -25,12 +25,15 @@ import qs from "query-string";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
+import { SignOutButton, useAuth } from "@clerk/nextjs";
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
   imageUrl: z.string().min(1, { message: "Image is required" }),
 });
 function InitialModal() {
+  const { sessionId } = useAuth();
+
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const form = useForm({
@@ -51,6 +54,7 @@ function InitialModal() {
 
     form.reset();
     router.refresh();
+    router.push("/");
   };
 
   useEffect(() => {
@@ -71,7 +75,15 @@ function InitialModal() {
           Let's bring your server to life with a unique name and a custom image!
         </DialogDescription>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              const isSignout =
+                (e.nativeEvent as SubmitEvent).submitter?.id === "signOut";
+
+              if (!isSignout) form.handleSubmit(onSubmit)();
+            }}
+          >
             <div className="flex items-center w-full gap-y-5 flex-col justify-center">
               <div className="flex items-center justify-center">
                 <FormField
@@ -116,10 +128,27 @@ function InitialModal() {
                 />
               </div>
             </div>
-            <DialogFooter className="mt-3">
+
+            <DialogFooter className="mt-3 flex items-center ">
+              <div className="mr-auto">
+                <SignOutButton
+                  signOutOptions={{ sessionId: sessionId as string }}
+                >
+                  <Button
+                    variant={"ghost"}
+                    id="signOut"
+                    type="button"
+                    onClick={(e) => e.stopPropagation()}
+                    className="hover:bg-red-500 hover:text-white bg-white border-[1px] duration-300 transition"
+                  >
+                    Sign Out
+                  </Button>
+                </SignOutButton>
+              </div>
               <Button
-                className="disabled:bg-slate-500"
+                className="disabled:bg-slate-500 ml-auto"
                 disabled={isLoading}
+                type="submit"
                 variant={"primary"}
               >
                 {isLoading ? <Loader2 className="animate-spin" /> : "Create"}

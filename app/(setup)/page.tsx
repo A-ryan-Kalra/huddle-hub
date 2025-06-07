@@ -23,6 +23,8 @@ export default async function Home() {
 
   if (server) {
     redirect(`/servers/${server.id}`);
+  } else if (profile && !server) {
+    redirect(`/servers/create-server`);
   }
 
   return <InitialModal />;

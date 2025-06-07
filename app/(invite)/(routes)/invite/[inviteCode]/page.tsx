@@ -1,5 +1,7 @@
+import { Button } from "@/components/ui/button";
 import { db } from "@/lib/db";
 import { initialProfile } from "@/lib/initialProfile";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 interface InvitePageProps {
@@ -26,6 +28,11 @@ async function InvitePage({ params }: InvitePageProps) {
         <p className="text-lg text-zinc-400">
           Oops! The invite code is invalid. Please check and try again.
         </p>
+        <Link href={"/"}>
+          <Button variant={"ghost"} className="border-[1px]">
+            Go Back
+          </Button>
+        </Link>
       </div>
     );
   }
@@ -85,6 +92,11 @@ async function InvitePage({ params }: InvitePageProps) {
           ? "Oops! The invite code is invalid. Please check and try again."
           : "Oops! the page you are looking for doesn't exist."}
       </p>
+      <Link href={"/"}>
+        <Button variant={"ghost"} className="border-[1px]">
+          Go Back
+        </Button>
+      </Link>
     </div>
   );
 }
