@@ -4,6 +4,7 @@ import { currentProfile } from "@/lib/currentProfile";
 import Image from "next/image";
 import Header from "@/components/landing-page/header";
 import HeroPage from "@/components/landing-page/hero";
+import FeaturePages from "@/components/landing-page/feature";
 
 export default async function Home() {
   const profile = await currentProfile();
@@ -32,6 +33,9 @@ export default async function Home() {
       <Header />
       <section className="bg-inherit">
         <HeroPage />
+      </section>
+      <section className="">
+        <FeaturePages />
       </section>
     </main>
   );

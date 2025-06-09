@@ -62,7 +62,10 @@ function HeaderPage() {
           "max-w-[1280px] mx-auto flex p-2  items-center justify-between"
         )}
       >
-        <Link href={"/"} className="flex items-center gap-x-1 sm:gap-x-3">
+        <Link
+          href={"/"}
+          className="focus-visible:outline-none flex items-center gap-x-1 sm:gap-x-3"
+        >
           <div className="relative sm:w-20 sm:h-20  w-16 h-16">
             <Image
               draggable="false"
