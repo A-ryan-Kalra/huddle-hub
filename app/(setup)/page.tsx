@@ -28,9 +28,9 @@ export default async function Home() {
   }
 
   return (
-    <main className="bg-[#F2FCF8]  w-full h-[110vh] relative">
+    <main className="bg-[#F2FCF8]  w-full h-full relative">
       <Header />
-      <section className="">
+      <section className="bg-inherit">
         <HeroPage />
       </section>
     </main>

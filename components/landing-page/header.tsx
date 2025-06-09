@@ -37,7 +37,7 @@ function HeaderPage() {
   return (
     <header
       className={cn(
-        "w-full  sticky top-0 transition-all duration-100",
+        "w-full  sticky top-0 transition-all z-[100] duration-100",
         isScroll && "border-[1px] bg-slate-200/[0.5]"
       )}
     >

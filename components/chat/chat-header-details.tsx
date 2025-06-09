@@ -36,6 +36,7 @@ function ChatHeaderDetails({ type, channel, member }: ChatHeaderDetailsProps) {
                 server: channel?.server,
                 channelId: channel?.members[0].channelId,
                 currentMember: member,
+                name: channel?.name,
               })
             }
             className="hover:bg-zinc-100 flex gap-x-1 transition cursor-pointer p-0.5 rounded-md"
@@ -55,7 +56,7 @@ function ChatHeaderDetails({ type, channel, member }: ChatHeaderDetailsProps) {
             >
               <Badge
                 variant={"outline"}
-                className="!bg-emerald-600 rounded-full animate-pulse p-1.5 text-white font-semibold"
+                className="!bg-emerald-600 rounded-full p-1.5 text-white font-semibold"
               ></Badge>
             </ActionToolTip>
           ) : (
@@ -67,7 +68,7 @@ function ChatHeaderDetails({ type, channel, member }: ChatHeaderDetailsProps) {
             >
               <Badge
                 variant={"outline"}
-                className="!bg-yellow-600 rounded-full animate-pulse p-1.5 text-white font-semibold"
+                className="!bg-yellow-600 rounded-full p-1.5 text-white font-semibold"
               ></Badge>
             </ActionToolTip>
           )}
