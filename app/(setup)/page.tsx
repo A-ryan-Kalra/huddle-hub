@@ -19,7 +19,6 @@ export default async function Home() {
         },
       },
     });
-    console.log(server);
 
     if (server) {
       redirect(`/servers/${server.id}`);
@@ -29,7 +28,7 @@ export default async function Home() {
   }
 
   return (
-    <main className="bg-[#F2FCF8]  w-full h-full relative">
+    <main className="bg-[#F2FCF8]  w-full min-h-screen relative">
       <Header />
       <section className="bg-inherit">
         <HeroPage />

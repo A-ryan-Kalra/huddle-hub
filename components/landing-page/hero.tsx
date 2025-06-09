@@ -6,7 +6,7 @@ function HeroPage() {
   const [takePriority, setTakePriority] = useState(false);
 
   return (
-    <div className="max-w-[1280px] mx-auto bg-inherit flex flex-col gap-y-7 p-2 md items-center pt-24 justify-center">
+    <div className="max-w-[1280px] mx-auto  flex flex-col gap-y-7 p-2 items-center pt-24 justify-center">
       <div className="flex max-md:flex-col items-center">
         <h1 className="sm:text-5xl text-3xl font-[1000]">
           Connect.Collaborate.
@@ -21,9 +21,9 @@ function HeroPage() {
         share files and connect with coworkers and clients, engaging in
         one-to-one or one-to-many video/audio chat.
       </p>
-      <div className="relative pt-12 sm:pt-24 h-full max-sm:h-[400px] sm:h-[700px] lg:h-[1000px] bg-inherit w-full mt-10">
+      <div className="relative pt-12 sm:pt-24 h-full max-sm:h-[400px] sm:h-[700px] lg:h-[1000px]  w-full mt-10">
         <div
-          className={`absolute shadow-lg shadow-slate-400   rounded-lg  duration-500 ease-in-out transition-all w-full h-auto sm:h-auto overflow-hidden bg-transparent ${
+          className={`absolute shadow-lg shadow-slate-400   rounded-lg  duration-700 ease-in-out transition-all w-full h-auto sm:h-auto overflow-hidden bg-transparent ${
             takePriority
               ? "scale-[1] z-[10] translate-y-4 sm:translate-y-8"
               : "md:hover:-translate-y-14 scale-[.95] opacity-[.8] -translate-y-1 sm:-translate-y-7"
@@ -43,7 +43,7 @@ function HeroPage() {
         </div>
         <div
           onClick={() => setTakePriority((prev) => !prev)}
-          className={`absolute shadow-lg shadow-slate-400 rounded-xl w-full h-auto sm:h-auto overflow-hidden bg-transparent duration-500 ease-in-out transition-all ${
+          className={`absolute shadow-lg shadow-slate-400 rounded-xl w-full h-auto sm:h-auto overflow-hidden bg-transparent duration-700 ease-in-out transition-all ${
             !takePriority
               ? "scale-[1] z-[10]  translate-y-4 sm:translate-y-8"
               : "md:hover:-translate-y-14 -translate-y-1 sm:-translate-y-7 opacity-[.8]  scale-[.95]"
