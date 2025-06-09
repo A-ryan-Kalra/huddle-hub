@@ -34,7 +34,7 @@ export default async function Home() {
       <section className="bg-inherit">
         <HeroPage />
       </section>
-      <section className="">
+      <section className="bg-white">
         <FeaturePages />
       </section>
     </main>

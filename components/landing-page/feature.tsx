@@ -1,4 +1,5 @@
 import React from "react";
+import FeaturePopupEffect from "./feature-popup-effect";
 
 function FeaturePages() {
   return (
@@ -18,6 +19,7 @@ function FeaturePages() {
           </span>
         </h2>
       </div>
+      <FeaturePopupEffect />
     </div>
   );
 }
