@@ -8,7 +8,7 @@ function NavbarPage() {
     <nav>
       <div
         tabIndex={0}
-        className="bg-[#A2E6CB] group flex items-center text-teal-800 font-semibold text-lg px-4 py-1 rounded-[23px]"
+        className="bg-[#A2E6CB] group cursor-pointer flex items-center text-teal-800 font-semibold text-lg px-4 py-1 rounded-[23px]"
       >
         <SignInButton />
 
@@ -25,9 +25,9 @@ function NavbarPage() {
             <path
               d="M 1 8 L 9 8"
               stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             ></path>
           </svg>
           <svg
@@ -41,9 +41,9 @@ function NavbarPage() {
               d="m6 12 4-4-4-4"
               stroke="currentColor"
               className="icon-dark"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             ></path>
           </svg>
         </span>
