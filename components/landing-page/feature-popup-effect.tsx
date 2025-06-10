@@ -42,10 +42,10 @@ function FeaturePopupEffect() {
     <div className="max-w-[1280px] w-full relative mx-auto flex h-full flex-col p-2 items-center pt-28  ">
       <div
         ref={imgeRef}
-        className="w-12 h-12 rounded-xl absolute top-0 mx-auto mt-5 transition"
+        className="w-[50px]  h-[50px] rounded-xl absolute top-0 mx-auto mt-5 transition"
         style={{ height: "100px" }}
       >
-        <div className="bg-teal-600 z-10 bottom-0 absolute rounded-full w-12 h-12 flex items-center">
+        <div className="border-[2px] border-teal-600 z-10 bottom-0 absolute bg-white rounded-full w-[50px] h-[50px] flex items-center">
           <img
             className="object-cover aspect-square scale-[200%] mx-auto w-10 h-10"
             alt="logo"
