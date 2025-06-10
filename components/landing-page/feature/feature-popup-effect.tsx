@@ -43,6 +43,10 @@ function FeaturePopupEffect() {
     <div className="max-w-[1280px] w-full relative mx-auto flex h-full flex-col p-2 items-center pt-[4.5rem]  ">
       <div
         ref={imgeRef}
+        className="w-1 border-[3px] border-gray-300 border-dashed rounded-xl h-full absolute top-0 mx-auto mt-5 transition"
+      ></div>
+      <div
+        ref={imgeRef}
         className="w-[50px]  h-[50px] rounded-xl absolute top-0 mx-auto mt-5 transition"
         style={{ height: "100px" }}
       >
@@ -60,7 +64,7 @@ function FeaturePopupEffect() {
         style={{ height: "100px" }}
       ></div>
 
-      <div ref={sectionRef} className="h-[1000px] w-full bg-gray-100">
+      <div ref={sectionRef} className="h-[1000px] w-full bg-gray-">
         <FeatureImagePages />
       </div>
     </div>
