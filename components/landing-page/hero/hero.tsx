@@ -25,10 +25,12 @@ function HeroPage() {
         <div
           className={`absolute shadow-lg shadow-slate-400   rounded-lg  duration-700 ease-in-out transition-all w-full h-auto sm:h-auto overflow-hidden bg-transparent ${
             takePriority
-              ? "scale-[1] z-[10] translate-y-4 sm:translate-y-8"
+              ? "scale-[1] z-[10] translate-y-5 sm:translate-y-10"
               : "md:hover:-translate-y-14 scale-[.95] opacity-[.8] -translate-y-1 sm:-translate-y-7"
           }`}
-          onClick={() => setTakePriority((prev) => !prev)}
+          onClick={() => {
+            if (!takePriority) setTakePriority((prev) => !prev);
+          }}
         >
           <div className="relative w-full h-full">
             <Image
@@ -42,10 +44,12 @@ function HeroPage() {
           </div>
         </div>
         <div
-          onClick={() => setTakePriority((prev) => !prev)}
+          onClick={() => {
+            if (takePriority) setTakePriority((prev) => !prev);
+          }}
           className={`absolute shadow-lg shadow-slate-400 rounded-xl w-full h-auto sm:h-auto overflow-hidden bg-transparent duration-700 ease-in-out transition-all ${
             !takePriority
-              ? "scale-[1] z-[10]  translate-y-4 sm:translate-y-8"
+              ? "scale-[1] z-[10]  translate-y-5 sm:translate-y-10"
               : "md:hover:-translate-y-14 -translate-y-1 sm:-translate-y-7 opacity-[.8]  scale-[.95]"
           } `}
         >
