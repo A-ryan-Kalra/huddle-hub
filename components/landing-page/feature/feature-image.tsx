@@ -1,5 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
+import { Modak } from "next/font/google";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -14,13 +15,13 @@ function FeatureImagePages({
 }) {
   const imageRef = useRef<HTMLDivElement>(null);
   const heightRef = useRef<HTMLDivElement>(null);
-  const [scrollProgress, setScrollProgress] = useState(0);
+
   useEffect(() => {
     function handleScroll() {
       const element = imageRef.current;
       const heightElement = heightRef.current;
       const windowHeight = window.innerHeight;
-
+      const imgEl = document.querySelector(`img[alt="${alt}"]`);
       if (!element || !heightElement) {
         return;
       }
@@ -32,21 +33,36 @@ function FeatureImagePages({
           totalScrollable,
           Math.max(0, windowHeight - targetPoint - rect.top)
         );
+
+        if (scrolled > 10 && scrolled < 390) {
+          imgEl?.classList.add("show");
+          imgEl?.classList.remove("hide");
+        } else {
+          imgEl?.classList.remove("show");
+          imgEl?.classList.add("hide");
+        }
+
         heightElement.style.height = `${scrolled}px`;
       }
     }
 
     window.addEventListener("scroll", handleScroll);
 
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
-  //   console.log(scrollProgress);
   return (
     <div
       ref={imageRef}
-      className="flex items-start relative justify-between w-full h-[300px]"
+      className="flex items-start relative justify-between  overflow-hidde bg w-full h-[400px]"
     >
+      <div className="absolute top-0 rounded-full   bg-white py-3  left-[50%] translate-x-[-50%] w-3 h-3  ">
+        <div
+          className={`relative rounded-full border-[2px] bg-white top-[50%]  left-[50%] translate-x-[-50%] translate-y-[-50%]  border-indigo-400  w-3 h-3`}
+        ></div>
+      </div>
       <div ref={heightRef} className="absolute top-0  ">
         <div
           className={cn(`w-[600px] h-[500px] absolute top-full `, className)}

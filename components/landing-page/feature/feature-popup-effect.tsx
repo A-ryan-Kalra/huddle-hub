@@ -35,39 +35,33 @@ function FeaturePopupEffect() {
       }
     };
 
-    const observer1 = new IntersectionObserver(
+    const observer = new IntersectionObserver(
       (entries) => {
         // console.log(entries);
         for (let i = entries.length - 1; i >= 0; i--) {
           const entry = entries[i];
 
-          if (entry.isIntersecting) {
-            document
-              .querySelectorAll("[data-img-new]")
-              .forEach((img) => img.classList.remove("active-slide"));
-            console.log(
-              "first",
-              `${(entry.target as HTMLElement).dataset.imgToShowNew}`
-            );
-            // console.log(entry.target);
-            const img = document.querySelector(
-              `img[alt="${(entry.target as HTMLElement).dataset.imgToShowNew}"]`
-            );
-            // console.log(img);
-            img?.classList.add("active-slide");
+          if (!entry.isIntersecting) {
+            document.querySelectorAll("[data-img-new]").forEach((img) => {
+              console.log(img);
+              img.classList.toggle("hide");
+            });
+
             break;
           }
         }
       },
-      { threshold: 1 }
+      { threshold: 0 }
     );
-
-    document
-      .querySelectorAll("[data-img-to-show-new]")
-      .forEach((section) => observer1.observe(section));
+    if (sectionRef.current) observer.observe(sectionRef.current);
 
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+    };
   }, []);
 
   return (
@@ -95,19 +89,19 @@ function FeaturePopupEffect() {
         style={{ height: "100px" }}
       ></div>
 
-      <div ref={sectionRef} className="h-[1000px] w-full bg-gray-">
+      <div ref={sectionRef} className="h-full w-full bg-gray-">
         <div className="bg-white w-1 h-1" data-img-to-show-new="modal"></div>
         <FeatureImagePages
           alt="modal"
-          className="active-slide"
+          // className="active-slide"
           icon="/modal.png"
         />
         <div className="bg-white w-1 h-1" data-img-to-show-new="env-card"></div>
         <FeatureImagePages alt="env-card" icon="/env-card.png" />
         <div className="bg-white w-1 h-1" data-img-to-show-new="deploy"></div>
-        <FeatureImagePages alt="deploy" icon="/deploy.png" />
-        <div className="bg-white w-1 h-1" data-img-to-show-new="type"></div>
-        <FeatureImagePages alt="deploy" icon="/deploy.png" />
+        <FeatureImagePages alt="deploy" icon="/type.png" />
+        {/* <div className="bg-white w-1 h-1" data-img-to-show-new="type"></div> */}
+        {/* <FeatureImagePages alt="deploy" icon="/modal.png" /> */}
       </div>
     </div>
   );
