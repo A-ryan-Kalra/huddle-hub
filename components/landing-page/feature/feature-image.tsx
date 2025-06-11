@@ -39,15 +39,16 @@ function FeatureImagePages({
           Math.max(0, windowHeight - targetPoint - rect.top)
         );
 
-        if (scrolled > 10 && scrolled < 395) {
+        if (scrolled < 399) {
           imgEl?.classList.add("show");
           imgEl?.classList.remove("hide");
         } else {
           imgEl?.classList.remove("show");
           imgEl?.classList.add("hide");
         }
-
-        heightElement.style.height = `${scrolled}px`;
+      } else {
+        imgEl?.classList.remove("show");
+        imgEl?.classList.add("hide");
       }
     }
 
