@@ -40,6 +40,7 @@ function FeatureImagePages({
         );
 
         if (scrolled < 399) {
+          heightElement.style.height = `${scrolled}px`;
           imgEl?.classList.add("show");
           imgEl?.classList.remove("hide");
         } else {
@@ -80,7 +81,7 @@ function FeatureImagePages({
             } border-indigo-400  w-3 h-3`}
           ></div>
         </div>
-        <div ref={heightRef} className="absolute top-0  ">
+        <div ref={heightRef} className="absolute top-0">
           <div
             className={cn(
               `sm:w-[600px]  w-[200px] h-[200px] sm:h-[500px] absolute top-full `,
