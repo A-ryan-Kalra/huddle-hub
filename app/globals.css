@@ -2,6 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+.active-slide {
+  opacity: 1 !important;
+}
+img[alt="modal"] {
+  opacity: 0;
+}
+img[alt="env-card"] {
+  opacity: 0;
+}
+img[alt="deploy"] {
+  opacity: 0;
+}
+img[alt="type"] {
+  opacity: 0;
+}
 html,
 body,
 :root {

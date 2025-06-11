@@ -1,8 +1,17 @@
 "use client";
+import { cn } from "@/lib/utils";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 
-function FeatureImagePages() {
+function FeatureImagePages({
+  icon,
+  alt,
+  className,
+}: {
+  icon: string;
+  alt: string;
+  className?: string;
+}) {
   const imageRef = useRef<HTMLDivElement>(null);
   const heightRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -36,14 +45,17 @@ function FeatureImagePages() {
   return (
     <div
       ref={imageRef}
-      className="flex items-start relative justify-between w-full h-full"
+      className="flex items-start relative justify-between w-full h-[300px]"
     >
       <div ref={heightRef} className="absolute top-0  ">
-        <div className={`w-[600px] h-[500px] absolute top-full `}>
+        <div
+          className={cn(`w-[600px] h-[500px] absolute top-full `, className)}
+        >
           <img
             className="object-cover aspect-square w-[600px] h-full"
-            alt="/modal.png"
-            src={"/modal.png"}
+            alt={alt}
+            src={icon}
+            data-img-new
           />
         </div>
       </div>

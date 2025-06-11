@@ -35,6 +35,37 @@ function FeaturePopupEffect() {
       }
     };
 
+    const observer1 = new IntersectionObserver(
+      (entries) => {
+        // console.log(entries);
+        for (let i = entries.length - 1; i >= 0; i--) {
+          const entry = entries[i];
+
+          if (entry.isIntersecting) {
+            document
+              .querySelectorAll("[data-img-new]")
+              .forEach((img) => img.classList.remove("active-slide"));
+            console.log(
+              "first",
+              `${(entry.target as HTMLElement).dataset.imgToShowNew}`
+            );
+            // console.log(entry.target);
+            const img = document.querySelector(
+              `img[alt="${(entry.target as HTMLElement).dataset.imgToShowNew}"]`
+            );
+            // console.log(img);
+            img?.classList.add("active-slide");
+            break;
+          }
+        }
+      },
+      { threshold: 1 }
+    );
+
+    document
+      .querySelectorAll("[data-img-to-show-new]")
+      .forEach((section) => observer1.observe(section));
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -65,7 +96,18 @@ function FeaturePopupEffect() {
       ></div>
 
       <div ref={sectionRef} className="h-[1000px] w-full bg-gray-">
-        <FeatureImagePages />
+        <div className="bg-white w-1 h-1" data-img-to-show-new="modal"></div>
+        <FeatureImagePages
+          alt="modal"
+          className="active-slide"
+          icon="/modal.png"
+        />
+        <div className="bg-white w-1 h-1" data-img-to-show-new="env-card"></div>
+        <FeatureImagePages alt="env-card" icon="/env-card.png" />
+        <div className="bg-white w-1 h-1" data-img-to-show-new="deploy"></div>
+        <FeatureImagePages alt="deploy" icon="/deploy.png" />
+        <div className="bg-white w-1 h-1" data-img-to-show-new="type"></div>
+        <FeatureImagePages alt="deploy" icon="/deploy.png" />
       </div>
     </div>
   );
