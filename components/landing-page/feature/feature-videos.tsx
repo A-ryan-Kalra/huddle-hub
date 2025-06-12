@@ -112,6 +112,7 @@ function FeatureVideos({
               data-alt={alt}
               ref={controlVideoRef}
               autoPlay
+              loop
               muted
               src={icon}
               data-img-new
