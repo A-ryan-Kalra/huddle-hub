@@ -57,7 +57,7 @@ async function ChannelSidebar({ serverId }: ChannelSideBarProps) {
   });
 
   if (!server) {
-    redirect("/");
+    redirect("/servers/create-server");
   }
   const allServers = await db.server.findMany({
     where: {

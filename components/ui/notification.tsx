@@ -10,6 +10,7 @@ import useChatQuery from "@/hooks/use-chat-query";
 
 import ListItem from "../notification/list-item";
 import useNotificationSocket from "@/hooks/use-notification-socket";
+import { useParams } from "next/navigation";
 
 interface NotificationProps {
   currentMemberId: string;
@@ -22,6 +23,7 @@ export function Notification({ currentMemberId }: NotificationProps) {
   const addKey = `notification:${notificationQuery}:newAlert`;
   const chatRef = React.useRef<HTMLDivElement | null>(null);
   const audioRef = React.useRef(null);
+  const params = useParams();
 
   const {
     data,
@@ -33,6 +35,7 @@ export function Notification({ currentMemberId }: NotificationProps) {
   } = useChatQuery({
     queryKey,
     apiUrl: `/api/notifications`,
+    serverId: params?.serverId as string,
     type: "notification",
   });
   const [notReadTotal, setNotReadTotal] = React.useState<number>(0);

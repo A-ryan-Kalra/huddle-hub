@@ -4,35 +4,36 @@ export const features = [
     description:
       "Threaded chats in Huddle-hub allow users to have focused, organized conversations within a specific message, keeping side discussions out of the main channel flow. By replying in a thread, team members can discuss a topic in depth without cluttering the channel.",
     alt: "threads",
-    icon: "/modal.png",
+    icon: "/mp4/threads-feature.mp4",
   },
+
   {
     title: "Push Notifications",
     description:
       "Introducing push notifications, It keep users instantly informed, even when they're not actively browsing. With this feature, users can receive real-time updates — like new messages, alerts or important announcements — directly on their device.",
     alt: "push-notification",
-    icon: "/env-card.png",
+    icon: "/mp4/push-notification.mp4",
   },
   {
     title: "Jump to Message",
     description:
       "Quickly navigate to the exact point in a conversation with our Jump to Message feature. Whether you're following up on a reply, a mention, or a thread, just tap and instantly scroll to the original message.",
     alt: "jump-message",
-    icon: "/type.png",
+    icon: "/mp4/jump-to-message.mp4",
   },
   {
     title: "Notification Tracking",
     description:
       "Our website includes a notification tracking feature that lets users view and manage all their notifications in one place. Whether it's a new message, update, alert, or reminder — everything is stored and organized so users never miss anything important.",
     alt: "notifiaction-tracks",
-    icon: "/type.png",
+    icon: "/mp4/track-notification.mp4",
   },
   {
     title: "Invite Friends",
     description:
       "Easily grow your network by inviting friends to join the platform. With our Invite Friends feature, users can send personalized invitations via link. It's a simple way to share the experience, collaborate with others.",
     alt: "invite",
-    icon: "/type.png",
+    icon: "/mp4/invite-friends.mp4",
   },
   {
     title: "Live Video Call",

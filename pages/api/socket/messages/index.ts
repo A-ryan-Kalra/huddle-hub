@@ -132,6 +132,7 @@ export default async function handler(
         recipients: {
           create: allMembers?.map((member, index) => ({
             memberId: member?.id,
+            serverId: serverId as string,
           })),
         },
       },

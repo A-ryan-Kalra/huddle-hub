@@ -17,6 +17,7 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
 
     const cursor = searchParams.get("cursor");
+    const serverId = searchParams.get("serverId");
 
     if (!profile) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -38,6 +39,7 @@ export async function GET(req: Request) {
           member: {
             profileId: profile?.id,
           },
+          serverId: serverId as string,
         },
         include: {
           notification: {
@@ -66,6 +68,7 @@ export async function GET(req: Request) {
           member: {
             profileId: profile?.id,
           },
+          serverId: serverId as string,
         },
         include: {
           notification: {
@@ -94,6 +97,7 @@ export async function GET(req: Request) {
         member: {
           profileId: profile.id,
         },
+        serverId: serverId as string,
         isRead: false,
       },
     });

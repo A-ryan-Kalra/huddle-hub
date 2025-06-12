@@ -118,7 +118,7 @@ function ServerDropDown({
           </DropdownMenuItem>
 
           <DropdownMenuItem
-            onClick={() => onOpen("invite", { server })}
+            onClick={() => onOpen("invite", { server, member: currentMember })}
             className="cursor-pointer"
           >
             Invite People

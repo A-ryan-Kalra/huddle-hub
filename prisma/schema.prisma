@@ -185,6 +185,7 @@ model notificationRecipient {
   id String @id @default(uuid())
   isRead Boolean @default(false)
   notificationId String
+  serverId String
   notification notification @relation(fields: [notificationId],references: [id],onDelete: Cascade)
   memberId String
   member member @relation(fields: [memberId],references: [id],onDelete: Cascade)

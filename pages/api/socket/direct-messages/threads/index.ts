@@ -104,6 +104,7 @@ export default async function handler(
         recipients: {
           create: {
             memberId: reciever,
+            serverId: serverId as string,
           },
         },
       },

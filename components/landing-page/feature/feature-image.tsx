@@ -20,12 +20,15 @@ function FeatureImagePages({
   const imageRef = useRef<HTMLDivElement>(null);
   const heightRef = useRef<HTMLDivElement>(null);
   const [isChecked, setIsChecked] = useState(false);
+  const controlVideoRef = useRef<HTMLVideoElement>(null);
+
   useEffect(() => {
-    function handleScroll() {
+    async function handleScroll() {
       const element = imageRef.current;
       const heightElement = heightRef.current;
       const windowHeight = window.innerHeight;
-      const imgEl = document.querySelector(`img[alt="${alt}"]`);
+      const video = controlVideoRef.current;
+      const imgEl = document.querySelector(`video[data-alt="${alt}"]`);
       if (!element || !heightElement) {
         return;
       }
@@ -40,18 +43,34 @@ function FeatureImagePages({
         );
 
         if (scrolled < 399) {
+          if (video) {
+            try {
+              await video.play(); // Wait until it's safe to play
+            } catch (err) {
+              console.error("Playback failed:", err);
+            }
+          }
           heightElement.style.height = `${scrolled}px`;
           imgEl?.classList.add("show");
           imgEl?.classList.remove("hide");
         } else {
           imgEl?.classList.remove("show");
           imgEl?.classList.add("hide");
+          if (video) {
+            video.pause();
+            video.currentTime = 0;
+          }
         }
+
         setIsChecked(true);
       } else {
         imgEl?.classList.remove("show");
         imgEl?.classList.add("hide");
         setIsChecked(false);
+        if (video) {
+          video.pause();
+          video.currentTime = 0;
+        }
       }
     }
 
@@ -84,13 +103,16 @@ function FeatureImagePages({
         <div ref={heightRef} className="absolute top-0">
           <div
             className={cn(
-              `sm:w-[600px]  w-[200px] h-[200px] sm:h-[500px] absolute top-full `,
+              `sm:w-[600px] w-[200px] rounded-md -left-3 h-[200px] sm:h-[340px] absolute top-full `,
               className
             )}
           >
-            <img
-              className="object-cover aspect-square w-[600px] h-full"
-              alt={alt}
+            <video
+              className="object-cover object-top z-10 shadow-md shadow-slate-400 rounded-md overflow-hidden aspect-square w-full h-full"
+              data-alt={alt}
+              ref={controlVideoRef}
+              autoPlay
+              muted
               src={icon}
               data-img-new
             />
