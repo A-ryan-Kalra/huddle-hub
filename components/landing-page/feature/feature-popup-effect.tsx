@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
-import FeatureImagePages from "./feature-image";
+import FeatureVideos from "./feature-videos";
 import { features } from "@/lib/constant-features";
 
 function FeaturePopupEffect() {
@@ -90,9 +90,9 @@ function FeaturePopupEffect() {
         style={{ height: "100px" }}
       ></div>
 
-      <div ref={sectionRef} className="h-full w-full bg-gray-">
+      <div ref={sectionRef} className="h-full w-full">
         {features?.map((feature, index) => (
-          <FeatureImagePages
+          <FeatureVideos
             key={index}
             title={feature.title}
             description={feature.description}

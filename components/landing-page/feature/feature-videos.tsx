@@ -4,7 +4,7 @@ import { Modak } from "next/font/google";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 
-function FeatureImagePages({
+function FeatureVideos({
   icon,
   alt,
   className,
@@ -88,9 +88,9 @@ function FeatureImagePages({
     >
       <>
         <div
-          className={`absolute top-0 rounded-full bg-white left-[50%] translate-x-[-50%] w-3 h-3   ${
+          className={`absolute top-0 rounded-full bg-white left-[50%] translate-x-[-50%] w-2 h-2   ${
             isChecked
-              ? "border-indigo-600  border-[3px] px-2 py-2"
+              ? "border-indigo-600  border-[2px] px-2 py-2"
               : "bg-white py-3"
           }`}
         >
@@ -122,7 +122,7 @@ function FeatureImagePages({
       <div className="  w-full flex  justify-between h-full">
         <div className="flex-1 w-full h-full"></div>
         <div className="flex-1 flex gap-y-5 flex-col  px-2">
-          <h1 className="mt-2 text-left text-2xl ml-2 sm:ml-10  font-extrabold sm:text-4xl">
+          <h1 className="mt-2 text-left text-2xl ml-2 sm:ml-10  font-extrabold sm:text-3xl">
             <span
               className={`${
                 isChecked
@@ -133,7 +133,7 @@ function FeatureImagePages({
               {title}
             </span>
           </h1>
-          <p className=" sm:text-xl max-sm:text-sm w-full text-left sm:px-5 ml-5 py-2 px-2 font-sans text-zinc-700">
+          <p className=" sm:text-lg max-sm:text-sm w-full text-left sm:px-5 ml-5 py-2 px-2 font-sans text-zinc-700">
             {description}
           </p>
         </div>
@@ -142,4 +142,4 @@ function FeatureImagePages({
   );
 }
 
-export default FeatureImagePages;
+export default FeatureVideos;

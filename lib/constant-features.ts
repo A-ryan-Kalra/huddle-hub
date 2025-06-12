@@ -40,20 +40,20 @@ export const features = [
     description:
       "Connect in real time with seamless live video calls directly through the platform. Ensuring high-quality video, secure connections, and instant communication — all in one place whether for meetings, collaboration, or casual chats.",
     alt: "video-call",
-    icon: "/type.png",
+    icon: "/mp4/video-call.mp4",
   },
   {
     title: "Create Channels",
     description:
       "Organize conversations your way with the ability to create private or public channels. Stay in control of who sees what — and keep communication organized and secure.",
     alt: "channels",
-    icon: "/type.png",
+    icon: "/mp4/create-channel.mp4",
   },
   {
     title: "Create Server",
     description:
       "Build your own workspace for community, collaboration, or team communication with the Create Server feature. Servers act as hubs where you can organize channels, manage members, set permissions, and customize settings to fit your needs — whether it's for friends, a project team, or a large community.",
     alt: "server",
-    icon: "/type.png",
+    icon: "/mp4/create-server.mp4",
   },
 ];
