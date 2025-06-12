@@ -101,7 +101,13 @@ function FeatureImagePages({
         <div className="flex-1 w-full h-full"></div>
         <div className="flex-1 flex gap-y-5 flex-col  px-2">
           <h1 className="mt-2 text-left text-2xl ml-2 sm:ml-10  font-extrabold sm:text-4xl">
-            <span className="from-purple-500 to-blue-500 bg-gradient-to-r text-transparent bg-clip-text">
+            <span
+              className={`${
+                isChecked
+                  ? "from-purple-500 to-blue-500"
+                  : "from-slate-500 to-purple-300"
+              }  bg-gradient-to-r text-transparent bg-clip-text`}
+            >
               {title}
             </span>
           </h1>

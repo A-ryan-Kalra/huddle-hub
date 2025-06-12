@@ -69,7 +69,7 @@ function FeaturePopupEffect() {
     <div className=" w-full relative mx-auto flex h-full flex-col p-2 items-center pt-[4.5rem]  ">
       <div
         ref={imgeRef}
-        className="w-1 border-[3px] border-gray-300 border-dashed rounded-xl h-full absolute top-0 mx-auto mt-5 transition"
+        className="w-1 border-[2px] border-gray-300 border-dashed rounded-xl h-full absolute top-0 mx-auto mt-5 transition"
       ></div>
       <div
         ref={imgeRef}
@@ -86,7 +86,7 @@ function FeaturePopupEffect() {
       </div>
       <div
         ref={lineRef}
-        className="w-[5px] bg-indigo-700  rounded-xl absolute top-0 mx-auto mt-5 transition"
+        className="w-[4px] bg-indigo-700  rounded-xl absolute top-0 mx-auto mt-5 transition"
         style={{ height: "100px" }}
       ></div>
 
