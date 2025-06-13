@@ -29,8 +29,16 @@ function FeaturePopupEffect() {
           Math.max(100, windowHeight - triggerPoint - rect.top)
         );
 
-        line.style.height = `${scrolled}px`;
-        imge.style.height = `${scrolled}px`;
+        // line.style.height = `${scrolled}px`;
+        // imge.style.height = `${scrolled}px`;
+        line.animate(
+          { height: `${scrolled}px` },
+          { duration: 0, easing: "ease-in-out", fill: "forwards" }
+        );
+        imge.animate(
+          { height: `${scrolled}px` },
+          { duration: 0, easing: "ease-in-out", fill: "forwards" }
+        );
       } else {
         imge.style.height = `${100}px`;
         line.style.height = `${100}px`;
@@ -92,7 +100,7 @@ max-lg:h-11 lg:w-[50px] lg:h-[50px] flex items-center"
       </div>
       <div
         ref={lineRef}
-        className="w-[4px] bg-indigo-700 rounded-xl absolute top-0 mx-auto mt-5 transition"
+        className="w-[4px] bg-indigo-700 rounded-xl absolute top-0 mx-auto mt-5"
         style={{ height: "100px" }}
       ></div>
 

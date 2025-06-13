@@ -7,23 +7,19 @@ import { cn } from "@/lib/utils";
 
 function HeaderPage() {
   const [isScroll, setIsScroll] = useState(false);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+  // const [position, setPosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     function handleScroll(e: Event) {
-      if (window.scrollY > 0) {
-        setIsScroll(true);
-      } else {
-        setIsScroll(false);
-      }
+      setIsScroll(window.scrollY > 0);
     }
 
-    function handleMouseMove(e: Event) {
-      const mouseEvent = e instanceof MouseEvent;
-      if (mouseEvent) {
-        setPosition({ x: e.clientX, y: e.clientY });
-      }
-    }
+    // function handleMouseMove(e: Event) {
+    //   const mouseEvent = e instanceof MouseEvent;
+    //   if (mouseEvent) {
+    //     setPosition({ x: e.clientX, y: e.clientY });
+    //   }
+    // }
 
     document.addEventListener("scroll", handleScroll);
     // document.addEventListener("mousemove", handleMouseMove);
@@ -33,12 +29,14 @@ function HeaderPage() {
       //   document.removeEventListener("mousemove", handleMouseMove);
     };
   }, []);
-  //   console.log(position);
+
   return (
     <header
       className={cn(
-        "w-full  sticky top-0 transition-all z-[100] duration-100",
-        isScroll && "border-[1px] bg-slate-200/[0.5]"
+        "w-full  sticky top-0 z-[100] border-b-[1px] duration-100",
+        isScroll
+          ? "bg-slate-200/[0.5] border-b-slate-200"
+          : " border-b-transparent"
       )}
     >
       {/* <div
