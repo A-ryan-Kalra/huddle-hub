@@ -19,7 +19,9 @@ function FeaturePages() {
           </span>
         </h2>
       </div>
-      <FeaturePopupEffect />
+      <div className="mb-[400px] relative w-full h-full">
+        <FeaturePopupEffect />
+      </div>
     </div>
   );
 }

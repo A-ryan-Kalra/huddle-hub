@@ -41,6 +41,7 @@ function FeatureVideos({
       const targetPoint = 500;
 
       if (rect.top < windowHeight - targetPoint && rect.bottom > 0) {
+        setIsChecked(true);
         const totalScrollable = rect.height;
         const scrolled = Math.min(
           totalScrollable,
@@ -84,8 +85,6 @@ function FeatureVideos({
             videoMobile.currentTime = 0;
           }
         }
-
-        setIsChecked(true);
       } else {
         imgEl?.classList.remove("show");
         showImgElement?.classList.remove("show");
@@ -117,14 +116,14 @@ function FeatureVideos({
     >
       <>
         <div
-          className={`absolute top-0  translate-x-[2%]  rounded-full bg-white lg:left-[50%] lg:translate-x-[-50%] w-2 h-2   ${
+          className={`absolute top-0 translate-x-[2%] rounded-full bg-white lg:left-[50%] lg:translate-x-[-50%] w-2 h-2   ${
             isChecked
               ? "border-indigo-600  border-[2px] px-2 py-2 max-sm:-left-[2%] -left-[1%]"
               : "bg-white py-3 -left-0.5"
           }`}
         >
           <div
-            className={`relative rounded-full border-[2px]  top-[50%] lg:left-[50%] lg:translate-x-[-50%] translate-y-[-50%] ${
+            className={`relative rounded-full border-[2px] top-[50%] lg:left-[50%] lg:translate-x-[-50%] translate-y-[-50%] ${
               isChecked
                 ? "bg-indigo-600 translate-x-[-50%]"
                 : "bg-white max-lg:translate-x-[-10%]"

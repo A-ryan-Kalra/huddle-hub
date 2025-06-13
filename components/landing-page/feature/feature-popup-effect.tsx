@@ -25,7 +25,7 @@ function FeaturePopupEffect() {
       if (rect.top < windowHeight - triggerPoint && rect.bottom > 0) {
         const totalScrollable = rect.height;
         const scrolled = Math.min(
-          totalScrollable,
+          totalScrollable + 100,
           Math.max(100, windowHeight - triggerPoint - rect.top)
         );
 
