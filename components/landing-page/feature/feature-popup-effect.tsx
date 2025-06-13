@@ -54,9 +54,12 @@ function FeaturePopupEffect() {
       },
       { threshold: 0 }
     );
-    if (sectionRef.current) observer.observe(sectionRef.current);
+    if (window.innerWidth >= 1024) {
+      if (sectionRef.current) observer.observe(sectionRef.current);
+    }
 
     window.addEventListener("scroll", handleScroll);
+
     return () => {
       window.removeEventListener("scroll", handleScroll);
       if (sectionRef.current) {
@@ -66,19 +69,22 @@ function FeaturePopupEffect() {
   }, []);
 
   return (
-    <div className=" w-full relative mx-auto flex h-full flex-col p-2 items-center pt-[4.5rem]  ">
+    <div className=" w-full relative mx-auto flex h-full flex-col p-2 lg:items-center pt-[4.5rem]  ">
       <div
         ref={imgeRef}
-        className="w-1 border-[2px] border-gray-300 border-dashed rounded-xl h-full absolute top-0 mx-auto mt-5"
+        className="w-1 border-[2px] border-gray-300 border-dashed rounded-xl h-full absolute top-0 lg:mx-auto mr-auto mt-5"
       ></div>
       <div
         ref={imgeRef}
-        className="w-[50px]  h-[50px] rounded-xl absolute top-0 mx-auto mt-5"
+        className="lg:w-[50px] w-[30px] lg:h-[50px] h-[30px] rounded-xl absolute top-0  lg:mx-auto max-lg:-left-2.5 mt-5"
         style={{ height: "100px" }}
       >
-        <div className="border-[2px] border-teal-600 z-10 bottom-0 absolute bg-white rounded-full w-[50px] h-[50px] flex items-center">
+        <div
+          className="border-[2px] border-teal-600 z-10 bottom-0 absolute bg-white rounded-full max-lg:w-10
+max-lg:h-10 lg:w-[50px] lg:h-[50px] flex items-center"
+        >
           <img
-            className="object-cover aspect-square scale-[200%] mx-auto w-10 h-10"
+            className="object-cover aspect-square scale-[200%] mx-auto lg:w-10 w-7 lg:h-10 h-7"
             alt="logo"
             src={"/icons/maskable-icon.png"}
           />
@@ -86,7 +92,7 @@ function FeaturePopupEffect() {
       </div>
       <div
         ref={lineRef}
-        className="w-[4px] bg-indigo-700  rounded-xl absolute top-0 mx-auto mt-5 transition"
+        className="w-[4px] bg-indigo-700 rounded-xl absolute top-0 mx-auto mt-5 transition"
         style={{ height: "100px" }}
       ></div>
 
