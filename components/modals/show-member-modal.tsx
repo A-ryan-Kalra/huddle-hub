@@ -32,11 +32,6 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuPortal,
-  DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { useRouter } from "next/navigation";
@@ -56,11 +51,13 @@ function ShowChannelMemberModal() {
     server,
     channelId,
     currentMember,
+    name,
   } = data as {
     member: (memberType & { profile: profile })[];
     server: server;
     channelId: string;
     currentMember: memberType & { profile: profile };
+    name: string;
   };
   const openModal = type === "showChannelMembers";
   const [loadingId, setLoadingId] = useState("");
@@ -140,7 +137,7 @@ function ShowChannelMemberModal() {
                     </p>
                   </div>
                   <div className="ml-auto p-2 ">
-                    {canRemove && (
+                    {canRemove && name !== "general" && (
                       <>
                         {!isHigherRole && member.id !== loadingId && (
                           <DropdownMenu>
@@ -167,7 +164,7 @@ function ShowChannelMemberModal() {
                       </>
                     )}
 
-                    {!canRemove && (
+                    {!canRemove && name !== "general" && (
                       <>
                         {!isHigherRole &&
                           currentMember?.id === member?.id &&

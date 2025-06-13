@@ -26,6 +26,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import { useModal } from "@/hooks/use-modal-store";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
@@ -50,10 +51,17 @@ function CreateServerModal() {
       url: "/api/servers",
     });
 
-    const res = await axios.post(url, values);
+    await axios.post(url, values);
 
-    onClose();
+    toast("Success", {
+      description: "Server Created Successfully",
+      style: { backgroundColor: "white", color: "black" },
+      richColors: true,
+    });
+
     router.refresh();
+
+    handleCancel();
   };
 
   const handleCancel = () => {

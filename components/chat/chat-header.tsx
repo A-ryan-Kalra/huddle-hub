@@ -31,7 +31,7 @@ function ChatHeader({
     <div className=" border-b-[1px] border-b-zinc-400 w-full">
       <div className="flex justify-between items-center w-full px-2 py-2">
         <div className="flex w-full items-center">
-          <div className="p-1 md:hidden">
+          <div className="p-1 lg:hidden">
             <MobileToggle
               currentMemberId={currentMemberId}
               serverId={channel?.serverId as string}

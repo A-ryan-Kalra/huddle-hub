@@ -14,28 +14,34 @@ import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
 
 import { useModal } from "@/hooks/use-modal-store";
+import { Loader2Icon } from "lucide-react";
 
 function DeleteServerModal() {
   const { type, onClose, data, onOpen } = useModal();
   const openModal = type === "deleteServer";
   const params = useParams();
   const { server } = data;
+  const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
 
   const onSubmit = async () => {
+    setIsLoading(true);
     const url = qs.stringifyUrl({
       url: `/api/servers/${params?.serverId}`,
     });
 
     await axios.delete(url);
     await fetch("/api/socket/reload"); // reload pages
+    setIsLoading(false);
+
     router.refresh();
     handleCancel();
   };
 
   const handleCancel = () => {
     onClose();
+    setIsLoading(false);
   };
 
   return (
@@ -53,8 +59,17 @@ function DeleteServerModal() {
           <Button className="" onClick={handleCancel} variant={"default"}>
             Cancel
           </Button>
-          <Button className="" variant={"primary"} onClick={onSubmit}>
-            Confirm
+          <Button
+            disabled={isLoading}
+            className=""
+            variant={"primary"}
+            onClick={onSubmit}
+          >
+            {isLoading ? (
+              <Loader2Icon className="w-4 h-4 animate-spin" />
+            ) : (
+              "Confirm"
+            )}
           </Button>
         </div>
       </DialogContent>

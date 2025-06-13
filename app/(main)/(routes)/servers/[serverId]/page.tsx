@@ -39,7 +39,7 @@ async function ServerPage({ params }: ServerPageProps) {
     },
   });
   if (!server) {
-    return redirect("/");
+    return redirect("/servers/create-server");
   }
 
   return redirect(`/servers/${server.id}/channels/${server.channels[0].id}`);

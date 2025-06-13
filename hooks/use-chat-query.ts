@@ -16,6 +16,7 @@ interface ChatQueryProps {
   paramValue?: string;
   apiUrl: string;
   type?: string;
+  serverId: string;
 }
 
 function useChatQuery({
@@ -24,6 +25,7 @@ function useChatQuery({
   queryKey,
   apiUrl,
   type,
+  serverId,
 }: ChatQueryProps) {
   const { isConnected } = useSocket();
 
@@ -34,6 +36,7 @@ function useChatQuery({
         query: {
           [paramKey as string]: paramValue,
           cursor: pageParam,
+          serverId: serverId,
         },
       },
       {

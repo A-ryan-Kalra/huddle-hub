@@ -27,6 +27,7 @@ import { Check, Copy, Loader2, RefreshCcw } from "lucide-react";
 import { useModal } from "@/hooks/use-modal-store";
 
 import { useOrigin } from "@/hooks/use-origin";
+import { memberRole } from "@prisma/client";
 
 function InviteMemberModal() {
   const { type, onClose, data, onOpen } = useModal();
@@ -34,7 +35,7 @@ function InviteMemberModal() {
   const openModal = type === "invite";
   const params = useParams();
   const origin = useOrigin();
-  const { server } = data;
+  const { server, member } = data;
   const inviteUrl = `${origin}/invite/${server?.inviteCode}`;
 
   const router = useRouter();
@@ -90,14 +91,21 @@ function InviteMemberModal() {
             )}
           </button>
         </div>
-        <DialogFooter className="mt-3">
+
+        <DialogFooter className="mt-3 flex flex-col gap-y-0">
           <Button
             className="mr-auto text-zinc-500 flex items-center"
             variant={"link"}
             onClick={onSubmit}
+            disabled={(member as any)?.role !== memberRole.ADMIN}
           >
             Generate a new link <RefreshCcw className="w-4 h-4" />
           </Button>
+          {(member as any)?.role !== memberRole.ADMIN && (
+            <p className="text-xs text-red-500">
+              Only admins are allowed to generate a new link.
+            </p>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -106,6 +106,7 @@ export default async function handler(
           create: [
             {
               memberId: reciever,
+              serverId: serverId as string,
             },
           ],
         },

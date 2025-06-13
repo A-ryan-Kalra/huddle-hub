@@ -46,6 +46,11 @@ export async function DELETE(req: NextRequest) {
     if (!serverId) {
       return NextResponse.json({ error: "Server Id missing" }, { status: 400 });
     }
+    await db.channelOnMember.deleteMany({
+      where: {
+        serverId,
+      },
+    });
 
     const deleteMember = await db.server.delete({
       where: {

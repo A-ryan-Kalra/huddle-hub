@@ -9,9 +9,9 @@
 huddle-hub🌍 - A **real-time** communication platform primarly designated for **workplace communication** and **collaboration**,allowing users to send messages, share files and `connect` with coworkers and clients.
 
 ## A quick look at the workspace 👀
+
  <img width="1440" alt="workspace" src="https://github.com/user-attachments/assets/20821d43-33b8-4df4-b754-f7275b20c3a6" />
 </div>
-
 
 <br/>
 
@@ -61,6 +61,7 @@ huddle-hub🌍 - A **real-time** communication platform primarly designated for 
 **Member have limited access to workspace features.**
 
 - 🔐 `User Management`
+  - Create their own `workspace server` and grow your community.
   - Now Members can invite new users via **authorized link**.
   - `Communicate with members on real-time video🎦 or audio chat🎚️🔈.`
   - leave channel or workspace anytime for now.
@@ -73,8 +74,6 @@ huddle-hub🌍 - A **real-time** communication platform primarly designated for 
 </div>
 
 <br/>
-
-
 
 <br/>
 
@@ -134,7 +133,6 @@ Okay, we all are familiar with the common features - but what makes it special? 
 <li>LiveKit</li>
 <li>Clerk</li>
 </ul>
-
 
 # ⚙️🔧Installation:
 
