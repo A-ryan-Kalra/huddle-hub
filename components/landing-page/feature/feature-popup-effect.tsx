@@ -80,11 +80,11 @@ function FeaturePopupEffect() {
         style={{ height: "100px" }}
       >
         <div
-          className="border-[2px] border-teal-600 z-10 bottom-0 absolute bg-white rounded-full max-lg:w-10
-max-lg:h-10 lg:w-[50px] lg:h-[50px] flex items-center"
+          className="border-[2px] border-teal-600 z-10 bottom-0 absolute bg-white rounded-full max-lg:w-11
+max-lg:h-11 lg:w-[50px] lg:h-[50px] flex items-center"
         >
           <img
-            className="object-cover aspect-square scale-[200%] mx-auto lg:w-10 w-7 lg:h-10 h-7"
+            className="object-cover aspect-square scale-[200%] mx-auto lg:w-10 w-8 lg:h-10 h-8"
             alt="logo"
             src={"/icons/maskable-icon.png"}
           />

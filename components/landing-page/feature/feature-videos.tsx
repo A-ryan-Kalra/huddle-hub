@@ -92,7 +92,7 @@ function FeatureVideos({
       window.removeEventListener("scroll", handleScroll);
     };
   }, [isChecked]);
-  console.log(window.innerWidth);
+
   return (
     <div
       ref={imageRef}
@@ -156,7 +156,7 @@ function FeatureVideos({
             </div>
           </div>
         </div>
-        <div className="flex-1 flex lg:gap-y-5 gap-y-2 flex-col  px-2">
+        <div className="flex-1 flex lg:gap-y-5 gap-y-2 flex-col max-sm:ml-3 px-2">
           <h1 className=" max-sm:mt-3 text-left text-2xl ml-2 sm:ml-10  font-extrabold sm:text-3xl">
             <span
               className={`${
