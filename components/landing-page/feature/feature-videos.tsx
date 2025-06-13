@@ -84,7 +84,7 @@ function FeatureVideos({
   return (
     <div
       ref={imageRef}
-      className="flex items-start relative justify-between overflow-hidde   w-full h-[400px]"
+      className="flex items-start relative justify-between overflow-hidde  w-full h-[400px]"
     >
       <>
         <div
@@ -103,7 +103,7 @@ function FeatureVideos({
         <div ref={heightRef} className="absolute top-0">
           <div
             className={cn(
-              `sm:w-[600px] w-[200px] rounded-md -left-3 h-[200px] sm:h-[340px] absolute top-full `,
+              `sm:w-[600px] w-[200px] rounded-md -left-7 h-[200px] sm:h-[340px] absolute top-full `,
               className
             )}
           >
