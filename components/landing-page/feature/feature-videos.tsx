@@ -22,6 +22,7 @@ function FeatureVideos({
   const showRef = useRef<HTMLDivElement>(null);
   const [isChecked, setIsChecked] = useState(false);
   const controlVideoRef = useRef<HTMLVideoElement>(null);
+  const controlVideoRefMobile = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     async function handleScroll() {
@@ -30,6 +31,7 @@ function FeatureVideos({
       const showImgElement = showRef.current;
       const windowHeight = window.innerHeight;
       const video = controlVideoRef.current;
+      const videoMobile = controlVideoRefMobile.current;
 
       const imgEl = document.querySelector(`video[data-alt="${alt}"]`);
       if (!element || !heightElement) {
@@ -46,9 +48,16 @@ function FeatureVideos({
         );
 
         if (scrolled < 399) {
-          if (video) {
+          if (video && window.innerWidth >= 1024) {
             try {
               await video.play(); // Wait until it's safe to play
+            } catch (err) {
+              console.error("Playback failed:", err);
+            }
+          }
+          if (videoMobile) {
+            try {
+              await videoMobile.play(); // Wait until it's safe to play
             } catch (err) {
               console.error("Playback failed:", err);
             }
@@ -66,9 +75,13 @@ function FeatureVideos({
           showImgElement?.classList.remove("show");
           imgEl?.classList.add("hide");
           showImgElement?.classList.add("hide");
-          if (video) {
+          if (video && window.innerWidth >= 1024) {
             video.pause();
             video.currentTime = 0;
+          }
+          if (videoMobile) {
+            videoMobile.pause();
+            videoMobile.currentTime = 0;
           }
         }
 
@@ -79,9 +92,13 @@ function FeatureVideos({
         imgEl?.classList.add("hide");
         showImgElement?.classList.add("hide");
         setIsChecked(false);
-        if (video) {
+        if (video && window.innerWidth >= 1024) {
           video.pause();
           video.currentTime = 0;
+        }
+        if (videoMobile) {
+          videoMobile.pause();
+          videoMobile.currentTime = 0;
         }
       }
     }
@@ -146,7 +163,7 @@ function FeatureVideos({
               <video
                 className="object-cover show object-top z-10 shadow-md shadow-slate-400 rounded-md overflow-hidden aspect-square w-full h-full"
                 data-alt={alt}
-                ref={controlVideoRef}
+                ref={controlVideoRefMobile}
                 autoPlay
                 loop
                 muted
