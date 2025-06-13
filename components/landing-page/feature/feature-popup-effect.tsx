@@ -69,7 +69,7 @@ function FeaturePopupEffect() {
   }, []);
 
   return (
-    <div className=" w-full relative mx-auto flex h-full flex-col p-2 lg:items-center pt-[4.5rem]  ">
+    <div className=" w-full relative mx-auto flex h-full flex-col p-2 lg:items-center pt-[4.5rem]">
       <div
         ref={imgeRef}
         className="w-1 border-[2px] border-gray-300 border-dashed rounded-xl h-full absolute top-0 lg:mx-auto mr-auto mt-5"

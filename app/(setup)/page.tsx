@@ -5,6 +5,7 @@ import { currentProfile } from "@/lib/currentProfile";
 import Header from "@/components/landing-page/header/header";
 import HeroPage from "@/components/landing-page/hero/hero";
 import FeaturePages from "@/components/landing-page/feature/feature";
+import Footer from "@/components/landing-page/footer";
 
 export default async function Home() {
   const profile = await currentProfile();
@@ -36,6 +37,7 @@ export default async function Home() {
       <section className="bg-white">
         <FeaturePages />
       </section>
+      <Footer />
     </main>
   );
 }
