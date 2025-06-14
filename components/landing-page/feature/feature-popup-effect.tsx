@@ -1,8 +1,17 @@
 "use client";
-import Image from "next/image";
+
 import React, { useEffect, useRef, useState } from "react";
-import FeatureVideos from "./feature-videos";
+// import FeatureVideos from "./feature-videos";
 import { features } from "@/lib/constant-features";
+import dynamic from "next/dynamic";
+
+const FeatureVideos = dynamic(
+  () => import("../../../components/landing-page/feature/feature-videos"),
+  {
+    ssr: false,
+    loading: () => <p>Loading video...</p>, // Fallback while loading
+  }
+);
 
 function FeaturePopupEffect() {
   const sectionRef = useRef<HTMLDivElement>(null);
