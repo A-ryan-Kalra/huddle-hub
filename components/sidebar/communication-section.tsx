@@ -122,7 +122,9 @@ function CommunicationSection({
       )}
       {type === "conversation" && (
         <button
-          onClick={() => onOpen("invite", { server: server })}
+          onClick={() =>
+            onOpen("invite", { server: server, member: currentMember })
+          }
           className="group p-1 text-sm gap-x-2 hover:bg-zinc-200 transition  flex items-center justify-start rounded-md"
         >
           <span className="group-hover:bg-slate-50 rounded-md p-1 transition">

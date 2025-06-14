@@ -8,7 +8,7 @@ function Loading() {
       <div className="relative w-[350px] h-[300px] ">
         <Image
           alt="img"
-          className="object-cover"
+          className="object-cover aspect-square"
           src={"/icons/maskable-icon.png"}
           fill
         />
