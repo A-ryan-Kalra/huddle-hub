@@ -21,7 +21,7 @@ huddle-hub🌍 - A **real-time** communication platform primarly designated for 
  
 ## A quick look at the workspace 👀
 
- <img width="1440" alt="workspace" src="https://github.com/user-attachments/assets/2acec02c-8a07-46dc-953c-4078193db401" />
+ <img width="1440" alt="workspace" src="https://github.com/user-attachments/assets/4db75a95-b897-4ffe-b24e-da39ad31c7f9" />
 </div>
 
 <br/>
