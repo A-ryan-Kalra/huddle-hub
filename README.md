@@ -16,13 +16,14 @@ huddle-hub🌍 - A **real-time** communication platform primarly designated for 
     </td>
   </tr>
 </table>
-
-
+</div>
  
 ## A quick look at the workspace 👀
 
+> [!TIP]
+> ___Join a demo server to explore and experience all the cool features show in the image below via [invitation link](https://huddle-hub-uqmv.onrender.com/invite/edbb0d0b-affc-4c29-bb9f-bc629102ab08) — or create your own server and go all in!___
+> 
  <img width="1440" alt="workspace" src="https://github.com/user-attachments/assets/4db75a95-b897-4ffe-b24e-da39ad31c7f9" />
-</div>
 
 <br/>
 
