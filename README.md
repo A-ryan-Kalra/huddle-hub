@@ -8,6 +8,17 @@
 
 huddle-hub🌍 - A **real-time** communication platform primarly designated for **workplace communication** and **collaboration**,allowing users to send messages, share files and `connect` with coworkers and clients.
 
+<table>
+  <tr>
+    <td>
+      v2.5 is out 🚀<br>
+      <a href="https://github.com/A-ryan-Kalra/huddle-hub/releases/tag/v2.5.0">Check out →</a>
+    </td>
+  </tr>
+</table>
+
+
+ 
 ## A quick look at the workspace 👀
 
  <img width="1440" alt="workspace" src="https://github.com/user-attachments/assets/20821d43-33b8-4df4-b754-f7275b20c3a6" />
