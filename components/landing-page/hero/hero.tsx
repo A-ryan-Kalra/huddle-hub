@@ -36,6 +36,7 @@ function HeroPage() {
             <Image
               width={0}
               height={0}
+              draggable={false}
               sizes="100vw"
               className="h-auto w-auto"
               src={"/feature-template.png"}
@@ -57,6 +58,7 @@ function HeroPage() {
             <Image
               width={0}
               height={0}
+              draggable={false}
               sizes="100vw"
               className="h-auto w-auto"
               src={"/workspace-dashboard.png"}
