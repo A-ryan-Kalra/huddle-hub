@@ -23,6 +23,11 @@ const righteous = Noto_Sans_Indic_Siyaq_Numbers({
 export const metadata: Metadata = {
   title: "Huddle Hub",
   description: "The only platform to connect employes within the organization.",
+  icons: [
+    {
+      url: "/favicon.ico",
+    },
+  ],
   keywords: [
     "internal chat",
     "organization",
