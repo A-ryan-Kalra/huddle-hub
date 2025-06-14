@@ -129,7 +129,7 @@ function InitialModal() {
               </div>
             </div>
 
-            <DialogFooter className="mt-3 flex items-center ">
+            <div className="mt-3 flex items-center ">
               <div className="mr-auto">
                 <SignOutButton
                   signOutOptions={{ sessionId: sessionId as string }}
@@ -153,7 +153,7 @@ function InitialModal() {
               >
                 {isLoading ? <Loader2 className="animate-spin" /> : "Create"}
               </Button>
-            </DialogFooter>
+            </div>
           </form>
         </Form>
       </DialogContent>
