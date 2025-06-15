@@ -58,7 +58,13 @@ function ChatSection({
   const allMessageRef = useRef<Record<string, HTMLDivElement | null>>({});
 
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage, status } =
-    useChatQuery({ queryKey, paramKey, paramValue, apiUrl });
+    useChatQuery({
+      queryKey,
+      paramKey,
+      paramValue,
+      apiUrl,
+      serverId: currentMember?.serverId,
+    });
 
   const pushNotificationAlertId = `push:${currentMember?.id}`;
   usePushNotificationAlert({ notificationId: pushNotificationAlertId });

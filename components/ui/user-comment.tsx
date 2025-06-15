@@ -484,6 +484,27 @@ function UserComment({
                   __html: removeLastSpan(message?.content as string),
                 }}
               />
+              {message?.fileUrl && (
+                <div className="relative max-w-[500px] shadow-sm shadow-current my-2 max-h-[400px] rounded-lg overflow-hidden">
+                  <Link
+                    href={message?.fileUrl}
+                    draggable="false"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className=""
+                  >
+                    <Image
+                      src={message?.fileUrl}
+                      alt="message"
+                      width={300}
+                      height={300}
+                      loading="lazy"
+                      className=" object-cover w-full h-fit aspect-square hover:scale-110 cursor-pointer transition"
+                      // fill
+                    />
+                  </Link>
+                </div>
+              )}
               {message?.threads?.length > 0 && (
                 <button
                   onClick={() => {
@@ -514,27 +535,6 @@ function UserComment({
                     {threadLastReply && <span>{threadLastReply}</span>}
                   </p>
                 </button>
-              )}
-              {message?.fileUrl && (
-                <div className="relative max-w-[500px] shadow-sm shadow-current my-2 max-h-[400px] rounded-lg overflow-hidden">
-                  <Link
-                    href={message?.fileUrl}
-                    draggable="false"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className=""
-                  >
-                    <Image
-                      src={message?.fileUrl}
-                      alt="message"
-                      width={300}
-                      height={300}
-                      loading="lazy"
-                      className=" object-cover w-full h-fit aspect-square hover:scale-110 cursor-pointer transition"
-                      // fill
-                    />
-                  </Link>
-                </div>
               )}
             </div>
           )}
