@@ -24,7 +24,7 @@ huddle-hub🌍 - A **real-time** communication platform primarly designated for 
 > ## Not sure where to start?
 > ___Jump into our demo server to explore all the powerful features in action as shown in the image below by logging via [invitation link](https://huddle-hub-uqmv.onrender.com/invite/edbb0d0b-affc-4c29-bb9f-bc629102ab08)  — no setup needed, Get a feel for everything you can do, then create your own server when you're ready to make it yours.___
 > 
- <img width="1440" alt="workspace" src="https://github.com/user-attachments/assets/dc0904f5-a320-4657-b7bf-95acebda4ceb" />
+ <img width="1440" alt="workspace" src="https://github.com/user-attachments/assets/d45ff451-c4c2-4c31-84ec-0035f2017fca" />
 
 <br/>
 
