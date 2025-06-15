@@ -14,19 +14,10 @@ function HeaderPage() {
       setIsScroll(window.scrollY > 0);
     }
 
-    // function handleMouseMove(e: Event) {
-    //   const mouseEvent = e instanceof MouseEvent;
-    //   if (mouseEvent) {
-    //     setPosition({ x: e.clientX, y: e.clientY });
-    //   }
-    // }
-
     document.addEventListener("scroll", handleScroll);
-    // document.addEventListener("mousemove", handleMouseMove);
 
     return () => {
       document.removeEventListener("scroll", handleScroll);
-      //   document.removeEventListener("mousemove", handleMouseMove);
     };
   }, []);
 
@@ -39,22 +30,6 @@ function HeaderPage() {
           : " border-b-transparent"
       )}
     >
-      {/* <div
-        style={{
-          position: "fixed",
-          top: position.y,
-          left: position.x,
-          width: "40px",
-          height: "40px",
-          border: "2px solid #5cbacd",
-          borderRadius: "50%",
-          transform: "translate(-50%, -50%)",
-          pointerEvents: "none",
-          zIndex: 9999,
-          transition: "transform 0.05s ease-out",
-        }}
-      /> */}
-
       <div
         className={cn(
           "max-w-[1280px] mx-auto flex p-2  items-center justify-between"

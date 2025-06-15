@@ -1,7 +1,5 @@
 import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
-import { currentProfile } from "@/lib/currentProfile";
-
 import Header from "@/components/landing-page/header/header";
 import HeroPage from "@/components/landing-page/hero/hero";
 import FeaturePages from "@/components/landing-page/feature/feature";
