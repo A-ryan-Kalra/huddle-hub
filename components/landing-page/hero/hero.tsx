@@ -38,7 +38,7 @@ function HeroPage() {
               height={0}
               draggable={false}
               sizes="100vw"
-              className="h-auto w-auto"
+              className="h-auto w-auto pointer-events-none"
               src={"/feature-template.png"}
               alt="/feature-template.png"
             />
@@ -60,7 +60,7 @@ function HeroPage() {
               height={0}
               draggable={false}
               sizes="100vw"
-              className="h-auto w-auto"
+              className="h-auto w-auto pointer-events-none"
               src={"/workspace-dashboard.png"}
               alt="/workspace-dashboard.png"
             />

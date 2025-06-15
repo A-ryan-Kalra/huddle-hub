@@ -9,7 +9,7 @@ const FeatureVideos = dynamic(
   () => import("../../../components/landing-page/feature/feature-videos"),
   {
     ssr: false,
-    loading: () => <p>Loading video...</p>, // Fallback while loading
+    loading: () => <p className="w-full h-full">Loading video...</p>, // Fallback while loading
   }
 );
 
@@ -33,6 +33,7 @@ function FeaturePopupEffect() {
 
       if (rect.top < windowHeight - triggerPoint && rect.bottom > 0) {
         const totalScrollable = rect.height;
+
         const scrolled = Math.min(
           totalScrollable + 100,
           Math.max(100, windowHeight - triggerPoint - rect.top)
@@ -88,8 +89,8 @@ function FeaturePopupEffect() {
   return (
     <div className=" w-full relative mx-auto flex h-full flex-col p-2 lg:items-center pt-[4.5rem]">
       <div
-        ref={imgeRef}
-        className="w-1 border-[2px] border-gray-300 border-dashed rounded-xl h-full absolute top-0 lg:mx-auto mr-auto mt-5"
+        // ref={imgeRef}
+        className={`w-1 border-[2px] border-gray-300 border-dashed rounded-xl h-full absolute top-0 lg:mx-auto mr-auto mt-5`}
       ></div>
       <div
         ref={imgeRef}

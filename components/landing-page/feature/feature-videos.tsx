@@ -4,19 +4,20 @@ import { Modak } from "next/font/google";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 
+interface FeatureVideoProps {
+  icon: string;
+  alt: string;
+  className?: string;
+  title: string;
+  description: string;
+}
 function FeatureVideos({
   icon,
   alt,
   className,
   description,
   title,
-}: {
-  icon: string;
-  alt: string;
-  className?: string;
-  title: string;
-  description: string;
-}) {
+}: FeatureVideoProps) {
   const imageRef = useRef<HTMLDivElement>(null);
   const heightRef = useRef<HTMLDivElement>(null);
   const showRef = useRef<HTMLDivElement>(null);
@@ -40,7 +41,7 @@ function FeatureVideos({
       const rect = element.getBoundingClientRect();
       const targetPoint = 500;
 
-      if (rect.top < windowHeight - targetPoint && rect.bottom > 0) {
+      if (rect.top - 10 < windowHeight - targetPoint && rect.bottom > 0) {
         setIsChecked(true);
         const totalScrollable = rect.height;
         const scrolled = Math.min(
@@ -48,7 +49,7 @@ function FeatureVideos({
           Math.max(0, windowHeight - targetPoint - rect.top)
         );
 
-        if (scrolled < 399) {
+        if (scrolled < 389) {
           if (video && window.innerWidth >= 1024) {
             try {
               await video.play(); // Wait until it's safe to play
@@ -64,9 +65,15 @@ function FeatureVideos({
             }
           }
           if (window.innerWidth >= 1024) {
-            heightElement.style.height = `${scrolled}px`;
+            // heightElement.style.height = `${scrolled}px`;
+            // heightElement.style.transform = `translateY(${scrolled}px)`;
+
+            heightElement.animate(
+              { transform: `translateY(${scrolled}px)` },
+              { duration: 0, easing: "ease-in-out", fill: "forwards" }
+            );
           }
-          // heightElement.style.height = `${scrolled}px`;
+
           imgEl?.classList.add("show");
           showImgElement?.classList.add("show");
           imgEl?.classList.remove("hide");
@@ -112,11 +119,13 @@ function FeatureVideos({
   return (
     <div
       ref={imageRef}
-      className="flex items-start relative lg:justify-between overflow-hidde  w-full h-[400px]"
+      className={`flex items-start relative lg:justify-between overflow-hidde  w-full ${
+        alt !== "server" ? "h-[400px]" : "h-full"
+      } `}
     >
       <>
         <div
-          className={`absolute top-0 translate-x-[2%] rounded-full bg-white lg:left-[50%] lg:translate-x-[-50%] w-2 h-2   ${
+          className={`absolute top-1 translate-x-[2%] rounded-full bg-white lg:left-[50%] lg:translate-x-[-50%] w-2 h-2   ${
             isChecked
               ? "border-indigo-600  border-[2px] px-2 py-2 max-sm:-left-[2%] -left-[1%]"
               : "bg-white py-3 -left-0.5"
