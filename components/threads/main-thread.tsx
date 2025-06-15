@@ -37,7 +37,7 @@ function MainThread({ message }: MainThreadProps) {
           height={34}
           className="!rounded-md aspect-square ring-2 ring-offset-1 ring-zinc-600"
         />
-        <div className="flex flex-col gap-y-2 w-full">
+        <div className="flex flex-col gap-y-2 max-sm:gap-y-1 w-full">
           <div className="flex items-center -mt-1 justify-start">
             <h1 className="text-sm  font-semibold hover:underline cursor-pointer transition">
               {message?.member?.profile?.name}
@@ -51,17 +51,17 @@ function MainThread({ message }: MainThreadProps) {
             </ActionToolTip>
           </div>
           <div
-            className="w-full break-all line-clamp-4"
+            className="w-full break-all line-clamp-4 max-sm:text-sm"
             dangerouslySetInnerHTML={{ __html: message?.content as string }}
           />
           {message?.fileUrl && (
-            <div className="relative max-w-full shadow-sm shadow-current max-h-[300px] rounded-lg overflow-hidden">
+            <div className="relative max-sm:max-w-[200px] max-w-full shadow-sm shadow-current max-h-[200px] rounded-lg overflow-hidden">
               <Link
                 href={message?.fileUrl}
                 draggable="false"
                 target="_blank"
                 rel="noopener noreferrer"
-                className=""
+                className="relative"
               >
                 <Image
                   src={message?.fileUrl}
@@ -69,7 +69,7 @@ function MainThread({ message }: MainThreadProps) {
                   width={300}
                   height={300}
                   loading="lazy"
-                  className=" object-cover w-full h-fit aspect-square hover:scale-110 cursor-pointer transition"
+                  className=" object-cover w-full h-fit aspect-video hover:scale-110 cursor-pointer transition"
                   // fill
                 />
               </Link>

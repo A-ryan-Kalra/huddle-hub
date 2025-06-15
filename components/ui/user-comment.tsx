@@ -499,7 +499,7 @@ function UserComment({
                       width={300}
                       height={300}
                       loading="lazy"
-                      className=" object-cover w-full h-fit aspect-square hover:scale-110 cursor-pointer transition"
+                      className=" object-cover w-full h-fit aspect-video hover:scale-110 cursor-pointer transition"
                       // fill
                     />
                   </Link>
