@@ -20,11 +20,14 @@ huddle-hub🌍 - A **real-time** communication platform primarly designated for 
  
 ## A quick look at the workspace 👀
 
+ <img width="1440" alt="workspace" src="https://github.com/user-attachments/assets/d45ff451-c4c2-4c31-84ec-0035f2017fca" />
+ 
+<br/>
+<br/>
+
 > [!TIP]
 > ## Not sure where to start?
-> ___Jump into our demo server to explore all the powerful features in action as shown in the image below by logging via [invitation link](https://huddle-hub-uqmv.onrender.com/invite/edbb0d0b-affc-4c29-bb9f-bc629102ab08)  — no setup needed, Get a feel for everything you can do, then create your own server when you're ready to make it yours.___
-> 
- <img width="1440" alt="workspace" src="https://github.com/user-attachments/assets/d45ff451-c4c2-4c31-84ec-0035f2017fca" />
+> ___Jump into our demo server to explore all the powerful features in action as shown in the image above by logging via [invitation link](https://huddle-hub-uqmv.onrender.com/invite/edbb0d0b-affc-4c29-bb9f-bc629102ab08)  — no setup needed, Get a feel for everything you can do, then create your own server when you're ready to make it yours.___
 
 <br/>
 
@@ -36,6 +39,9 @@ huddle-hub🌍 - A **real-time** communication platform primarly designated for 
 - [🤔🌌 What Sets This Project Apart?](#-what-sets-this-project-apart)
 - [🧑‍💻🎧Tech Stacks](#tech-stacks)
 - [⚙️🔧Installation](#%EF%B8%8Finstallation)
+
+<br/>
+
 
 # 🛡️🗡️Roles:
 
