@@ -25,8 +25,9 @@ async function InvitePage({ params }: InvitePageProps) {
     return (
       <div className="w-full h-full flex gap-y-5 items-center justify-center flex-col">
         <h1 className="text-8xl text-zinc-700">404</h1>
-        <p className="text-lg text-zinc-400">
-          Oops! The invite code is invalid. Please check and try again.
+        <p className="text-lg text-center text-zinc-400">
+          Oops! The invite code is invalid.
+          <br /> Please check and try again.
         </p>
         <Link href={"/"}>
           <Button variant={"ghost"} className="border-[1px]">
