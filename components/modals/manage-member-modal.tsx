@@ -95,6 +95,8 @@ function ManageMemberModal() {
 
       setLoadingId("");
 
+      await fetch("/api/socket/reload"); // reload pages
+      // router.push("/");
       router.refresh();
     } catch (error) {
       console.error(error);
