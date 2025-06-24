@@ -26,7 +26,7 @@ function HeaderPage() {
       className={cn(
         "w-full  sticky top-0 z-[100] border-b-[1px] duration-100",
         isScroll
-          ? "bg-slate-200/[0.5] border-b-slate-200"
+          ? "bg-slate-200/[0.5] backdrop-blur-sm border-b-slate-200"
           : " border-b-transparent"
       )}
     >
