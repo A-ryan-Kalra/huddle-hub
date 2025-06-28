@@ -152,6 +152,8 @@ function FeatureVideos({
               ref={controlVideoRef}
               autoPlay
               loop
+              controlsList="nodownload noplaybackrate noremoteplayback"
+              disablePictureInPicture={true}
               muted
               src={icon}
               data-img-new
@@ -172,6 +174,8 @@ function FeatureVideos({
                 className="object-cover show object-top z-10 shadow-md shadow-slate-400 rounded-md overflow-hidden aspect-square w-full h-full"
                 data-alt={alt}
                 ref={controlVideoRefMobile}
+                controlsList="nodownload noremoteplayback noplaybackrate"
+                disablePictureInPicture={true}
                 autoPlay
                 loop
                 muted
