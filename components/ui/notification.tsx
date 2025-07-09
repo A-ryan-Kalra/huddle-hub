@@ -75,7 +75,12 @@ export function Notification({ currentMemberId }: NotificationProps) {
 
   return (
     <div className="relative group">
-      <audio className="" ref={audioRef} src="/notification.mp3" />
+      <audio
+        className="hidden"
+        controls
+        ref={audioRef}
+        src="/notification.mp3"
+      />
 
       <button className="hover:bg-zinc-200 transition relative rounded-md p-1">
         <Bell className="w-6 h-6" />

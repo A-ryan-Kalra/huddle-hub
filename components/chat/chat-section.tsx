@@ -233,7 +233,12 @@ function ChatSection({
         ))}
       </div>
 
-      <audio className="" ref={audioRef} src="/notification.mp3" />
+      <audio
+        className="hidden"
+        controls
+        ref={audioRef}
+        src="/notification.mp3"
+      />
 
       <div ref={bottomRef} />
     </div>
