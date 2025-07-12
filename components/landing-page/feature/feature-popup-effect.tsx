@@ -72,9 +72,10 @@ function FeaturePopupEffect() {
       },
       { threshold: 0 }
     );
-    if (window.innerWidth >= 1024) {
-      if (sectionRef.current) observer.observe(sectionRef.current);
-    }
+    // if (window.innerWidth >= 1024) {
+
+    //   if (sectionRef.current) observer.observe(sectionRef.current);
+    // }
 
     window.addEventListener("scroll", handleScroll);
 
