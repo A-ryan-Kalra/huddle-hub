@@ -4,12 +4,19 @@ import React, { useEffect, useRef, useState } from "react";
 // import FeatureVideos from "./feature-videos";
 import { features } from "@/lib/constant-features";
 import dynamic from "next/dynamic";
+import { Loader } from "lucide-react";
 
 const FeatureVideos = dynamic(
   () => import("../../../components/landing-page/feature/feature-videos"),
   {
     ssr: false,
-    loading: () => <p className="w-full h-full">Loading video...</p>, // Fallback while loading
+    loading: () => (
+      <div className="w-full flex items-start max-lg:justify-center h-[400px]">
+        <div className=" animate-spin w-fit">
+          <Loader />
+        </div>
+      </div>
+    ), // Fallback while loading
   }
 );
 
